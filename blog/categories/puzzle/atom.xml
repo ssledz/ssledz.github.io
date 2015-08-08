@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Puzzle | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/puzzle/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2015-08-08T23:27:00+02:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Puzzle - Write a Method to Compute All Permutations of a String]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/"/>
+    <updated>2015-08-08T21:06:54+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string</id>
+    <content type="html"><![CDATA[<h3>How to Approche</h3>
+
+<p>When we hear a problem beginning with: &lsquo;Write a method to compute all&hellip;&rsquo;, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called &lsquo;base case&rsquo; - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
+
+<h4>Problem</h4>
+
+<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let&rsquo;s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
+
+<p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code>
+<code>
+perm('a')   = 'a'
+perm('b')   = 'b'
+perm('c')   = 'c'
+perm('ab')  = 'ab', 'ba'
+perm('ac')  = 'ac', 'ca'
+perm('bc')  = 'bc', 'cb'
+perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
+</code></p>
+
+<p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
+
+<pre><code>perm('a')   = 'a'
+perm('b')   = 'b'
+perm('c')   = 'c'
+perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
+perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
+perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
+perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')
+</code></pre>
+
+<p>where <code>|</code> means a concatenation of two strings.</p>
+
+<p>First three cases are called &lsquo;base cases&rsquo; and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
+
+<h3>Coding</h3>
+
+<pre><code class="java">    public static List&lt;String&gt; permute(String str) {
+
+        if (str.length() == 1) {
+            List&lt;String&gt; ret = new LinkedList&lt;&gt;();
+            ret.add(str);
+            return ret;
+        }
+
+        List&lt;String&gt; permutations = new LinkedList&lt;&gt;();
+
+        for (int i = 0; i &lt; str.length(); i++) {
+            String left = "" + str.charAt(i);
+            StringBuilder subStr = new StringBuilder(str);
+            subStr.deleteCharAt(i);
+
+            List&lt;String&gt; subPermutations = permute(subStr.toString());
+
+            for (String perm : subPermutations) {
+                permutations.add(left + perm);
+            }
+
+        }
+
+        return permutations;
+
+    }
+</code></pre>
+
+<pre><code class="java">    public static void main(String[] args) {
+
+        List&lt;String&gt; permutations = permute("abc");
+        System.out.println(String.format("permutations size: %d", permutations.size()));
+        for (String perm : permutations) {
+            System.out.println(perm);
+        }
+    }
+</code></pre>
+
+<pre><code>permutations size: 6
+abc
+acb
+bac
+bca
+cab
+cba
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

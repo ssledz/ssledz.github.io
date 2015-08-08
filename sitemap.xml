@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/</loc>
+    <lastmod>2015-08-08T21:06:54+02:00</lastmod>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/archives/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/puzzle/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/recursion/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/algorithms/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/java/</loc>
+  </url>
+</urlset>
