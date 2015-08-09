@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithms | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/algorithms/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-08-09T00:22:34+02:00</updated>
+  <updated>2015-08-09T21:09:17+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,65 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Puzzle - Write a Method to Reverse a String Using Recursion]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/"/>
+    <updated>2015-08-09T20:25:16+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion</id>
+    <content type="html"><![CDATA[<h3>Problem</h3>
+
+<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a &lsquo;base case&rsquo; which can&rsquo;t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
+
+<p>So let&rsquo;s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.
+<code>
+revers('a')     = 'a'
+revers('ab')    = 'ba'
+revers('abc')   = 'cba'
+revers('abcd')  = 'dcba'
+revers('abcde') = 'edcba'
+</code>
+Based on that we can already write a recursive procedure.
+<code>
+revers('a')     = 'a'
+revers('ab')    = 'b'|revers('a')
+revers('abc')   = 'c'|revers('ab')
+revers('abcd')  = 'd'|revers('abc')
+revers('abcde') = 'e'|revers('abcd')
+</code>
+To compute a reversed string for <code>'a'</code> we need to return that string and it is our &lsquo;base case&rsquo;. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
+
+<p>I think we are ready to write some code.</p>
+
+<h3>Coding</h3>
+
+<pre><code class="java">    public static String revers(String arg) {
+
+        if (arg.length() == 1) {
+            return arg;
+        }
+        return arg.charAt(arg.length() - 1) + revers(arg.substring(0, arg.length() - 1));
+
+    }
+</code></pre>
+
+<pre><code class="java">    public static void main(String[] args) {
+        System.out.println(revers("a"));
+        System.out.println(revers("ab"));
+        System.out.println(revers("abc"));
+        System.out.println(revers("abcd"));
+        System.out.println(revers("abcde"));
+    }
+</code></pre>
+
+<pre><code>a
+ba
+cba
+dcba
+edcba
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Puzzle - Write a Method to Compute All Permutations of a String]]></title>

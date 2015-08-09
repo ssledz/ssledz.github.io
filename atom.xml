@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-08-09T00:22:34+02:00</updated>
+  <updated>2015-08-09T21:09:17+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,107 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Puzzle - Write a Method to Reverse a String Using Recursion]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/"/>
+    <updated>2015-08-09T20:25:16+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion</id>
+    <content type="html"><![CDATA[<h3>Problem</h3>
+
+<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a &lsquo;base case&rsquo; which can&rsquo;t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
+
+<p>So let&rsquo;s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>revers('a')     = 'a'
+</span><span class='line'>revers('ab')    = 'ba'
+</span><span class='line'>revers('abc')   = 'cba'
+</span><span class='line'>revers('abcd')  = 'dcba'
+</span><span class='line'>revers('abcde') = 'edcba'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+Based on that we can already write a recursive procedure.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>revers('a')     = 'a'
+</span><span class='line'>revers('ab')    = 'b'|revers('a')
+</span><span class='line'>revers('abc')   = 'c'|revers('ab') 
+</span><span class='line'>revers('abcd')  = 'd'|revers('abc')
+</span><span class='line'>revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To compute a reversed string for <code>'a'</code> we need to return that string and it is our &lsquo;base case&rsquo;. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
+
+<p>I think we are ready to write some code.</p>
+
+<h3>Coding</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">revers</span><span class="o">(</span><span class="n">String</span> <span class="n">arg</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">arg</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">revers</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;ab&quot;</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcd&quot;</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcde&quot;</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">a</span>
+</span><span class='line'><span class="n">ba</span>
+</span><span class='line'><span class="n">cba</span>
+</span><span class='line'><span class="n">dcba</span>
+</span><span class='line'><span class="n">edcba</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Puzzle - Write a Method to Compute All Permutations of a String]]></title>
