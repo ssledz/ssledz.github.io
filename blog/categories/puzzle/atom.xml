@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Puzzle | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/puzzle/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-08-09T21:09:17+02:00</updated>
+  <updated>2015-08-09T22:46:33+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Puzzle - Write a Method That Return All Subsets of a Set]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/"/>
+    <updated>2015-08-09T21:52:26+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set</id>
+    <content type="html"><![CDATA[<h3>Problem</h3>
+
+<p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of &lsquo;number of element in a set&rsquo;. So for a set consisting of <code>3</code> elements it is 8.  To proceed let&rsquo;s write some examples.
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>subsets({&lsquo;a&rsquo;}) = {} + {&lsquo;a&rsquo;}
+</span><span class='line'>subsets({&lsquo;b&rsquo;}) = {} + {&lsquo;b&rsquo;}
+</span><span class='line'>subsets({&lsquo;c&rsquo;}) = {} + {&lsquo;c&rsquo;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;subsets({&lsquo;b&rsquo;,&lsquo;c&rsquo;}) = {} + {&lsquo;b&rsquo;} + {&lsquo;c&rsquo;} + {&lsquo;b&rsquo;,&lsquo;c&rsquo;}
+</span><span class='line'>subsets({&lsquo;a&rsquo;,&lsquo;c&rsquo;}) = {} + {&lsquo;a&rsquo;} + {&lsquo;c&rsquo;} + {&lsquo;a&rsquo;,&lsquo;c&rsquo;}
+</span><span class='line'>subsets({&lsquo;a&rsquo;,&lsquo;b&rsquo;}) = {} + {&lsquo;a&rsquo;} + {&lsquo;b&rsquo;} + {&lsquo;a&rsquo;,&lsquo;b&rsquo;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;subsets({&lsquo;a&rsquo;, &lsquo;b&rsquo;, &lsquo;c&rsquo;}) = {} + {&lsquo;a&rsquo;} + {&lsquo;a&rsquo;,&lsquo;b&rsquo;} + {&lsquo;a&rsquo;,&lsquo;c&rsquo;} + {&lsquo;a&rsquo;,&lsquo;b&rsquo;,&lsquo;c&rsquo;} + {&lsquo;b&rsquo;} + {&lsquo;b&rsquo;,&lsquo;c&rsquo;} + {&lsquo;c&rsquo;}</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Based on that we can notice a following pattern
+<code>
+subset('a')            = {}, {'a'}
+subset('b')            = {}, {'b'}
+subset('c')            = {}, {'c'}
+subsets({'b','c'})     = subset({'b'}) + subset({'c'}) + {'b','c'}
+subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
+subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
+subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}
+</code></p>
+
+<h3>Coding</h3>
+
+<pre><code class="java">    public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set) {
+
+        if (set.size() == 1) {
+            Set&lt;Set&lt;String&gt;&gt; ret = new HashSet&lt;&gt;();
+            ret.add(new HashSet&lt;&gt;());
+            ret.add(new HashSet&lt;&gt;(set));
+            return ret;
+        }
+
+        Set&lt;Set&lt;String&gt;&gt; ret = new HashSet&lt;&gt;();
+        ret.add(set);
+
+        for (String e : set) {
+
+            Set&lt;String&gt; newSet = new HashSet&lt;&gt;(set);
+            newSet.remove(e);
+            Set&lt;Set&lt;String&gt;&gt; subsets = subsets(newSet);
+            ret.addAll(subsets);
+
+        }
+        return ret;
+
+    }
+</code></pre>
+
+<pre><code>    public static void main(String[] args) {
+        Set&lt;String&gt; set  = new HashSet&lt;&gt;(Arrays.asList("a", "b", "c", "d"));
+
+        Set&lt;Set&lt;String&gt;&gt; subs = subsets(set);
+        System.out.println("size: " + subs.size());
+        for(Set&lt;String&gt; sub : subs) {
+            System.out.println(sub.toString());
+        }
+    }
+</code></pre>
+
+<pre><code>size: 16
+[]
+[a]
+[b]
+[c]
+[a, b]
+[d]
+[a, c]
+[b, c]
+[a, d]
+[b, d]
+[a, b, c]
+[c, d]
+[a, b, d]
+[a, c, d]
+[b, c, d]
+[a, b, c, d]
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Puzzle - Write a Method to Reverse a String Using Recursion]]></title>
