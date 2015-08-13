@@ -17,14 +17,13 @@ The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and 
 ```java
     public static long slowFibonacci(int n) {
 
-	if (n == 0 || n == 1) {
-	    return n;
-	}
+        if (n == 0 || n == 1) {
+            return n;
+        }
 
-	return slowFibonacci(n - 1) + slowFibonacci(n - 2);
+        return slowFibonacci(n - 1) + slowFibonacci(n - 2);
 
     }
-
 ```
 You have already noticed that instead of writing fibonacci I have written slowFibonacci. There is a reason for that and You may guessing that probably we can do something with this method to make it much faster and You have right. There is a quite usful programming method which we can use to improve the performance of this method. However before doing this let's try to write a method call stack trace for let's say 5th Fibonacci number.
 ```
@@ -68,31 +67,31 @@ public class Fibonacci {
 
     public static long fibonacci(int n) {
 
-	if (n == 0 || n == 1) {
-	    return n;
-	}
+        if (n == 0 || n == 1) {
+            return n;
+        }
 
-	if (FIB[n] != 0) {
-	    return FIB[n];
-	}
+        if (FIB[n] != 0) {
+            return FIB[n];
+        }
 
-	FIB[n] = fibonacci(n - 1) + fibonacci(n - 2);
+        FIB[n] = fibonacci(n - 1) + fibonacci(n - 2);
 
-	return FIB[n];
+        return FIB[n];
 
     }
-    
+
     public static long slowFibonacci(int n) {
 
-	if (n == 0 || n == 1) {
-	    return n;
-	}
+        if (n == 0 || n == 1) {
+            return n;
+        }
 
-	return slowFibonacci(n - 1) + slowFibonacci(n - 2);
+        return slowFibonacci(n - 1) + slowFibonacci(n - 2);
 
     }
-}
 
+}
 ```
 Call stack trace for this tuned method is following
 ```
