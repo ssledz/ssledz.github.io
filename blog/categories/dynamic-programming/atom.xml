@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Dynamic Programming | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/dynamic-programming/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2015-08-13T02:50:54+02:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Puzzle - Write a Method to Generate the Nth Fibonacci Number]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number/"/>
+    <updated>2015-08-13T01:18:14+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number</id>
+    <content type="html"><![CDATA[<h3>Preface</h3>
+
+<p>Writing a method to generate the nth Fibonacci number is not a rocket science. The recursive formula for that is very simple and can be written following:
+<code>
+fibonacci(0) = 0
+fibonacci(1) = 1
+fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)
+</code>
+The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our &lsquo;base cases&rsquo;. Based on this we can write a method <code>public static long slowFibonacci(int n)</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">You</span> <span class="n">have</span> <span class="n">already</span> <span class="n">noticed</span> <span class="n">that</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">writing</span> <span class="n">fibonacci</span> <span class="n">I</span> <span class="n">have</span> <span class="n">written</span> <span class="n">slowFibonacci</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">reason</span> <span class="k">for</span> <span class="n">that</span> <span class="n">and</span> <span class="n">You</span> <span class="n">may</span> <span class="n">guessing</span> <span class="n">that</span> <span class="n">probably</span> <span class="n">we</span> <span class="n">can</span> <span class="k">do</span> <span class="n">something</span> <span class="n">with</span> <span class="k">this</span> <span class="n">method</span> <span class="n">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">much</span> <span class="n">faster</span> <span class="n">and</span> <span class="n">You</span> <span class="n">have</span> <span class="n">right</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">quite</span> <span class="n">usful</span> <span class="n">programming</span> <span class="n">method</span> <span class="n">which</span> <span class="n">we</span> <span class="n">can</span> <span class="n">use</span> <span class="n">to</span> <span class="n">improve</span> <span class="n">the</span> <span class="n">performance</span> <span class="n">of</span> <span class="k">this</span> <span class="n">method</span><span class="o">.</span> <span class="n">However</span> <span class="n">before</span> <span class="n">doing</span> <span class="k">this</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">try</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">method</span> <span class="n">call</span> <span class="n">stack</span> <span class="n">trace</span> <span class="k">for</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">say</span> <span class="mi">5</span><span class="n">th</span> <span class="n">Fibonacci</span> <span class="n">number</span><span class="o">.</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class='line'><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
+</span></code></pre></td></tr></table></div></figure>
+The number of dashes means how many delayed operations is on the stack. Dash followed by the &lsquo;>&rsquo; (&lsquo;->&rsquo;) means that the operation can be computed (return value is provided) and removed from the stack.</p>
+
+<p>You can notice that the same operations are evaluated many times, for example <code>slowFibonacci(2)</code> is computed 3 times. It is obvious waste of cpu resources. What can we do to use previously computed value instead of evaluating it again and again ?</p>
+
+<h3>Dynamic programming</h3>
+
+<p>&lsquo;Dynamic programming&rsquo; method comes to our rescue. According to the wiki, &lsquo;dynamic programming&rsquo; is a method for solving a complex problem by breaking it down into a collection of simpler subproblems. It is applicable to problems exhibiting the properties of overlapping subproblems and optimal substructure. The dynamic programming approach seeks to solve each subproblem only once, thus reducing the number of computations: once the solution to a given subproblem has been computed, it is stored or &ldquo;memoized&rdquo;: the next time the same solution is needed, it is simply looked up.</p>
+
+<p>What does it mean for us ? Each already solved subproblem (computed i-th Fibonacci number) can be saved in the let&rsquo;s say global array and if the same solution is needed just simply look for it in that table.</p>
+
+<h3>Coding</h3>
+
+<pre><code class="java">public class Fibonacci {
+
+    private static long[] FIB = new long[100];
+
+    public static long fibonacci(int n) {
+
+    if (n == 0 || n == 1) {
+        return n;
+    }
+
+    if (FIB[n] != 0) {
+        return FIB[n];
+    }
+
+    FIB[n] = fibonacci(n - 1) + fibonacci(n - 2);
+
+    return FIB[n];
+
+    }
+
+    public static long slowFibonacci(int n) {
+
+    if (n == 0 || n == 1) {
+        return n;
+    }
+
+    return slowFibonacci(n - 1) + slowFibonacci(n - 2);
+
+    }
+}
+</code></pre>
+
+<p>Call stack trace for this tuned method is following
+<code>
+fibonacci(5)
+-fibonacci(4)
+--fibonacci(3)
+---fibonacci(2)
+----fibonacci(1) -&gt; 1
+----fibonacci(0) -&gt; 0
+---fibonacci(2) -&gt; 1
+---fibonacci(1) -&gt; 1
+--fibonacci(3) -&gt; 2
+--fibonacci(2) -&gt; 2
+-fibonacci(4) -&gt; 3
+-fibonacci(3) -&gt; 2
+fibonacci(5) -&gt; 5
+</code>
+You can notice that the number of calls is much smaller then for <code>slowFibonacci(5)</code>.</p>
+
+<p>At the end I would like to present a simple benchmark
+<code>
+fibonacci(45) = 1134903170
+Duration: 0,002000s
+fibonacci(60) = 1548008755920
+Duration: 0,000000s
+slowFibonacci(45) = 1134903170
+Duration: 7,893000s
+</code>
+To compute 45-th Fibonacci number for <code>fibonacci</code> it takes 2ms and for <code>slowFibonacci</code> it takes 7.8s so a savings are significant.</p>
+]]></content>
+  </entry>
+  
+</feed>
