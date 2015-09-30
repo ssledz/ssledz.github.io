@@ -7,7 +7,7 @@ categories: [java, pattern, context free grammar]
 ---
 
 ###Preface
-Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had needed to answer on one simple question. Is given expression a **well formed array** ? He was searching for a ready to use regular expression but he failed, because this puzzle can't be solved using regex engine. Why, I will explain later but now I can say that this puzzle can be easily solved using **Context free grammar**. 
+Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had needed to answer on one simple question. Is given expression a **well formed array**? He was searching for a ready to use regular expression but he failed, because this puzzle can't be solved using regex engine. Why, I will explain later but now I can say that this puzzle can be easily solved using **Context free grammar**. 
 
 ###Well formed array
 You can ask what does the **well formed array** mean ? I will try to answer by providing some positive and negative examples of such arrays.
@@ -27,12 +27,14 @@ Above are well formed arrays. In opposite below are expressions which are not sy
 
 ```
 Studying those examples we can try to answer on this question. So well formed array is an expression which fulfills following requirements
+
 * first, no blank, character is an open brace ``'['``
 * the last no blank character needs to be a closed brace
 * inside array, integers and other well formed arrays can appear
 * integers are separated with at least one blank character
+
 ###Why not regex ?
-Let's simplified our example. Let's say that we want to write a regular expression which will generate following words w = {'['^n']'^n | n >= 1}
+Let's simplified our example. Let's say that we want to write a regular expression which will generate following words $$w=( [^n\quad ]^n\quad|\quad n >= 1 )$$
 ```
 []
 [[]]
@@ -40,11 +42,11 @@ Let's simplified our example. Let's say that we want to write a regular expressi
 [[[]]]
 ```
 You can notice that the mention above strings are a subset of the set of strings which we want to parse. And here I don't have also good news. We can't use regex engine to parse such strings.
-Why is it not possible ? Simply speaking regex engine, which model is a **Finite Automata (FA)** can't simple count how many '[' we have already used and check that the same number of ']' must appear just after the last '['. **FA** doesn't have stack to remember such things. If You are curious about formal proof you can try to google **Pumping Lemma** phrase. **Pumping Lemma** provides You a useful tool to proof if a given language (set of words which fulfill given conditions) is not a regular.
-###Context free grammar
-I have already mentioned that to solve our problem (if a given array is well formed) we need to write a parser of some **context free grammar**. The model of **Context free grammar** is a **Finite Automata** with a **stack**. Thanks to this an Automat is able to remember some facts that have happened (e.g count braces). To write a parser we need first to write down a grammar for expression of **well formed array**. To do this I will use **ebnf**(Extended Backus–Naur Form) form.
-```
+Why is it not possible ? Simply speaking regex engine modeled by a **Finite Automata (FA)** can't count how many ``'['`` we have already used and check that the same number of ``']'`` must appear just after the last ``'['``. **FA** doesn't have stack to remember such things. If You are curious about formal proof you can try to google **Pumping Lemma** phrase. **Pumping Lemma** provides You a useful tool to proof if a given language (set of words which fulfill given conditions) is not a regular.
 
+###Context free grammar
+I have already mentioned that to solve our problem (if a given array is well formed) we need to write a parser of some **context free grammar**. The model of **Context free grammar** is a **Finite Automata** with a **stack**. Thanks to this an Automat is able to remember some facts that have happened (e.g count braces). To write a parser we need first to write down a grammar for expression of **well formed array**. To do this I will use **ebnf** (Extended Backus–Naur Form) form.
+```
 array = "[", { array-body }, "]" 
 array-body = number | array
 number = [ "-" ], digit, { digit }
@@ -53,15 +55,19 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 Now we are ready to write a parser.  To be precise I will use top-down parsing strategy which let me directly transform written above grammar into set of recursively called procedures.
 
 ###Parser
+
 It is a good manner to split parser into 2 parts
+
 * lexer
 * parser
 
 Lexer is responsible for grouping letters into tokens. In our grammar we have 4 kinds of tokens
-* '[' (**LB**)
-* ']' (**RB**)
+
+* ``'['`` (**LB**)
+* ``']'`` (**RB**)
 * number (**NUMBER**)
 * end - token informing that there is no letter left on input  (**END**)
+
 Tokens are expressed by a class ``Token`` written below
 
 ```java
