@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Pattern | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/pattern/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-01T00:33:55+02:00</updated>
+  <updated>2015-10-01T00:39:10+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -120,7 +120,8 @@ public String toString() {
 } } ```
 </code></pre>
 
-<h3 id="lexer">Lexer</h3>
+<h4 id="lexer">Lexer</h4>
+
 <p>```java
 public class Lexer {</p>
 
@@ -186,9 +187,15 @@ public Token next() {
 
     return new Token(Type.NUMBER, s &gt; 0 ? buffer.toString() : "-" + buffer.toString());
 
-} } ``` ###Parser ```java public class Parser {
+} } ```
+</code></pre>
 
-private Lexer lexer;
+<h4 id="parser-1">Parser</h4>
+
+<p>```java
+public class Parser {</p>
+
+<pre><code>private Lexer lexer;
 private Token currentToken;
 
 private boolean match(Type type) {
@@ -247,7 +254,6 @@ public boolean isWellFormedArray(String line) {
 
 <p>}
 <code>
-###Test
 </code>java
 public class ParserTest {</p>
 
@@ -267,7 +273,6 @@ public void testIsWellFormedArray() throws Exception {
 
 } } ```
 </code></pre>
-
 ]]></content>
   </entry>
   
