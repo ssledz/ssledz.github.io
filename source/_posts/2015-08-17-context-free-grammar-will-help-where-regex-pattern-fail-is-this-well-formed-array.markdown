@@ -24,7 +24,6 @@ Above are well formed arrays. In opposite below are expressions which are not sy
 [1 2 -34 7] 34]
 [1 2 [-34 [7] 34]
 [][]
-
 ```
 Studying those examples we can try to answer on this question. So well formed array is an expression which fulfills following requirements
 
@@ -171,7 +170,6 @@ public class Lexer {
         return new Token(Type.NUMBER, s > 0 ? buffer.toString() : "-" + buffer.toString());
 
     }
-
 }
 ```
 ####Parser
