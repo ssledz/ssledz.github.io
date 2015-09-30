@@ -104,6 +104,7 @@ public class Token {
 ```
 
 ####Lexer
+
 ```java
 public class Lexer {
 
@@ -172,7 +173,9 @@ public class Lexer {
     }
 }
 ```
+
 ####Parser
+
 ```java
 public class Parser {
 
@@ -234,7 +237,6 @@ public class Parser {
 
 }
 ```
-###Test
 ```java
 public class ParserTest {
 
@@ -255,6 +257,3 @@ public class ParserTest {
     }
 }
 ```
-
-
-
