@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Pattern | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/pattern/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-01T00:31:43+02:00</updated>
+  <updated>2015-10-01T00:33:55+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -120,7 +120,7 @@ public String toString() {
 } } ```
 </code></pre>
 
-<h4 id="lexer">Lexer</h4>
+<h3 id="lexer">Lexer</h3>
 <p>```java
 public class Lexer {</p>
 
@@ -186,7 +186,7 @@ public Token next() {
 
     return new Token(Type.NUMBER, s &gt; 0 ? buffer.toString() : "-" + buffer.toString());
 
-} } ``` ####Parser ```java public class Parser {
+} } ``` ###Parser ```java public class Parser {
 
 private Lexer lexer;
 private Token currentToken;
