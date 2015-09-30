@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Puzzle | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/puzzle/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-08-13T02:57:19+02:00</updated>
+  <updated>2015-10-01T00:31:43+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -18,15 +18,14 @@
     <link href="http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number/"/>
     <updated>2015-08-13T01:18:14+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number</id>
-    <content type="html"><![CDATA[<h3>Preface</h3>
-
+    <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
 <p>Writing a method to generate the nth Fibonacci number is not a rocket science. The recursive formula for that is very simple and can be written following:
 <code>
 fibonacci(0) = 0
 fibonacci(1) = 1
 fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)
 </code>
-The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our &lsquo;base cases&rsquo;. Based on this we can write a method <code>public static long slowFibonacci(int n)</code>
+The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our ‘base cases’. Based on this we can write a method <code>public static long slowFibonacci(int n)</code>
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -63,6 +62,38 @@ The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and 
 <span class='line-number'>34</span>
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nf">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
@@ -71,96 +102,67 @@ The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and 
 </span><span class='line'>
 </span><span class='line'><span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
 </span><span class='line'>
+</span><span class='line'><span class="o">}</span> <span class="err">```</span> <span class="n">You</span> <span class="n">have</span> <span class="n">already</span> <span class="n">noticed</span> <span class="n">that</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">writing</span> <span class="n">fibonacci</span> <span class="n">I</span> <span class="n">have</span> <span class="n">written</span> <span class="n">slowFibonacci</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">reason</span> <span class="k">for</span> <span class="n">that</span> <span class="n">and</span> <span class="n">You</span> <span class="n">may</span> <span class="n">guessing</span> <span class="n">that</span> <span class="n">probably</span> <span class="n">we</span> <span class="n">can</span> <span class="k">do</span> <span class="n">something</span> <span class="n">with</span> <span class="k">this</span> <span class="n">method</span> <span class="n">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">much</span> <span class="n">faster</span> <span class="n">and</span> <span class="n">You</span> <span class="n">have</span> <span class="n">right</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">quite</span> <span class="n">usful</span> <span class="n">programming</span> <span class="n">method</span> <span class="n">which</span> <span class="n">we</span> <span class="n">can</span> <span class="n">use</span> <span class="n">to</span> <span class="n">improve</span> <span class="n">the</span> <span class="n">performance</span> <span class="n">of</span> <span class="k">this</span> <span class="n">method</span><span class="o">.</span> <span class="n">However</span> <span class="n">before</span> <span class="n">doing</span> <span class="k">this</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">try</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">method</span> <span class="n">call</span> <span class="n">stack</span> <span class="n">trace</span> <span class="k">for</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">say</span> <span class="mi">5</span><span class="n">th</span> <span class="n">Fibonacci</span> <span class="n">number</span><span class="o">.</span> <span class="err">```</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">0</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">2</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">0</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">3</span> <span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span> <span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">2</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">5</span> <span class="err">```</span> <span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">dashes</span> <span class="n">means</span> <span class="n">how</span> <span class="n">many</span> <span class="n">delayed</span> <span class="n">operations</span> <span class="n">is</span> <span class="n">on</span> <span class="n">the</span> <span class="n">stack</span><span class="o">.</span> <span class="n">Dash</span> <span class="n">followed</span> <span class="n">by</span> <span class="n">the</span> <span class="err">&#39;</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span><span class="err">&#39;</span> <span class="o">(</span><span class="err">&#39;</span><span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span><span class="err">&#39;</span><span class="o">)</span> <span class="n">means</span> <span class="n">that</span> <span class="n">the</span> <span class="n">operation</span> <span class="n">can</span> <span class="n">be</span> <span class="nf">computed</span> <span class="o">(</span><span class="k">return</span> <span class="n">value</span> <span class="n">is</span> <span class="n">provided</span><span class="o">)</span> <span class="n">and</span> <span class="n">removed</span> <span class="n">from</span> <span class="n">the</span> <span class="n">stack</span><span class="o">.</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">You</span> <span class="n">can</span> <span class="n">notice</span> <span class="n">that</span> <span class="n">the</span> <span class="n">same</span> <span class="n">operations</span> <span class="n">are</span> <span class="n">evaluated</span> <span class="n">many</span> <span class="n">times</span><span class="o">,</span> <span class="k">for</span> <span class="n">example</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">is</span> <span class="n">computed</span> <span class="mi">3</span> <span class="n">times</span><span class="o">.</span> <span class="n">It</span> <span class="n">is</span> <span class="n">obvious</span> <span class="n">waste</span> <span class="n">of</span> <span class="n">cpu</span> <span class="n">resources</span><span class="o">.</span> <span class="n">What</span> <span class="n">can</span> <span class="n">we</span> <span class="k">do</span> <span class="n">to</span> <span class="n">use</span> <span class="n">previously</span> <span class="n">computed</span> <span class="n">value</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">evaluating</span> <span class="n">it</span> <span class="n">again</span> <span class="n">and</span> <span class="n">again</span> <span class="o">?&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span> <span class="n">id</span><span class="o">=</span><span class="s">&quot;dynamic-programming&quot;</span><span class="o">&gt;</span><span class="n">Dynamic</span> <span class="n">programming</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">‘</span><span class="n">Dynamic</span> <span class="n">programming</span><span class="err">’</span> <span class="n">method</span> <span class="n">comes</span> <span class="n">to</span> <span class="n">our</span> <span class="n">rescue</span><span class="o">.</span> <span class="n">According</span> <span class="n">to</span> <span class="n">the</span> <span class="n">wiki</span><span class="o">,</span> <span class="err">‘</span><span class="n">dynamic</span> <span class="n">programming</span><span class="err">’</span> <span class="n">is</span> <span class="n">a</span> <span class="n">method</span> <span class="k">for</span> <span class="n">solving</span> <span class="n">a</span> <span class="n">complex</span> <span class="n">problem</span> <span class="n">by</span> <span class="n">breaking</span> <span class="n">it</span> <span class="n">down</span> <span class="n">into</span> <span class="n">a</span> <span class="n">collection</span> <span class="n">of</span> <span class="n">simpler</span> <span class="n">subproblems</span><span class="o">.</span> <span class="n">It</span> <span class="n">is</span> <span class="n">applicable</span> <span class="n">to</span> <span class="n">problems</span> <span class="n">exhibiting</span> <span class="n">the</span> <span class="n">properties</span> <span class="n">of</span> <span class="n">overlapping</span> <span class="n">subproblems</span> <span class="n">and</span> <span class="n">optimal</span> <span class="n">substructure</span><span class="o">.</span> <span class="n">The</span> <span class="n">dynamic</span> <span class="n">programming</span> <span class="n">approach</span> <span class="n">seeks</span> <span class="n">to</span> <span class="n">solve</span> <span class="n">each</span> <span class="n">subproblem</span> <span class="n">only</span> <span class="n">once</span><span class="o">,</span> <span class="n">thus</span> <span class="n">reducing</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="nl">computations:</span> <span class="n">once</span> <span class="n">the</span> <span class="n">solution</span> <span class="n">to</span> <span class="n">a</span> <span class="n">given</span> <span class="n">subproblem</span> <span class="n">has</span> <span class="n">been</span> <span class="n">computed</span><span class="o">,</span> <span class="n">it</span> <span class="n">is</span> <span class="n">stored</span> <span class="n">or</span> <span class="err">“</span><span class="n">memoized</span><span class="err">”</span><span class="o">:</span> <span class="n">the</span> <span class="n">next</span> <span class="n">time</span> <span class="n">the</span> <span class="n">same</span> <span class="n">solution</span> <span class="n">is</span> <span class="n">needed</span><span class="o">,</span> <span class="n">it</span> <span class="n">is</span> <span class="n">simply</span> <span class="n">looked</span> <span class="n">up</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">What</span> <span class="n">does</span> <span class="n">it</span> <span class="n">mean</span> <span class="k">for</span> <span class="n">us</span> <span class="o">?</span> <span class="n">Each</span> <span class="n">already</span> <span class="n">solved</span> <span class="nf">subproblem</span> <span class="o">(</span><span class="n">computed</span> <span class="n">i</span><span class="o">-</span><span class="n">th</span> <span class="n">Fibonacci</span> <span class="n">number</span><span class="o">)</span> <span class="n">can</span> <span class="n">be</span> <span class="n">saved</span> <span class="n">in</span> <span class="n">the</span> <span class="n">let</span><span class="err">’</span><span class="n">s</span> <span class="n">say</span> <span class="n">global</span> <span class="n">array</span> <span class="n">and</span> <span class="k">if</span> <span class="n">the</span> <span class="n">same</span> <span class="n">solution</span> <span class="n">is</span> <span class="n">needed</span> <span class="n">just</span> <span class="n">simply</span> <span class="n">look</span> <span class="k">for</span> <span class="n">it</span> <span class="n">in</span> <span class="n">that</span> <span class="n">table</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span> <span class="n">id</span><span class="o">=</span><span class="s">&quot;coding&quot;</span><span class="o">&gt;</span><span class="n">Coding</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">java</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Fibonacci</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">private</span> <span class="kd">static</span> <span class="kt">long</span><span class="o">[]</span> <span class="n">FIB</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">long</span><span class="o">[</span><span class="mi">100</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">fibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">=</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">You</span> <span class="n">have</span> <span class="n">already</span> <span class="n">noticed</span> <span class="n">that</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">writing</span> <span class="n">fibonacci</span> <span class="n">I</span> <span class="n">have</span> <span class="n">written</span> <span class="n">slowFibonacci</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">reason</span> <span class="k">for</span> <span class="n">that</span> <span class="n">and</span> <span class="n">You</span> <span class="n">may</span> <span class="n">guessing</span> <span class="n">that</span> <span class="n">probably</span> <span class="n">we</span> <span class="n">can</span> <span class="k">do</span> <span class="n">something</span> <span class="n">with</span> <span class="k">this</span> <span class="n">method</span> <span class="n">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">much</span> <span class="n">faster</span> <span class="n">and</span> <span class="n">You</span> <span class="n">have</span> <span class="n">right</span><span class="o">.</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">quite</span> <span class="n">usful</span> <span class="n">programming</span> <span class="n">method</span> <span class="n">which</span> <span class="n">we</span> <span class="n">can</span> <span class="n">use</span> <span class="n">to</span> <span class="n">improve</span> <span class="n">the</span> <span class="n">performance</span> <span class="n">of</span> <span class="k">this</span> <span class="n">method</span><span class="o">.</span> <span class="n">However</span> <span class="n">before</span> <span class="n">doing</span> <span class="k">this</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">try</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">method</span> <span class="n">call</span> <span class="n">stack</span> <span class="n">trace</span> <span class="k">for</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">say</span> <span class="mi">5</span><span class="n">th</span> <span class="n">Fibonacci</span> <span class="n">number</span><span class="o">.</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">mdash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">Call</span> <span class="n">stack</span> <span class="n">trace</span> <span class="k">for</span> <span class="k">this</span> <span class="n">tuned</span> <span class="n">method</span> <span class="n">is</span> <span class="n">following</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nf">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class='line'><span class="err">–</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class='line'><span class="err">—</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'><span class="err">—</span><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span>
+</span><span class='line'><span class="err">—</span><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">0</span>
+</span><span class='line'><span class="err">—</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span>
+</span><span class='line'><span class="err">—</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span>
+</span><span class='line'><span class="err">–</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">2</span>
+</span><span class='line'><span class="err">–</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">2</span>
+</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">2</span>
+</span><span class='line'><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">5</span>
 </span></code></pre></td></tr></table></div></figure>
-The number of dashes means how many delayed operations is on the stack. Dash followed by the &lsquo;>&rsquo; (&lsquo;->&rsquo;) means that the operation can be computed (return value is provided) and removed from the stack.</p>
-
-<p>You can notice that the same operations are evaluated many times, for example <code>slowFibonacci(2)</code> is computed 3 times. It is obvious waste of cpu resources. What can we do to use previously computed value instead of evaluating it again and again ?</p>
-
-<h3>Dynamic programming</h3>
-
-<p>&lsquo;Dynamic programming&rsquo; method comes to our rescue. According to the wiki, &lsquo;dynamic programming&rsquo; is a method for solving a complex problem by breaking it down into a collection of simpler subproblems. It is applicable to problems exhibiting the properties of overlapping subproblems and optimal substructure. The dynamic programming approach seeks to solve each subproblem only once, thus reducing the number of computations: once the solution to a given subproblem has been computed, it is stored or &ldquo;memoized&rdquo;: the next time the same solution is needed, it is simply looked up.</p>
-
-<p>What does it mean for us ? Each already solved subproblem (computed i-th Fibonacci number) can be saved in the let&rsquo;s say global array and if the same solution is needed just simply look for it in that table.</p>
-
-<h3>Coding</h3>
-
-<pre><code class="java">public class Fibonacci {
-
-    private static long[] FIB = new long[100];
-
-    public static long fibonacci(int n) {
-
-        if (n == 0 || n == 1) {
-            return n;
-        }
-
-        if (FIB[n] != 0) {
-            return FIB[n];
-        }
-
-        FIB[n] = fibonacci(n - 1) + fibonacci(n - 2);
-
-        return FIB[n];
-
-    }
-
-    public static long slowFibonacci(int n) {
-
-        if (n == 0 || n == 1) {
-            return n;
-        }
-
-        return slowFibonacci(n - 1) + slowFibonacci(n - 2);
-
-    }
-
-}
-</code></pre>
-
-<p>Call stack trace for this tuned method is following
-<code>
-fibonacci(5)
--fibonacci(4)
---fibonacci(3)
----fibonacci(2)
-----fibonacci(1) -&gt; 1
-----fibonacci(0) -&gt; 0
----fibonacci(2) -&gt; 1
----fibonacci(1) -&gt; 1
---fibonacci(3) -&gt; 2
---fibonacci(2) -&gt; 2
--fibonacci(4) -&gt; 3
--fibonacci(3) -&gt; 2
-fibonacci(5) -&gt; 5
-</code>
 You can notice that the number of calls is much smaller then for <code>slowFibonacci(5)</code>.</p>
 
 <p>At the end I would like to present a simple benchmark
@@ -181,9 +183,8 @@ To compute 45-th Fibonacci number for <code>fibonacci</code> it takes 2ms and fo
     <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/"/>
     <updated>2015-08-09T21:52:26+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set</id>
-    <content type="html"><![CDATA[<h3>Problem</h3>
-
-<p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of &lsquo;number of element in a set&rsquo;. So for a set consisting of <code>3</code> elements it is 8.  To proceed let&rsquo;s write some examples.
+    <content type="html"><![CDATA[<h3 id="problem">Problem</h3>
+<p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of ‘number of element in a set’. So for a set consisting of <code>3</code> elements it is 8.  To proceed let’s write some examples.
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -193,15 +194,15 @@ To compute 45-th Fibonacci number for <code>fibonacci</code> it takes 2ms and fo
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span>
-</span><span class='line'><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span>
-</span><span class='line'><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">}</span>
+</span><span class='line'><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">}</span>
+</span><span class='line'><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span>
-</span><span class='line'><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span>
-</span><span class='line'><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">}</span>
+</span><span class='line'><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">}</span>
+</span><span class='line'><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">b</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">b</span><span class="err">’</span><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">subsets</span><span class="o">({&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">b</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span> <span class="o">+</span> <span class="o">{&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">c</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">subsets</span><span class="o">({</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span> <span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">,</span> <span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">})</span> <span class="o">=</span> <span class="o">{}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">b</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">b</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">b</span><span class="err">’</span><span class="o">,</span><span class="err">’</span><span class="n">c</span><span class="err">’</span><span class="o">}</span> <span class="o">+</span> <span class="o">{</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure></p>
 
 <p>Based on that we can notice a following pattern
@@ -213,123 +214,212 @@ subsets({'b','c'})     = subset({'b'}) + subset({'c'}) + {'b','c'}
 subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
 subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
 subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}
-</code></p>
-
-<h3>Coding</h3>
-
-<pre><code class="java">    public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set) {
-
-        if (set.size() == 1) {
-            Set&lt;Set&lt;String&gt;&gt; ret = new HashSet&lt;&gt;();
-            ret.add(new HashSet&lt;&gt;());
-            ret.add(new HashSet&lt;&gt;(set));
-            return ret;
-        }
-
-        Set&lt;Set&lt;String&gt;&gt; ret = new HashSet&lt;&gt;();
-        ret.add(set);
-
-        for (String e : set) {
-
-            Set&lt;String&gt; newSet = new HashSet&lt;&gt;(set);
-            newSet.remove(e);
-            Set&lt;Set&lt;String&gt;&gt; subsets = subsets(newSet);
-            ret.addAll(subsets);
-
-        }
-        return ret;
-
-    }
-</code></pre>
-
-<pre><code>    public static void main(String[] args) {
-        Set&lt;String&gt; set  = new HashSet&lt;&gt;(Arrays.asList("a", "b", "c", "d"));
-
-        Set&lt;Set&lt;String&gt;&gt; subs = subsets(set);
-        System.out.println("size: " + subs.size());
-        for(Set&lt;String&gt; sub : subs) {
-            System.out.println(sub.toString());
-        }
-    }
-</code></pre>
-
-<pre><code>size: 16
-[]
-[a]
-[b]
-[c]
-[a, b]
-[d]
-[a, c]
-[b, c]
-[a, d]
-[b, d]
-[a, b, c]
-[c, d]
-[a, b, d]
-[a, c, d]
-[b, c, d]
-[a, b, c, d]
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Puzzle - Write a Method to Reverse a String Using Recursion]]></title>
-    <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/"/>
-    <updated>2015-08-09T20:25:16+02:00</updated>
-    <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion</id>
-    <content type="html"><![CDATA[<h3>Problem</h3>
-
-<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a &lsquo;base case&rsquo; which can&rsquo;t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
-
-<p>So let&rsquo;s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.
-<code>
-revers('a')     = 'a'
-revers('ab')    = 'ba'
-revers('abc')   = 'cba'
-revers('abcd')  = 'dcba'
-revers('abcde') = 'edcba'
 </code>
-Based on that we can already write a recursive procedure.
-<code>
-revers('a')     = 'a'
-revers('ab')    = 'b'|revers('a')
-revers('abc')   = 'c'|revers('ab')
-revers('abcd')  = 'd'|revers('abc')
-revers('abcde') = 'e'|revers('abcd')
-</code>
-To compute a reversed string for <code>'a'</code> we need to return that string and it is our &lsquo;base case&rsquo;. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
+###Coding
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">subsets</span><span class="o">(</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">string</span><span class="o">&gt;&lt;/</span><span class="n">string</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nf">if</span> <span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;();</span>
+</span><span class='line'>    <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;());</span>
+</span><span class='line'>    <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;(</span><span class="n">set</span><span class="o">));</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;();</span>
+</span><span class='line'><span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">e</span> <span class="o">:</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">newSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;(</span><span class="n">set</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">newSet</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">subsets</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">newSet</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">ret</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">subsets</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span> <span class="err">```</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Set</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">set</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span> <span class="s">&quot;b&quot;</span><span class="o">,</span> <span class="s">&quot;c&quot;</span><span class="o">,</span> <span class="s">&quot;d&quot;</span><span class="o">));&lt;/</span><span class="n">string</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;size: &quot;</span> <span class="o">+</span> <span class="n">subs</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="n">Set</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">String</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">sub</span> <span class="o">:</span> <span class="n">subs</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sub</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span> <span class="err">```</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nl">size:</span> <span class="mi">16</span>
+</span><span class='line'><span class="o">[]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">c</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">]]&gt;&lt;/</span><span class="n">content</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;/</span><span class="n">entry</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">entry</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">title</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;html&quot;</span><span class="o">&gt;&lt;![</span><span class="n">CDATA</span><span class="o">[</span><span class="n">Puzzle</span> <span class="o">-</span> <span class="n">Write</span> <span class="n">a</span> <span class="n">Method</span> <span class="n">to</span> <span class="n">Reverse</span> <span class="n">a</span> <span class="n">String</span> <span class="n">Using</span> <span class="n">Recursion</span><span class="o">]]&gt;&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">updated</span><span class="o">&gt;</span><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">09</span><span class="nl">T20:</span><span class="mi">25</span><span class="o">:</span><span class="mi">16</span><span class="o">+</span><span class="mi">02</span><span class="o">:</span><span class="mi">00</span><span class="o">&lt;/</span><span class="n">updated</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">id</span><span class="o">&gt;</span><span class="nl">http:</span><span class="c1">//ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion&lt;/id&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">content</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;html&quot;</span><span class="o">&gt;&lt;![</span><span class="n">CDATA</span><span class="o">[&lt;</span><span class="n">h3</span> <span class="n">id</span><span class="o">=</span><span class="s">&quot;problem&quot;</span><span class="o">&gt;</span><span class="n">Problem</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">I</span> <span class="n">bet</span> <span class="n">that</span> <span class="n">everyone</span> <span class="n">who</span> <span class="n">is</span> <span class="n">reading</span> <span class="k">this</span> <span class="n">know</span> <span class="n">how</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">method</span> <span class="n">to</span> <span class="n">revers</span> <span class="n">the</span> <span class="n">string</span><span class="o">,</span> <span class="n">but</span> <span class="n">does</span> <span class="n">everyone</span> <span class="n">know</span> <span class="n">how</span> <span class="n">to</span> <span class="k">do</span> <span class="n">it</span> <span class="n">using</span> <span class="n">recursion</span> <span class="o">?</span> <span class="n">To</span> <span class="n">face</span> <span class="n">such</span> <span class="n">puzzle</span> <span class="n">it</span> <span class="n">it</span> <span class="n">always</span> <span class="n">a</span> <span class="n">good</span> <span class="n">idea</span> <span class="n">to</span> <span class="n">write</span> <span class="n">first</span> <span class="n">some</span> <span class="n">results</span> <span class="k">for</span> <span class="n">given</span> <span class="n">arguments</span> <span class="n">and</span> <span class="k">try</span> <span class="n">to</span> <span class="n">find</span> <span class="n">a</span> <span class="n">pattern</span><span class="o">.</span> <span class="n">There</span> <span class="n">always</span> <span class="n">must</span> <span class="n">be</span> <span class="n">a</span> <span class="err">‘</span><span class="n">base</span> <span class="k">case</span><span class="err">’</span> <span class="n">which</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">be</span> <span class="n">divided</span> <span class="n">into</span> <span class="n">subproblems</span><span class="o">.</span> <span class="n">We</span> <span class="n">also</span> <span class="n">need</span> <span class="n">to</span> <span class="n">discover</span> <span class="n">a</span> <span class="n">procedure</span> <span class="n">which</span> <span class="n">solves</span> <span class="n">bigger</span> <span class="n">problem</span> <span class="n">using</span> <span class="n">its</span> <span class="n">smaller</span> <span class="n">subproblems</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">So</span> <span class="n">let</span><span class="err">’</span><span class="n">s</span> <span class="n">say</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">method</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">revers</span><span class="o">(</span><span class="n">String</span> <span class="n">arg</span><span class="o">)&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">which</span> <span class="k">for</span> <span class="n">a</span> <span class="n">given</span> <span class="n">argument</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">reversed</span> <span class="n">string</span><span class="o">.</span> <span class="n">Below</span> <span class="n">I</span> <span class="n">have</span> <span class="n">written</span> <span class="n">some</span> <span class="n">examples</span><span class="o">.</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nf">revers</span><span class="o">(</span><span class="sc">&#39;a&#39;</span><span class="o">)</span>     <span class="o">=</span> <span class="sc">&#39;a&#39;</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">ab</span><span class="err">&#39;</span><span class="o">)</span>    <span class="o">=</span> <span class="err">&#39;</span><span class="n">ba</span><span class="err">&#39;</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abc</span><span class="err">&#39;</span><span class="o">)</span>   <span class="o">=</span> <span class="err">&#39;</span><span class="n">cba</span><span class="err">&#39;</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abcd</span><span class="err">&#39;</span><span class="o">)</span>  <span class="o">=</span> <span class="err">&#39;</span><span class="n">dcba</span><span class="err">&#39;</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abcde</span><span class="err">&#39;</span><span class="o">)</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">edcba</span><span class="err">&#39;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">Based</span> <span class="n">on</span> <span class="n">that</span> <span class="n">we</span> <span class="n">can</span> <span class="n">already</span> <span class="n">write</span> <span class="n">a</span> <span class="n">recursive</span> <span class="n">procedure</span><span class="o">.</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nf">revers</span><span class="o">(</span><span class="sc">&#39;a&#39;</span><span class="o">)</span>     <span class="o">=</span> <span class="sc">&#39;a&#39;</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">ab</span><span class="err">&#39;</span><span class="o">)</span>    <span class="o">=</span> <span class="sc">&#39;b&#39;</span><span class="o">|</span><span class="n">revers</span><span class="o">(</span><span class="sc">&#39;a&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abc</span><span class="err">&#39;</span><span class="o">)</span>   <span class="o">=</span> <span class="sc">&#39;c&#39;</span><span class="o">|</span><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">ab</span><span class="err">&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abcd</span><span class="err">&#39;</span><span class="o">)</span>  <span class="o">=</span> <span class="sc">&#39;d&#39;</span><span class="o">|</span><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abc</span><span class="err">&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abcde</span><span class="err">&#39;</span><span class="o">)</span> <span class="o">=</span> <span class="sc">&#39;e&#39;</span><span class="o">|</span><span class="n">revers</span><span class="o">(</span><span class="err">&#39;</span><span class="n">abcd</span><span class="err">&#39;</span><span class="o">)</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">To</span> <span class="n">compute</span> <span class="n">a</span> <span class="n">reversed</span> <span class="n">string</span> <span class="k">for</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="sc">&#39;a&#39;</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="k">return</span> <span class="n">that</span> <span class="n">string</span> <span class="n">and</span> <span class="n">it</span> <span class="n">is</span> <span class="n">our</span> <span class="err">‘</span><span class="n">base</span> <span class="k">case</span><span class="err">’</span><span class="o">.</span> <span class="n">In</span> <span class="n">other</span> <span class="n">cases</span> <span class="n">to</span> <span class="n">compute</span> <span class="n">a</span> <span class="n">reversed</span> <span class="n">string</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">last</span> <span class="kt">char</span> <span class="n">and</span> <span class="n">concatenate</span> <span class="n">it</span> <span class="n">with</span> <span class="n">the</span> <span class="n">reversed</span> <span class="n">string</span> <span class="n">without</span> <span class="n">that</span> <span class="n">last</span> <span class="n">character</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">I</span> <span class="n">think</span> <span class="n">we</span> <span class="n">are</span> <span class="n">ready</span> <span class="n">to</span> <span class="n">write</span> <span class="n">some</span> <span class="n">code</span><span class="o">.</span>
+</span><span class='line'><span class="err">###</span><span class="n">Coding</span>
+</span></code></pre></td></tr></table></div></figure>java
+    public static String revers(String arg) {</p>
 
-<p>I think we are ready to write some code.</p>
-
-<h3>Coding</h3>
-
-<pre><code class="java">    public static String revers(String arg) {
-
-        if (arg.length() == 1) {
-            return arg;
-        }
-        return arg.charAt(arg.length() - 1) + revers(arg.substring(0, arg.length() - 1));
-
+<pre><code>    if (arg.length() == 1) {
+        return arg;
     }
+    return arg.charAt(arg.length() - 1) + revers(arg.substring(0, arg.length() - 1));
+
+} ```
 </code></pre>
 
-<pre><code class="java">    public static void main(String[] args) {
+<p><code>java
+    public static void main(String[] args) {
         System.out.println(revers("a"));
         System.out.println(revers("ab"));
         System.out.println(revers("abc"));
         System.out.println(revers("abcd"));
         System.out.println(revers("abcde"));
     }
-</code></pre>
+</code></p>
 
-<pre><code>a
+<p>```
+a
 ba
 cba
 dcba
-edcba
-</code></pre>
+edcba</p>
+
+<p>```</p>
+
 ]]></content>
   </entry>
   
@@ -338,15 +428,13 @@ edcba
     <link href="http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/"/>
     <updated>2015-08-08T21:06:54+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string</id>
-    <content type="html"><![CDATA[<h3>How to Approche</h3>
+    <content type="html"><![CDATA[<h3 id="how-to-approche">How to Approche</h3>
+<p>When we hear a problem beginning with: ‘Write a method to compute all…’, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called ‘base case’ - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
 
-<p>When we hear a problem beginning with: &lsquo;Write a method to compute all&hellip;&rsquo;, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called &lsquo;base case&rsquo; - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
+<h4 id="problem">Problem</h4>
+<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let’s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
 
-<h4>Problem</h4>
-
-<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let&rsquo;s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
-
-<p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code>
+<p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code> 
 <code>
 perm('a')   = 'a'
 perm('b')   = 'b'
@@ -354,72 +442,78 @@ perm('c')   = 'c'
 perm('ab')  = 'ab', 'ba'
 perm('ac')  = 'ac', 'ca'
 perm('bc')  = 'bc', 'cb'
-perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
+perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' 
 </code></p>
 
 <p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
 
-<pre><code>perm('a')   = 'a'
+<p><code>
+perm('a')   = 'a'
 perm('b')   = 'b'
 perm('c')   = 'c'
 perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
 perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
 perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
 perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')
-</code></pre>
+</code></p>
 
 <p>where <code>|</code> means a concatenation of two strings.</p>
 
-<p>First three cases are called &lsquo;base cases&rsquo; and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
+<p>First three cases are called ‘base cases’ and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
 
-<h3>Coding</h3>
+<h3 id="coding">Coding</h3>
 
-<pre><code class="java">    public static List&lt;String&gt; permute(String str) {
+<p>```java
+    public static List<string> permute(String str) {</string></p>
 
-        if (str.length() == 1) {
-            List&lt;String&gt; ret = new LinkedList&lt;&gt;();
-            ret.add(str);
-            return ret;
+<pre><code>    if (str.length() == 1) {
+        List&lt;String&gt; ret = new LinkedList&lt;&gt;();
+        ret.add(str);
+        return ret;
+    }
+
+    List&lt;String&gt; permutations = new LinkedList&lt;&gt;();
+
+    for (int i = 0; i &lt; str.length(); i++) {
+        String left = "" + str.charAt(i);
+        StringBuilder subStr = new StringBuilder(str);
+        subStr.deleteCharAt(i);
+
+        List&lt;String&gt; subPermutations = permute(subStr.toString());
+
+        for (String perm : subPermutations) {
+            permutations.add(left + perm);
         }
-
-        List&lt;String&gt; permutations = new LinkedList&lt;&gt;();
-
-        for (int i = 0; i &lt; str.length(); i++) {
-            String left = "" + str.charAt(i);
-            StringBuilder subStr = new StringBuilder(str);
-            subStr.deleteCharAt(i);
-
-            List&lt;String&gt; subPermutations = permute(subStr.toString());
-
-            for (String perm : subPermutations) {
-                permutations.add(left + perm);
-            }
-
-        }
-
-        return permutations;
 
     }
+
+    return permutations;
+    
+} ```
 </code></pre>
 
-<pre><code class="java">    public static void main(String[] args) {
+<p>```java
+    public static void main(String[] args) {</p>
 
-        List&lt;String&gt; permutations = permute("abc");
-        System.out.println(String.format("permutations size: %d", permutations.size()));
-        for (String perm : permutations) {
-            System.out.println(perm);
-        }
+<pre><code>    List&lt;String&gt; permutations = permute("abc");
+    System.out.println(String.format("permutations size: %d", permutations.size()));
+    for (String perm : permutations) {
+        System.out.println(perm);
     }
+}
 </code></pre>
 
-<pre><code>permutations size: 6
+<p>```</p>
+
+<p><code>
+permutations size: 6
 abc
 acb
 bac
 bca
 cab
 cba
-</code></pre>
+</code></p>
 ]]></content>
   </entry>
   

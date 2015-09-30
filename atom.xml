@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-08-13T02:57:19+02:00</updated>
+  <updated>2015-10-01T00:31:43+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -14,221 +14,644 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Context Free Grammar Will Help Where Regex Pattern Fail - Is This Well Formed Array ?]]></title>
+    <link href="http://ssledz.github.io/blog/2015/08/17/context-free-grammar-will-help-where-regex-pattern-fail-is-this-well-formed-array/"/>
+    <updated>2015-08-17T00:04:55+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/08/17/context-free-grammar-will-help-where-regex-pattern-fail-is-this-well-formed-array</id>
+    <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
+<p>Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had needed to answer on one simple question. Is given expression a <strong>well formed array</strong>? He was searching for a ready to use regular expression but he failed, because this puzzle can’t be solved using regex engine. Why, I will explain later but now I can say that this puzzle can be easily solved using <strong>Context free grammar</strong>.</p>
+
+<h3 id="well-formed-array">Well formed array</h3>
+<p>You can ask what does the <strong>well formed array</strong> mean ? I will try to answer by providing some positive and negative examples of such arrays.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[1 2 [-34 7] 34]
+</span><span class="line">[1 2 [-34] [7] 34]
+</span><span class="line">[1 2 [-34 [7] 34]]
+</span><span class="line">[1 2[-34[7]34]]
+</span><span class="line">[]
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Above are well formed arrays. In opposite below are expressions which are not syntactically consistent with the definition of well formed array.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[1 2 -34 7] 34]
+</span><span class="line">[1 2 [-34 [7] 34]
+</span><span class="line">[][]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Studying those examples we can try to answer on this question. So well formed array is an expression which fulfills following requirements</p>
+
+<ul>
+  <li>first, no blank, character is an open brace <code>'['</code></li>
+  <li>the last no blank character needs to be a closed brace</li>
+  <li>inside array, integers and other well formed arrays can appear</li>
+  <li>integers are separated with at least one blank character</li>
+</ul>
+
+<h3 id="why-not-regex-">Why not regex ?</h3>
+<p>Let’s simplified our example. Let’s say that we want to write a regular expression which will generate following words <script type="math/tex">w=( [^n\quad ]^n\quad|\quad n >= 1 )</script></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[]
+</span><span class="line">[[]]
+</span><span class="line">[[]]
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>You can notice that the mention above strings are a subset of the set of strings which we want to parse. And here I don’t have also good news. We can’t use regex engine to parse such strings.
+Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finite Automata (FA)</strong> can’t count how many <code>'['</code> we have already used and check that the same number of <code>']'</code> must appear just after the last <code>'['</code>. <strong>FA</strong> doesn’t have stack to remember such things. If You are curious about formal proof you can try to google <strong>Pumping Lemma</strong> phrase. <strong>Pumping Lemma</strong> provides You a useful tool to proof if a given language (set of words which fulfill given conditions) is not a regular.</p>
+
+<h3 id="context-free-grammar">Context free grammar</h3>
+<p>I have already mentioned that to solve our problem (if a given array is well formed) we need to write a parser of some <strong>context free grammar</strong>. The model of <strong>Context free grammar</strong> is a <strong>Finite Automata</strong> with a <strong>stack</strong>. Thanks to this an Automat is able to remember some facts that have happened (e.g count braces). To write a parser we need first to write down a grammar for expression of <strong>well formed array</strong>. To do this I will use <strong>ebnf</strong> (Extended Backus–Naur Form) form.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">array = "[", { array-body }, "]" 
+</span><span class="line">array-body = number | array
+</span><span class="line">number = [ "-" ], digit, { digit }
+</span><span class="line">digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Now we are ready to write a parser.  To be precise I will use top-down parsing strategy which let me directly transform written above grammar into set of recursively called procedures.</p>
+
+<h3 id="parser">Parser</h3>
+
+<p>It is a good manner to split parser into 2 parts</p>
+
+<ul>
+  <li>lexer</li>
+  <li>parser</li>
+</ul>
+
+<p>Lexer is responsible for grouping letters into tokens. In our grammar we have 4 kinds of tokens</p>
+
+<ul>
+  <li><code>'['</code> (<strong>LB</strong>)</li>
+  <li><code>']'</code> (<strong>RB</strong>)</li>
+  <li>number (<strong>NUMBER</strong>)</li>
+  <li>end - token informing that there is no letter left on input  (<strong>END</strong>)</li>
+</ul>
+
+<p>Tokens are expressed by a class <code>Token</code> written below</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Token</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">enum</span> <span class="n">Type</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">LB</span><span class="o">,</span> <span class="n">RB</span><span class="o">,</span> <span class="n">NUMBER</span><span class="o">,</span> <span class="n">END</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Type</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">,</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">Type</span> <span class="nf">getType</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Override</span>
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="kd">final</span> <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">(</span><span class="s">&quot;Token[&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;type=&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">type</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;, value=&#39;&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">&#39;\&#39;&#39;</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">&#39;]&#39;</span><span class="o">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="lexer">Lexer</h4>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Lexer</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">current</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">String</span> <span class="n">input</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">Lexer</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">input</span> <span class="o">=</span> <span class="n">input</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">char</span> <span class="nf">getChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">current</span><span class="o">++);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">unputChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">current</span><span class="o">--;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">hasNextChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">current</span> <span class="o">&lt;</span> <span class="n">input</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">Token</span> <span class="nf">next</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(!</span><span class="n">hasNextChar</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">END</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;[&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">,</span> <span class="s">&quot;[&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;]&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">RB</span><span class="o">,</span> <span class="s">&quot;]&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;-&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">s</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">unputChar</span><span class="o">();</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">StringBuilder</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">();</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">hasNextChar</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">Character</span><span class="o">.</span><span class="na">isDigit</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">unputChar</span><span class="o">();</span>
+</span><span class="line">                <span class="k">break</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">,</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span> <span class="o">:</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>####Parser</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Parser</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="n">Lexer</span> <span class="n">lexer</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">Token</span> <span class="n">currentToken</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">match</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">type</span> <span class="o">==</span> <span class="n">currentToken</span><span class="o">.</span><span class="na">getType</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(!</span><span class="n">match</span><span class="o">(</span><span class="n">type</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Should be %s is %s&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">.</span><span class="na">name</span><span class="o">(),</span> <span class="n">currentToken</span><span class="o">.</span><span class="na">getType</span><span class="o">().</span><span class="na">name</span><span class="o">()));</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">currentToken</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">array</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">match</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">);</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">match</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">array</span><span class="o">();</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="k">break</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">RB</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">parse</span><span class="o">(</span><span class="n">String</span> <span class="n">line</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">lexer</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Lexer</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+</span><span class="line">        <span class="n">currentToken</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">array</span><span class="o">();</span>
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">END</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isWellFormedArray</span><span class="o">(</span><span class="n">String</span> <span class="n">line</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">parse</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+</span><span class="line">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%s is not a proper array because %s&quot;</span><span class="o">,</span> <span class="n">line</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">()));</span>
+</span><span class="line">            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>###Test</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParserTest</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Test</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testIsWellFormedArray</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">Parser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parser</span><span class="o">();</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 -34 7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34] [7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 [7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 [7] 34]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[][]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[[]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2[-34[7]34]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Puzzle - Write a Method to Generate the Nth Fibonacci Number]]></title>
     <link href="http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number/"/>
     <updated>2015-08-13T01:18:14+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number</id>
-    <content type="html"><![CDATA[<h3>Preface</h3>
-
+    <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
 <p>Writing a method to generate the nth Fibonacci number is not a rocket science. The recursive formula for that is very simple and can be written following:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>fibonacci(0) = 0
-</span><span class='line'>fibonacci(1) = 1
-</span><span class='line'>fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our &lsquo;base cases&rsquo;. Based on this we can write a method <code>public static long slowFibonacci(int n)</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You have already noticed that instead of writing fibonacci I have written slowFibonacci. There is a reason for that and You may guessing that probably we can do something with this method to make it much faster and You have right. There is a quite usful programming method which we can use to improve the performance of this method. However before doing this let&rsquo;s try to write a method call stack trace for let&rsquo;s say 5th Fibonacci number.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The number of dashes means how many delayed operations is on the stack. Dash followed by the &lsquo;>&rsquo; (&lsquo;->&rsquo;) means that the operation can be computed (return value is provided) and removed from the stack.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">fibonacci(0) = 0
+</span><span class="line">fibonacci(1) = 1
+</span><span class="line">fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our ‘base cases’. Based on this we can write a method <code>public static long slowFibonacci(int n)</code></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>You have already noticed that instead of writing fibonacci I have written slowFibonacci. There is a reason for that and You may guessing that probably we can do something with this method to make it much faster and You have right. There is a quite usful programming method which we can use to improve the performance of this method. However before doing this let’s try to write a method call stack trace for let’s say 5th Fibonacci number.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class="line"><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class="line"><span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">----</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
+</span><span class="line"><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">---</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class="line"><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>The number of dashes means how many delayed operations is on the stack. Dash followed by the ‘&gt;’ (‘-&gt;’) means that the operation can be computed (return value is provided) and removed from the stack.</p>
 
 <p>You can notice that the same operations are evaluated many times, for example <code>slowFibonacci(2)</code> is computed 3 times. It is obvious waste of cpu resources. What can we do to use previously computed value instead of evaluating it again and again ?</p>
 
-<h3>Dynamic programming</h3>
+<h3 id="dynamic-programming">Dynamic programming</h3>
+<p>‘Dynamic programming’ method comes to our rescue. According to the wiki, ‘dynamic programming’ is a method for solving a complex problem by breaking it down into a collection of simpler subproblems. It is applicable to problems exhibiting the properties of overlapping subproblems and optimal substructure. The dynamic programming approach seeks to solve each subproblem only once, thus reducing the number of computations: once the solution to a given subproblem has been computed, it is stored or “memoized”: the next time the same solution is needed, it is simply looked up.</p>
 
-<p>&lsquo;Dynamic programming&rsquo; method comes to our rescue. According to the wiki, &lsquo;dynamic programming&rsquo; is a method for solving a complex problem by breaking it down into a collection of simpler subproblems. It is applicable to problems exhibiting the properties of overlapping subproblems and optimal substructure. The dynamic programming approach seeks to solve each subproblem only once, thus reducing the number of computations: once the solution to a given subproblem has been computed, it is stored or &ldquo;memoized&rdquo;: the next time the same solution is needed, it is simply looked up.</p>
+<p>What does it mean for us ? Each already solved subproblem (computed i-th Fibonacci number) can be saved in the let’s say global array and if the same solution is needed just simply look for it in that table.</p>
 
-<p>What does it mean for us ? Each already solved subproblem (computed i-th Fibonacci number) can be saved in the let&rsquo;s say global array and if the same solution is needed just simply look for it in that table.</p>
-
-<h3>Coding</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Fibonacci</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">long</span><span class="o">[]</span> <span class="n">FIB</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">long</span><span class="o">[</span><span class="mi">100</span><span class="o">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">fibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">=</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<h3 id="coding">Coding</h3>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Fibonacci</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">long</span><span class="o">[]</span> <span class="n">FIB</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">long</span><span class="o">[</span><span class="mi">100</span><span class="o">];</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">fibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> <span class="o">=</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">return</span> <span class="n">FIB</span><span class="o">[</span><span class="n">n</span><span class="o">];</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>Call stack trace for this tuned method is following</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
-</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
-</span><span class='line'><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-</span><span class='line'><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'><span class="o">----</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">----</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-</span><span class='line'><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class="line"><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class="line"><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class="line"><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class="line"><span class="o">----</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">----</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+</span><span class="line"><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">---</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+</span><span class="line"><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class="line"><span class="o">--</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class="line"><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
+</span><span class="line"><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
+</span><span class="line"><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>You can notice that the number of calls is much smaller then for <code>slowFibonacci(5)</code>.</p>
 
 <p>At the end I would like to present a simple benchmark</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">fibonacci</span><span class="o">(</span><span class="mi">45</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1134903170</span>
-</span><span class='line'><span class="nl">Duration:</span> <span class="mi">0</span><span class="o">,</span><span class="mi">002000</span><span class="n">s</span>
-</span><span class='line'><span class="nf">fibonacci</span><span class="o">(</span><span class="mi">60</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1548008755920</span>
-</span><span class='line'><span class="nl">Duration:</span> <span class="mi">0</span><span class="o">,</span><span class="mi">000000</span><span class="n">s</span>
-</span><span class='line'><span class="nf">slowFibonacci</span><span class="o">(</span><span class="mi">45</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1134903170</span>
-</span><span class='line'><span class="nl">Duration:</span> <span class="mi">7</span><span class="o">,</span><span class="mi">893000</span><span class="n">s</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">fibonacci</span><span class="o">(</span><span class="mi">45</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1134903170</span>
+</span><span class="line"><span class="nl">Duration:</span> <span class="mi">0</span><span class="o">,</span><span class="mi">002000</span><span class="n">s</span>
+</span><span class="line"><span class="nf">fibonacci</span><span class="o">(</span><span class="mi">60</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1548008755920</span>
+</span><span class="line"><span class="nl">Duration:</span> <span class="mi">0</span><span class="o">,</span><span class="mi">000000</span><span class="n">s</span>
+</span><span class="line"><span class="nf">slowFibonacci</span><span class="o">(</span><span class="mi">45</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1134903170</span>
+</span><span class="line"><span class="nl">Duration:</span> <span class="mi">7</span><span class="o">,</span><span class="mi">893000</span><span class="n">s</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>To compute 45-th Fibonacci number for <code>fibonacci</code> it takes 2ms and for <code>slowFibonacci</code> it takes 7.8s so a savings are significant.</p>
 ]]></content>
   </entry>
@@ -238,160 +661,146 @@
     <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/"/>
     <updated>2015-08-09T21:52:26+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set</id>
-    <content type="html"><![CDATA[<h3>Problem</h3>
-
-<p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of &lsquo;number of element in a set&rsquo;. So for a set consisting of <code>3</code> elements it is 8.  To proceed let&rsquo;s write some examples.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>subsets({'a'}) = {} + {'a'}
-</span><span class='line'>subsets({'b'}) = {} + {'b'}
-</span><span class='line'>subsets({'c'}) = {} + {'c'}
-</span><span class='line'>
-</span><span class='line'>subsets({'b','c'}) = {} + {'b'} + {'c'} + {'b','c'}
-</span><span class='line'>subsets({'a','c'}) = {} + {'a'} + {'c'} + {'a','c'}
-</span><span class='line'>subsets({'a','b'}) = {} + {'a'} + {'b'} + {'a','b'}
-</span><span class='line'>
-</span><span class='line'>subsets({'a', 'b', 'c'}) = {} + {'a'} + {'a','b'} + {'a','c'} + {'a','b','c'} + {'b'} + {'b','c'} + {'c'}</span></code></pre></td></tr></table></div></figure>
-
+    <content type="html"><![CDATA[<h3 id="problem">Problem</h3>
+<p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of ‘number of element in a set’. So for a set consisting of <code>3</code> elements it is 8.  To proceed let’s write some examples.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">subsets({'a'}) = {} + {'a'}
+</span><span class="line">subsets({'b'}) = {} + {'b'}
+</span><span class="line">subsets({'c'}) = {} + {'c'}
+</span><span class="line">
+</span><span class="line">subsets({'b','c'}) = {} + {'b'} + {'c'} + {'b','c'}
+</span><span class="line">subsets({'a','c'}) = {} + {'a'} + {'c'} + {'a','c'}
+</span><span class="line">subsets({'a','b'}) = {} + {'a'} + {'b'} + {'a','b'}
+</span><span class="line">
+</span><span class="line">subsets({'a', 'b', 'c'}) = {} + {'a'} + {'a','b'} + {'a','c'} + {'a','b','c'} + {'b'} + {'b','c'} + {'c'}</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Based on that we can notice a following pattern</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">subset('a')            = {}, {'a'}
+</span><span class="line">subset('b')            = {}, {'b'}
+</span><span class="line">subset('c')            = {}, {'c'}
+</span><span class="line">subsets({'b','c'})     = subset({'b'}) + subset({'c'}) + {'b','c'}
+</span><span class="line">subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
+</span><span class="line">subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
+</span><span class="line">subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>###Coding</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="nf">subsets</span><span class="o">(</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;());</span>
+</span><span class="line">        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">set</span><span class="o">));</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">    <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">e</span> <span class="o">:</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">newSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">set</span><span class="o">);</span>
+</span><span class="line">        <span class="n">newSet</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class="line">        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">subsets</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">newSet</span><span class="o">);</span>
+</span><span class="line">        <span class="n">ret</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">subsets</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>subset('a')            = {}, {'a'}
-</span><span class='line'>subset('b')            = {}, {'b'}
-</span><span class='line'>subset('c')            = {}, {'c'}
-</span><span class='line'>subsets({'b','c'})     = subset({'b'}) + subset({'c'}) + {'b','c'}
-</span><span class='line'>subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
-</span><span class='line'>subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
-</span><span class='line'>subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">set</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span> <span class="s">&quot;b&quot;</span><span class="o">,</span> <span class="s">&quot;c&quot;</span><span class="o">,</span> <span class="s">&quot;d&quot;</span><span class="o">));</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;size: &quot;</span> <span class="o">+</span> <span class="n">subs</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span><span class="line">    <span class="k">for</span><span class="o">(</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sub</span> <span class="o">:</span> <span class="n">subs</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sub</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>Coding</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="nf">subsets</span><span class="o">(</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'>        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;());</span>
-</span><span class='line'>        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">set</span><span class="o">));</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'>    <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">e</span> <span class="o">:</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">newSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">set</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">newSet</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">subsets</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">newSet</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">ret</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">subsets</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">set</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span> <span class="s">&quot;b&quot;</span><span class="o">,</span> <span class="s">&quot;c&quot;</span><span class="o">,</span> <span class="s">&quot;d&quot;</span><span class="o">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Set</span><span class="o">&lt;</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">subs</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;size: &quot;</span> <span class="o">+</span> <span class="n">subs</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
-</span><span class='line'>    <span class="k">for</span><span class="o">(</span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sub</span> <span class="o">:</span> <span class="n">subs</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sub</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nl">size:</span> <span class="mi">16</span>
-</span><span class='line'><span class="o">[]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">c</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span><span class='line'><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="nl">size:</span> <span class="mi">16</span>
+</span><span class="line"><span class="o">[]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">b</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">c</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>
   
@@ -400,98 +809,80 @@
     <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/"/>
     <updated>2015-08-09T20:25:16+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion</id>
-    <content type="html"><![CDATA[<h3>Problem</h3>
+    <content type="html"><![CDATA[<h3 id="problem">Problem</h3>
+<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a ‘base case’ which can’t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
 
-<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a &lsquo;base case&rsquo; which can&rsquo;t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
+<p>So let’s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">revers('a')     = 'a'
+</span><span class="line">revers('ab')    = 'ba'
+</span><span class="line">revers('abc')   = 'cba'
+</span><span class="line">revers('abcd')  = 'dcba'
+</span><span class="line">revers('abcde') = 'edcba'</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Based on that we can already write a recursive procedure.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">revers('a')     = 'a'
+</span><span class="line">revers('ab')    = 'b'|revers('a')
+</span><span class="line">revers('abc')   = 'c'|revers('ab') 
+</span><span class="line">revers('abcd')  = 'd'|revers('abc')
+</span><span class="line">revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>To compute a reversed string for <code>'a'</code> we need to return that string and it is our ‘base case’. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
 
-<p>So let&rsquo;s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.</p>
+<p>I think we are ready to write some code.
+###Coding</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">revers</span><span class="o">(</span><span class="n">String</span> <span class="n">arg</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">arg</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">revers</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>revers('a')     = 'a'
-</span><span class='line'>revers('ab')    = 'ba'
-</span><span class='line'>revers('abc')   = 'cba'
-</span><span class='line'>revers('abcd')  = 'dcba'
-</span><span class='line'>revers('abcde') = 'edcba'</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">));</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;ab&quot;</span><span class="o">));</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcd&quot;</span><span class="o">));</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcde&quot;</span><span class="o">));</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<p>
-Based on that we can already write a recursive procedure.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>revers('a')     = 'a'
-</span><span class='line'>revers('ab')    = 'b'|revers('a')
-</span><span class='line'>revers('abc')   = 'c'|revers('ab') 
-</span><span class='line'>revers('abcd')  = 'd'|revers('abc')
-</span><span class='line'>revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To compute a reversed string for <code>'a'</code> we need to return that string and it is our &lsquo;base case&rsquo;. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
-
-<p>I think we are ready to write some code.</p>
-
-<h3>Coding</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">revers</span><span class="o">(</span><span class="n">String</span> <span class="n">arg</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">arg</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">revers</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">));</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;ab&quot;</span><span class="o">));</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcd&quot;</span><span class="o">));</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcde&quot;</span><span class="o">));</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">a</span>
-</span><span class='line'><span class="n">ba</span>
-</span><span class='line'><span class="n">cba</span>
-</span><span class='line'><span class="n">dcba</span>
-</span><span class='line'><span class="n">edcba</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">a</span>
+</span><span class="line"><span class="n">ba</span>
+</span><span class="line"><span class="n">cba</span>
+</span><span class="line"><span class="n">dcba</span>
+</span><span class="line"><span class="n">edcba</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 ]]></content>
   </entry>
@@ -501,150 +892,138 @@ Based on that we can already write a recursive procedure.</p>
     <link href="http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/"/>
     <updated>2015-08-08T21:06:54+02:00</updated>
     <id>http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string</id>
-    <content type="html"><![CDATA[<h3>How to Approche</h3>
+    <content type="html"><![CDATA[<h3 id="how-to-approche">How to Approche</h3>
+<p>When we hear a problem beginning with: ‘Write a method to compute all…’, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called ‘base case’ - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
 
-<p>When we hear a problem beginning with: &lsquo;Write a method to compute all&hellip;&rsquo;, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called &lsquo;base case&rsquo; - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
-
-<h4>Problem</h4>
-
-<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let&rsquo;s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
+<h4 id="problem">Problem</h4>
+<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let’s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
 
 <p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>perm('a')   = 'a'
-</span><span class='line'>perm('b')   = 'b'
-</span><span class='line'>perm('c')   = 'c'
-</span><span class='line'>perm('ab')  = 'ab', 'ba'
-</span><span class='line'>perm('ac')  = 'ac', 'ca'
-</span><span class='line'>perm('bc')  = 'bc', 'cb'
-</span><span class='line'>perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' </span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">perm('a')   = 'a'
+</span><span class="line">perm('b')   = 'b'
+</span><span class="line">perm('c')   = 'c'
+</span><span class="line">perm('ab')  = 'ab', 'ba'
+</span><span class="line">perm('ac')  = 'ac', 'ca'
+</span><span class="line">perm('bc')  = 'bc', 'cb'
+</span><span class="line">perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>perm('a')   = 'a'
-</span><span class='line'>perm('b')   = 'b'
-</span><span class='line'>perm('c')   = 'c'
-</span><span class='line'>perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
-</span><span class='line'>perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
-</span><span class='line'>perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
-</span><span class='line'>perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">perm('a')   = 'a'
+</span><span class="line">perm('b')   = 'b'
+</span><span class="line">perm('c')   = 'c'
+</span><span class="line">perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
+</span><span class="line">perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
+</span><span class="line">perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
+</span><span class="line">perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>where <code>|</code> means a concatenation of two strings.</p>
 
-<p>First three cases are called &lsquo;base cases&rsquo; and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
+<p>First three cases are called ‘base cases’ and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
 
-<h3>Coding</h3>
+<h3 id="coding">Coding</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">permute</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'>        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">String</span> <span class="n">left</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">subStr</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">subStr</span><span class="o">.</span><span class="na">deleteCharAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">subPermutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="n">subStr</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">subPermutations</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">permutations</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">perm</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">permutations</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">permute</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">String</span> <span class="n">left</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span><span class="line">        <span class="n">StringBuilder</span> <span class="n">subStr</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+</span><span class="line">        <span class="n">subStr</span><span class="o">.</span><span class="na">deleteCharAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">subPermutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="n">subStr</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">subPermutations</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">permutations</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">perm</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">permutations</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;permutations size: %d&quot;</span><span class="o">,</span> <span class="n">permutations</span><span class="o">.</span><span class="na">size</span><span class="o">()));</span>
+</span><span class="line">    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">permutations</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">perm</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;permutations size: %d&quot;</span><span class="o">,</span> <span class="n">permutations</span><span class="o">.</span><span class="na">size</span><span class="o">()));</span>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">permutations</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">perm</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">permutations</span> <span class="nl">size:</span> <span class="mi">6</span>
-</span><span class='line'><span class="n">abc</span>
-</span><span class='line'><span class="n">acb</span>
-</span><span class='line'><span class="n">bac</span>
-</span><span class='line'><span class="n">bca</span>
-</span><span class='line'><span class="n">cab</span>
-</span><span class='line'><span class="n">cba</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">permutations</span> <span class="nl">size:</span> <span class="mi">6</span>
+</span><span class="line"><span class="n">abc</span>
+</span><span class="line"><span class="n">acb</span>
+</span><span class="line"><span class="n">bac</span>
+</span><span class="line"><span class="n">bca</span>
+</span><span class="line"><span class="n">cab</span>
+</span><span class="line"><span class="n">cba</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>
   
