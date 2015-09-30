@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-01T00:39:10+02:00</updated>
+  <updated>2015-10-01T00:46:32+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,45 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress Pushing Error to GitHub]]></title>
+    <link href="http://ssledz.github.io/blog/2015/10/01/octopress-pushing-error-to-github/"/>
+    <updated>2015-10-01T00:40:41+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/10/01/octopress-pushing-error-to-github</id>
+    <content type="html"><![CDATA[<p>When You get something like that</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">## Pushing generated _deploy website
+</span><span class="line">To git@github.com:ssledz/ssledz.github.io.git
+</span><span class="line"> ! [rejected]        master -&gt; master (non-fast-forward)
+</span><span class="line">error: failed to push some refs to 'git@github.com:ssledz/ssledz.github.io.git'
+</span><span class="line">hint: Updates were rejected because the tip of your current branch is behind
+</span><span class="line">hint: its remote counterpart. Integrate the remote changes (e.g.
+</span><span class="line">hint: 'git pull ...') before pushing again.
+</span><span class="line">hint: See the 'Note about fast-forwards' in 'git push --help' for details.</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>just do following</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd </span>_deploy
+</span><span class="line">git reset --hard origin/master
+</span><span class="line"><span class="nb">cd</span> ..
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>and try again</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate
+</span><span class="line">rake deploy
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Context Free Grammar Will Help Where Regex Pattern Fail - Is This Well Formed Array ?]]></title>

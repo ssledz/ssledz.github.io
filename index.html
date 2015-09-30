@@ -9,8 +9,17 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Preface
-Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had &hellip;">
+  <meta name="description" content="When You get something like that
+1
+2
+3
+4
+5
+6
+7
+8
+## Pushing generated _deploy website
+To git@github.com:ssledz/ssledz.github.io.git ! [rejected] &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,6 +102,65 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/01/octopress-pushing-error-to-github/">Octopress Pushing Error to GitHub</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-01T00:40:41+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>12:40 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When You get something like that</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">## Pushing generated _deploy website
+</span><span class="line">To git@github.com:ssledz/ssledz.github.io.git
+</span><span class="line"> ! [rejected]        master -&gt; master (non-fast-forward)
+</span><span class="line">error: failed to push some refs to 'git@github.com:ssledz/ssledz.github.io.git'
+</span><span class="line">hint: Updates were rejected because the tip of your current branch is behind
+</span><span class="line">hint: its remote counterpart. Integrate the remote changes (e.g.
+</span><span class="line">hint: 'git pull ...') before pushing again.
+</span><span class="line">hint: See the 'Note about fast-forwards' in 'git push --help' for details.</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>just do following</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd </span>_deploy
+</span><span class="line">git reset --hard origin/master
+</span><span class="line"><span class="nb">cd</span> ..
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>and try again</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate
+</span><span class="line">rake deploy
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1232,6 +1300,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/01/octopress-pushing-error-to-github/">Octopress Pushing Error to GitHub</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/08/17/context-free-grammar-will-help-where-regex-pattern-fail-is-this-well-formed-array/">Context Free Grammar Will Help Where Regex Pattern Fail - Is This Well Formed Array ?</a>
       </li>
     
@@ -1245,10 +1317,6 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
     
       <li class="post">
         <a href="/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/">Puzzle - Write a Method to Reverse a String Using Recursion</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/">Puzzle - Write a Method to Compute All Permutations of a String</a>
       </li>
     
   </ul>

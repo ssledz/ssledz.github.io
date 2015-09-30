@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Github | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/github/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2015-10-01T00:46:32+02:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress Pushing Error to GitHub]]></title>
+    <link href="http://ssledz.github.io/blog/2015/10/01/octopress-pushing-error-to-github/"/>
+    <updated>2015-10-01T00:40:41+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/10/01/octopress-pushing-error-to-github</id>
+    <content type="html"><![CDATA[<p>When You get something like that
+<code>
+## Pushing generated _deploy website
+To git@github.com:ssledz/ssledz.github.io.git
+ ! [rejected]        master -&gt; master (non-fast-forward)
+error: failed to push some refs to 'git@github.com:ssledz/ssledz.github.io.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+</code>
+just do following
+<code>bash
+cd _deploy
+git reset --hard origin/master
+cd ..
+</code>
+and try again
+<code>
+rake generate
+rake deploy
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>
