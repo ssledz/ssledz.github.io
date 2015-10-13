@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ssledz.github.io/blog/2015/10/13/virtual-box-vdi-compaction/</loc>
+    <lastmod>2015-10-13T10:00:43+02:00</lastmod>
+  </url>
+  <url>
     <loc>http://ssledz.github.io/blog/2015/10/01/octopress-pushing-error-to-github/</loc>
     <lastmod>2015-10-01T00:40:41+02:00</lastmod>
   </url>
@@ -56,5 +60,11 @@
   </url>
   <url>
     <loc>http://ssledz.github.io/blog/categories/github/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/virtual-box/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/linux/</loc>
   </url>
 </urlset>

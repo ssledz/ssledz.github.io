@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-01T00:46:32+02:00</updated>
+  <updated>2015-10-13T10:11:36+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Virtual Box VDI Compaction]]></title>
+    <link href="http://ssledz.github.io/blog/2015/10/13/virtual-box-vdi-compaction/"/>
+    <updated>2015-10-13T10:00:43+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/10/13/virtual-box-vdi-compaction</id>
+    <content type="html"><![CDATA[<p>Virtual Disk Image (<code>VDI</code>) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it is time for compaction.</p>
+
+<ol>
+  <li>Install zerofree tool (<code>apt-get install zerofree</code>).</li>
+  <li>Remove unused files (<code>apt-get autoremove</code>, <code>apt-get autoclean</code>, <code>orphaner --guess-all</code>).</li>
+  <li>Reboot the guest system in single user mode (hit e during Grub boot and append single option to the Grub boot parameters).</li>
+  <li>Remount filesystems as readonly (<code>mount -n -o remount,ro /</code>).</li>
+  <li>Fill unused block with zeros (<code>zerofree /</code>). It’s time consuming operation.</li>
+  <li>Shutdown the system (<code>poweroff</code>).</li>
+  <li>Compact VDI files on the host system (<code>VBoxManage modifyhd my.vdi compact</code>). It’s time consuming operation.</li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Octopress Pushing Error to GitHub]]></title>
@@ -737,7 +756,8 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
 </span><span class="line">subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
 </span><span class="line">subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>###Coding</p>
+
+<h3 id="coding">Coding</h3>
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
