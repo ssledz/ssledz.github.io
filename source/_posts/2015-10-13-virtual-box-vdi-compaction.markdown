@@ -19,5 +19,5 @@ then hit ``e`` when Grub boot appear and append ``single`` option to the Grub bo
 
 Instead points 1,3-5 to fill free space with zeros You can do following (You don't need to boot in single user mode)
 
-1. sudo dd if=/dev/zero of=/bigemptyfile bs=4096k
-2. sudo rm -rf /bigemptyfile
+1. ``sudo dd if=/dev/zero of=/bigemptyfile bs=4096k``
+2. ``sudo rm -rf /bigemptyfile``
