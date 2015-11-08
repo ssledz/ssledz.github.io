@@ -16,7 +16,7 @@ Vagrant provides easy to configure, reproducible, and portable work environments
 
 ###Vagrant Providers
 
-Vagrant has an ability to manage dozen of machine types like
+Vagrant has an ability to manage some of machine types like
 
 * ```VirtualBox```
 * ```VMware```
