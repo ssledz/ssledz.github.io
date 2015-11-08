@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Dev Env | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/dev-env/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-08T18:10:56+01:00</updated>
+  <updated>2015-11-08T18:17:23+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -24,11 +24,11 @@
 
 <h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
 
-<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it. One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it? One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
 
 <h3 id="vagrant-providers">Vagrant Providers</h3>
 
-<p>Vagrant has an ability to manage dozen of machine types like</p>
+<p>Vagrant has an ability to manage some of machine types like</p>
 
 <ul>
   <li><code>VirtualBox</code></li>
