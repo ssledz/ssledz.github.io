@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Recursion | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/recursion/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-28T23:27:53+01:00</updated>
+  <updated>2015-11-08T17:55:40+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -303,9 +303,11 @@ revers('abcde') = 'e'|revers('abcd')
 </code>
 To compute a reversed string for <code>'a'</code> we need to return that string and it is our ‘base case’. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
 
-<p>I think we are ready to write some code.
-###Coding
-```java
+<p>I think we are ready to write some code.</p>
+
+<h3 id="coding">Coding</h3>
+
+<p>```java
     public static String revers(String arg) {</p>
 
 <pre><code>    if (arg.length() == 1) {

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-10-28T23:27:53+01:00</updated>
+  <updated>2015-11-08T17:55:40+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,56 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java Development Environment With Vagrant - Part 1]]></title>
+    <link href="http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/"/>
+    <updated>2015-11-08T16:06:35+01:00</updated>
+    <id>http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1</id>
+    <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
+
+<p>This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
+
+<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
+
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it. One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
+
+<h3 id="vagrant-providers">Vagrant Providers</h3>
+
+<p>Vagrant has an ability to manage dozen of machine types like</p>
+
+<ul>
+  <li><code>VirtualBox</code></li>
+  <li><code>VMware</code></li>
+  <li><code>Docker</code></li>
+  <li><code>Hyper-V</code></li>
+</ul>
+
+<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
+
+<h3 id="vagrant-installation">Vagrant Installation</h3>
+
+<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
+
+<h3 id="setting-development-environment">Setting development environment</h3>
+
+<p>To set up java development environment You need just type the following bunch of commands
+<code>
+git clone git@github.com:ssledz/vagrant-boxes.git
+cd vagrant-boxes/java-dev-environment
+vagrant up
+</code></p>
+
+<p>To loggin to the machine do
+<code>
+vagrant ssh
+</code></p>
+
+<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
+
+<p>More about how to use this setting to develop in the next post.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Virtual Box VDI Compaction]]></title>

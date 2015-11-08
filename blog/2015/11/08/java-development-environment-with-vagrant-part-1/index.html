@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Octopress - My Programmer's Road</title>
+  <title>Java Development Environment With Vagrant - Part 1 - My Programmer's Road</title>
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Category: octopress">
+  <meta name="description" content="Preface This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ssledz.github.io/blog/categories/octopress/">
+  <link rel="canonical" href="http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Programmer's Road" type="application/atom+xml">
@@ -91,36 +91,120 @@ MathJax.Hub.Config({
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Octopress</h1>
+    
+      <h1 class="entry-title">Java Development Environment With Vagrant - Part 1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-08T16:06:35+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:06 pm</span></time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><h3 id="preface">Preface</h3>
 
-  
-  <h2>2015</h2>
+<p>This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
 
-<article>
-  
-<h1><a href="/blog/2015/10/01/octopress-pushing-error-to-github/">Octopress Pushing Error to GitHub</a></h1>
-<time datetime="2015-10-01T00:40:41+02:00" pubdate><span class='month'>Oct</span> <span class='day'>01</span> <span class='year'>2015</span></time>
+<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a></span>
-</footer>
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it. One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
 
+<h3 id="vagrant-providers">Vagrant Providers</h3>
 
-</article>
+<p>Vagrant has an ability to manage dozen of machine types like</p>
 
+<ul>
+  <li><code>VirtualBox</code></li>
+  <li><code>VMware</code></li>
+  <li><code>Docker</code></li>
+  <li><code>Hyper-V</code></li>
+</ul>
+
+<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
+
+<h3 id="vagrant-installation">Vagrant Installation</h3>
+
+<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
+
+<h3 id="setting-development-environment">Setting development environment</h3>
+
+<p>To set up java development environment You need just type the following bunch of commands</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
+</span><span class="line">cd vagrant-boxes/java-dev-environment
+</span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To loggin to the machine do</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">vagrant ssh</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
+
+<p>More about how to use this setting to develop in the next post.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Sławomir Śledź</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-11-08T16:06:35+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:06 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/dev-env/'>dev env</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>, <a class='category' href='/blog/categories/virtual-box/'>virtual box</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/" data-via="" data-counturl="http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/10/13/virtual-box-vdi-compaction/" title="Previous Post: Virtual Box VDI compaction">&laquo; Virtual Box VDI compaction</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -214,7 +298,10 @@ MathJax.Hub.Config({
       var disqus_shortname = 'ssledz';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/';
+        var disqus_url = 'http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

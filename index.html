@@ -9,7 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Virtual Disk Image (VDI) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it &hellip;">
+  <meta name="description" content="Preface This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -92,6 +92,76 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">Java Development Environment With Vagrant - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-08T16:06:35+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:06 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3 id="preface">Preface</h3>
+
+<p>This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
+
+<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
+
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it. One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
+
+<h3 id="vagrant-providers">Vagrant Providers</h3>
+
+<p>Vagrant has an ability to manage dozen of machine types like</p>
+
+<ul>
+  <li><code>VirtualBox</code></li>
+  <li><code>VMware</code></li>
+  <li><code>Docker</code></li>
+  <li><code>Hyper-V</code></li>
+</ul>
+
+<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
+
+<h3 id="vagrant-installation">Vagrant Installation</h3>
+
+<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
+
+<h3 id="setting-development-environment">Setting development environment</h3>
+
+<p>To set up java development environment You need just type the following bunch of commands</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
+</span><span class="line">cd vagrant-boxes/java-dev-environment
+</span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To loggin to the machine do</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">vagrant ssh</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
+
+<p>More about how to use this setting to develop in the next post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1100,8 +1170,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>To compute a reversed string for <code>'a'</code> we need to return that string and it is our ‘base case’. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
 
-<p>I think we are ready to write some code.
-###Coding</p>
+<p>I think we are ready to write some code.</p>
+
+<h3 id="coding">Coding</h3>
+
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
@@ -1338,6 +1410,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">Java Development Environment With Vagrant - Part 1</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/13/virtual-box-vdi-compaction/">Virtual Box VDI Compaction</a>
       </li>
     
@@ -1351,10 +1427,6 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
     
       <li class="post">
         <a href="/blog/2015/08/13/puzzle-write-a-method-to-generate-the-nth-fibonacci-number/">Puzzle - Write a Method to Generate the Nth Fibonacci Number</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/">Puzzle - Write a Method That Return All Subsets of a Set</a>
       </li>
     
   </ul>
