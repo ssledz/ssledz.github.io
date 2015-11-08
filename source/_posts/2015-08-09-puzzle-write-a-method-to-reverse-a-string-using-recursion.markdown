@@ -29,7 +29,9 @@ revers('abcde') = 'e'|revers('abcd')
 To compute a reversed string for ``'a'`` we need to return that string and it is our 'base case'. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.
 
 I think we are ready to write some code.
+
 ###Coding
+
 ```java
     public static String revers(String arg) {
 
