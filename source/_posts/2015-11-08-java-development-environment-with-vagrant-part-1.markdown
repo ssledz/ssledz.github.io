@@ -38,6 +38,96 @@ cd vagrant-boxes/java-dev-environment
 vagrant up
 ```
 
+Now vagrant box image is downloading from the box repository and then installation script ```provision.sh``` will be called. 
+
+The ```provision.sh``` trace can look following
+```
+==> default: Creating directories
+==> default:     Creating bin directory
+==> default:     Creating public_html directory
+==> default:     Creating servers directory
+==> default: Installing packages
+==> default:     apt-get update
+==> default:     Installing vim
+==> default:     Installing git
+==> default: Installing mc
+==> default:     Installing libssl-dev libreadline-dev zlib1g-dev
+==> default:     Installing make g++
+==> default:     Installing apg
+==> default:     Installing mysql-server
+==> default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
+==> default:         Restarting mysql
+==> default:     Installing nginx-core ssl-cert
+==> default:         Creating /etc/nginx/sites-available/public_html
+==> default:         Enabling /etc/nginx/sites-available/public_html
+==> default:         Restarting nginx
+==> default: Downloading jdks
+==> default:     jdk-5u22-linux-x64.tar.gz is available
+==> default:     jdk-6u45-linux-x64.tar.gz is available
+==> default:     jdk-7u80-linux-x64.tar.gz is available
+==> default:     jdk-8u65-linux-x64.tar.gz is available
+==> default: Installing jdks
+==> default:     Extracting jdk-5u22-linux-x64.tar.gz
+==> default:     Extracting jdk-6u45-linux-x64.tar.gz
+==> default: Extracting jdk-7u80-linux-x64.tar.gz
+==> default:     Extracting jdk-8u65-linux-x64.tar.gz
+==> default:     Cleaning
+==> default: Installing apache-maven
+==> default:     Downloading apache-maven-3.3.3-bin.tar.gz
+==> default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
+==> default:     Cleaning
+==> default:     Creating symbolic link apache-maven
+==> default: Installing apache-ant
+==> default:     Downloading apache-ant-1.9.6-bin.tar.gz
+==> default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
+==> default:     Cleaning
+==> default:     Creating symbolic link apache-ant
+==> default: Installing gradle
+==> default:     Downloading gradle-2.8-bin.zip
+==> default:     Extracting gradle-2.8-bin.zip using unzip
+==> default:     Cleaning
+==> default:     Creating symbolic link gradle
+==> default: Installing sbt
+==> default:     Downloading sbt-0.13.9.tgz
+==> default:     Extracting sbt-0.13.9.tgz using tar
+==> default:     Cleaning
+==> default:     Creating symbolic link sbt
+==> default: Installing environment managers (for Java, Ruby, node.js and Python) 
+==> default:     Installing jenv
+==> default:         Clonning from github to ~/.jenv
+==> default:         Setting environment variables
+==> default:         Make build tools jenv aware
+==> default:             ant plugin activated
+==> default:             maven plugin activated
+==> default:             gradle plugin activated
+==> default:             sbt plugin activated
+==> default:     Installing rbenv
+==> default:         Clonning from github to ~/.rbenv
+==> default:         Installing plugins that provide rbenv install
+==> default:     Installing nodenv
+==> default:         Clonning from github to ~/.nodenv
+==> default:         Installing plugins that provide nodenv install
+==> default:     Installing pyenv
+==> default:         Clonning from github to ~/.pyenv
+==> default: Updating .bashrc
+==> default: Install runtimes using environment managers
+==> default:     Install java
+==> default:     Set jdk 1.8 globally
+==> default:     Install ruby
+==> default:     Install node.js
+==> default:     install python
+==> default: Installing apache-tomcat
+==> default:     Downloading apache-tomcat-8.0.28.tar.gz
+==> default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
+==> default:     Cleaning
+==> default:     Creating symbolic link apache-tomcat
+==> default:     Creating apache-tomcat /bin/setenv.sh
+==> default:     Copying tomcat-users.xml to apache-tomcat/conf
+==> default:     Creating /etc/init.d/tomcat script
+==> default:     Starting tomcat
+```
+
+
 To loggin to the machine do
 ```
 vagrant ssh
