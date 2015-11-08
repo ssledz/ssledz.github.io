@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Dev Env | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/dev-env/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-08T18:03:33+01:00</updated>
+  <updated>2015-11-08T18:10:56+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -20,7 +20,7 @@
     <id>http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1</id>
     <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
 
-<p>This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
+<p>This post describes my development environment driven by Vagrant (Full description what can be found there is <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">here</a>). You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
 
 <h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
 
