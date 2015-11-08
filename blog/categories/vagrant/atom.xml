@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vagrant | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/vagrant/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-08T18:17:23+01:00</updated>
+  <updated>2015-11-08T18:36:14+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -50,6 +50,95 @@
 git clone git@github.com:ssledz/vagrant-boxes.git
 cd vagrant-boxes/java-dev-environment
 vagrant up
+</code></p>
+
+<p>Now vagrant box image is downloading from the box repository and then installation script <code>provision.sh</code> will be called.</p>
+
+<p>The <code>provision.sh</code> trace can look following
+<code>
+==&gt; default: Creating directories
+==&gt; default:     Creating bin directory
+==&gt; default:     Creating public_html directory
+==&gt; default:     Creating servers directory
+==&gt; default: Installing packages
+==&gt; default:     apt-get update
+==&gt; default:     Installing vim
+==&gt; default:     Installing git
+==&gt; default: Installing mc
+==&gt; default:     Installing libssl-dev libreadline-dev zlib1g-dev
+==&gt; default:     Installing make g++
+==&gt; default:     Installing apg
+==&gt; default:     Installing mysql-server
+==&gt; default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
+==&gt; default:         Restarting mysql
+==&gt; default:     Installing nginx-core ssl-cert
+==&gt; default:         Creating /etc/nginx/sites-available/public_html
+==&gt; default:         Enabling /etc/nginx/sites-available/public_html
+==&gt; default:         Restarting nginx
+==&gt; default: Downloading jdks
+==&gt; default:     jdk-5u22-linux-x64.tar.gz is available
+==&gt; default:     jdk-6u45-linux-x64.tar.gz is available
+==&gt; default:     jdk-7u80-linux-x64.tar.gz is available
+==&gt; default:     jdk-8u65-linux-x64.tar.gz is available
+==&gt; default: Installing jdks
+==&gt; default:     Extracting jdk-5u22-linux-x64.tar.gz
+==&gt; default:     Extracting jdk-6u45-linux-x64.tar.gz
+==&gt; default: Extracting jdk-7u80-linux-x64.tar.gz
+==&gt; default:     Extracting jdk-8u65-linux-x64.tar.gz
+==&gt; default:     Cleaning
+==&gt; default: Installing apache-maven
+==&gt; default:     Downloading apache-maven-3.3.3-bin.tar.gz
+==&gt; default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
+==&gt; default:     Cleaning
+==&gt; default:     Creating symbolic link apache-maven
+==&gt; default: Installing apache-ant
+==&gt; default:     Downloading apache-ant-1.9.6-bin.tar.gz
+==&gt; default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
+==&gt; default:     Cleaning
+==&gt; default:     Creating symbolic link apache-ant
+==&gt; default: Installing gradle
+==&gt; default:     Downloading gradle-2.8-bin.zip
+==&gt; default:     Extracting gradle-2.8-bin.zip using unzip
+==&gt; default:     Cleaning
+==&gt; default:     Creating symbolic link gradle
+==&gt; default: Installing sbt
+==&gt; default:     Downloading sbt-0.13.9.tgz
+==&gt; default:     Extracting sbt-0.13.9.tgz using tar
+==&gt; default:     Cleaning
+==&gt; default:     Creating symbolic link sbt
+==&gt; default: Installing environment managers (for Java, Ruby, node.js and Python) 
+==&gt; default:     Installing jenv
+==&gt; default:         Clonning from github to ~/.jenv
+==&gt; default:         Setting environment variables
+==&gt; default:         Make build tools jenv aware
+==&gt; default:             ant plugin activated
+==&gt; default:             maven plugin activated
+==&gt; default:             gradle plugin activated
+==&gt; default:             sbt plugin activated
+==&gt; default:     Installing rbenv
+==&gt; default:         Clonning from github to ~/.rbenv
+==&gt; default:         Installing plugins that provide rbenv install
+==&gt; default:     Installing nodenv
+==&gt; default:         Clonning from github to ~/.nodenv
+==&gt; default:         Installing plugins that provide nodenv install
+==&gt; default:     Installing pyenv
+==&gt; default:         Clonning from github to ~/.pyenv
+==&gt; default: Updating .bashrc
+==&gt; default: Install runtimes using environment managers
+==&gt; default:     Install java
+==&gt; default:     Set jdk 1.8 globally
+==&gt; default:     Install ruby
+==&gt; default:     Install node.js
+==&gt; default:     install python
+==&gt; default: Installing apache-tomcat
+==&gt; default:     Downloading apache-tomcat-8.0.28.tar.gz
+==&gt; default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
+==&gt; default:     Cleaning
+==&gt; default:     Creating symbolic link apache-tomcat
+==&gt; default:     Creating apache-tomcat /bin/setenv.sh
+==&gt; default:     Copying tomcat-users.xml to apache-tomcat/conf
+==&gt; default:     Creating /etc/init.d/tomcat script
+==&gt; default:     Starting tomcat
 </code></p>
 
 <p>To loggin to the machine do

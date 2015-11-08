@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-08T18:17:23+01:00</updated>
+  <updated>2015-11-08T18:36:14+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -52,6 +52,176 @@
 </pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
 </span><span class="line">cd vagrant-boxes/java-dev-environment
 </span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Now vagrant box image is downloading from the box repository and then installation script <code>provision.sh</code> will be called.</p>
+
+<p>The <code>provision.sh</code> trace can look following</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">==&gt; default: Creating directories
+</span><span class="line">==&gt; default:     Creating bin directory
+</span><span class="line">==&gt; default:     Creating public_html directory
+</span><span class="line">==&gt; default:     Creating servers directory
+</span><span class="line">==&gt; default: Installing packages
+</span><span class="line">==&gt; default:     apt-get update
+</span><span class="line">==&gt; default:     Installing vim
+</span><span class="line">==&gt; default:     Installing git
+</span><span class="line">==&gt; default: Installing mc
+</span><span class="line">==&gt; default:     Installing libssl-dev libreadline-dev zlib1g-dev
+</span><span class="line">==&gt; default:     Installing make g++
+</span><span class="line">==&gt; default:     Installing apg
+</span><span class="line">==&gt; default:     Installing mysql-server
+</span><span class="line">==&gt; default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
+</span><span class="line">==&gt; default:         Restarting mysql
+</span><span class="line">==&gt; default:     Installing nginx-core ssl-cert
+</span><span class="line">==&gt; default:         Creating /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Enabling /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Restarting nginx
+</span><span class="line">==&gt; default: Downloading jdks
+</span><span class="line">==&gt; default:     jdk-5u22-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-6u45-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-7u80-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-8u65-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default: Installing jdks
+</span><span class="line">==&gt; default:     Extracting jdk-5u22-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-6u45-linux-x64.tar.gz
+</span><span class="line">==&gt; default: Extracting jdk-7u80-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-8u65-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default: Installing apache-maven
+</span><span class="line">==&gt; default:     Downloading apache-maven-3.3.3-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-maven
+</span><span class="line">==&gt; default: Installing apache-ant
+</span><span class="line">==&gt; default:     Downloading apache-ant-1.9.6-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-ant
+</span><span class="line">==&gt; default: Installing gradle
+</span><span class="line">==&gt; default:     Downloading gradle-2.8-bin.zip
+</span><span class="line">==&gt; default:     Extracting gradle-2.8-bin.zip using unzip
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link gradle
+</span><span class="line">==&gt; default: Installing sbt
+</span><span class="line">==&gt; default:     Downloading sbt-0.13.9.tgz
+</span><span class="line">==&gt; default:     Extracting sbt-0.13.9.tgz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link sbt
+</span><span class="line">==&gt; default: Installing environment managers (for Java, Ruby, node.js and Python) 
+</span><span class="line">==&gt; default:     Installing jenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.jenv
+</span><span class="line">==&gt; default:         Setting environment variables
+</span><span class="line">==&gt; default:         Make build tools jenv aware
+</span><span class="line">==&gt; default:             ant plugin activated
+</span><span class="line">==&gt; default:             maven plugin activated
+</span><span class="line">==&gt; default:             gradle plugin activated
+</span><span class="line">==&gt; default:             sbt plugin activated
+</span><span class="line">==&gt; default:     Installing rbenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.rbenv
+</span><span class="line">==&gt; default:         Installing plugins that provide rbenv install
+</span><span class="line">==&gt; default:     Installing nodenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.nodenv
+</span><span class="line">==&gt; default:         Installing plugins that provide nodenv install
+</span><span class="line">==&gt; default:     Installing pyenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.pyenv
+</span><span class="line">==&gt; default: Updating .bashrc
+</span><span class="line">==&gt; default: Install runtimes using environment managers
+</span><span class="line">==&gt; default:     Install java
+</span><span class="line">==&gt; default:     Set jdk 1.8 globally
+</span><span class="line">==&gt; default:     Install ruby
+</span><span class="line">==&gt; default:     Install node.js
+</span><span class="line">==&gt; default:     install python
+</span><span class="line">==&gt; default: Installing apache-tomcat
+</span><span class="line">==&gt; default:     Downloading apache-tomcat-8.0.28.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-tomcat
+</span><span class="line">==&gt; default:     Creating apache-tomcat /bin/setenv.sh
+</span><span class="line">==&gt; default:     Copying tomcat-users.xml to apache-tomcat/conf
+</span><span class="line">==&gt; default:     Creating /etc/init.d/tomcat script
+</span><span class="line">==&gt; default:     Starting tomcat</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>To loggin to the machine do</p>
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
