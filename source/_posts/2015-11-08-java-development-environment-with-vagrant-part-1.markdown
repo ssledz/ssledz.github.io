@@ -8,7 +8,7 @@ categories: [virtual box, linux, vagrant, dev env]
 
 ###Preface
 
-This post describes my development environment driven by Vagrant. You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours. 
+This post describes my development environment driven by Vagrant (Full description what can be found there is [here](https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment)). You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours. 
 
 ###What is [Vagrant](https://docs.vagrantup.com/v2/why-vagrant/index.html) (based on documentation)
 
