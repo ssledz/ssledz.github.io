@@ -72,9 +72,12 @@
     <loc>http://ssledz.github.io/blog/categories/linux/</loc>
   </url>
   <url>
+    <loc>http://ssledz.github.io/blog/categories/virtualization/</loc>
+  </url>
+  <url>
     <loc>http://ssledz.github.io/blog/categories/vagrant/</loc>
   </url>
   <url>
-    <loc>http://ssledz.github.io/blog/categories/dev-env/</loc>
+    <loc>http://ssledz.github.io/blog/categories/productivity/</loc>
   </url>
 </urlset>

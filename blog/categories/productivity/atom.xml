@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Vagrant | My Programmer's Road]]></title>
-  <link href="http://ssledz.github.io/blog/categories/vagrant/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Productivity | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/productivity/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
   <updated>2015-11-09T22:57:47+01:00</updated>
   <id>http://ssledz.github.io/</id>

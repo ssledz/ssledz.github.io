@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Dev Env | My Programmer's Road]]></title>
-  <link href="http://ssledz.github.io/blog/categories/dev-env/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Virtualization | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/virtualization/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-08T18:36:14+01:00</updated>
+  <updated>2015-11-09T22:57:47+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -149,6 +149,33 @@ vagrant ssh
 <p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
 
 <p>More about how to use this setting to develop in the next post.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Virtual Box VDI Compaction]]></title>
+    <link href="http://ssledz.github.io/blog/2015/10/13/virtual-box-vdi-compaction/"/>
+    <updated>2015-10-13T10:00:43+02:00</updated>
+    <id>http://ssledz.github.io/blog/2015/10/13/virtual-box-vdi-compaction</id>
+    <content type="html"><![CDATA[<p>Virtual Disk Image (<code>VDI</code>) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it is time for compaction.</p>
+
+<ol>
+  <li>Install zerofree tool (<code>apt-get install zerofree</code>).</li>
+  <li>Remove unused files (<code>apt-get autoremove</code>, <code>apt-get autoclean</code>, <code>orphaner --guess-all</code>).</li>
+  <li>Reboot the guest system in single user mode (Grub menu will appear if you press and hold <code>Shift</code> during starting, 
+then hit <code>e</code> when Grub boot appear and append <code>single</code> option to the Grub boot parameters).</li>
+  <li>Remount filesystems as readonly (<code>mount -n -o remount,ro -t auto /dev/sda1 /</code>).</li>
+  <li>Fill unused block with zeros (<code>zerofree /dev/sda1</code>). It’s time consuming operation. If You have other disk devices (e.g. <code>/dev/sda5</code>) then also perform <code>zerofree</code> on each one.</li>
+  <li>Shutdown the system (<code>poweroff</code>).</li>
+  <li>Compact VDI files on the host system (<code>VBoxManage modifyhd my.vdi compact</code>). It’s time consuming operation.</li>
+</ol>
+
+<p>Instead points 1,3-5 to fill free space with zeros You can do following (You don’t need to boot in single user mode)</p>
+
+<ol>
+  <li><code>sudo dd if=/dev/zero of=/bigemptyfile bs=4096k</code></li>
+  <li><code>sudo rm -rf /bigemptyfile</code></li>
+</ol>
 ]]></content>
   </entry>
   
