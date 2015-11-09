@@ -3,7 +3,7 @@ layout: post
 title: "Virtual Box VDI compaction"
 date: 2015-10-13 10:00:43 +0200
 comments: true
-categories: [virtual box, linux]
+categories: [virtual box, linux, virtualization]
 ---
 
 Virtual Disk Image (``VDI``) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it is time for compaction.

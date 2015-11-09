@@ -3,7 +3,7 @@ layout: post
 title: "Java Development Environment with Vagrant - part 1"
 date: 2015-11-08 16:06:35 +0100
 comments: true
-categories: [virtual box, linux, vagrant, dev env]
+categories: [virtual box, linux, vagrant, virtualization, productivity]
 ---
 
 ###Preface
