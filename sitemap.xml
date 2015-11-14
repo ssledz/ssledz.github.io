@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ssledz.github.io/blog/2015/11/14/standfords-automata-online-course-course-review/</loc>
+    <lastmod>2015-11-14T11:44:06+01:00</lastmod>
+  </url>
+  <url>
     <loc>http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/</loc>
     <lastmod>2015-11-08T16:06:35+01:00</lastmod>
   </url>
@@ -79,5 +83,17 @@
   </url>
   <url>
     <loc>http://ssledz.github.io/blog/categories/productivity/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/coursera/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/automata/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/learning/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/review/</loc>
   </url>
 </urlset>
