@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Git | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2015-11-27T02:44:01+01:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Git-svn Kata - First Release]]></title>
+    <link href="http://ssledz.github.io/blog/2015/11/27/git-svn-kata-first-release/"/>
+    <updated>2015-11-27T02:15:49+01:00</updated>
+    <id>http://ssledz.github.io/blog/2015/11/27/git-svn-kata-first-release</id>
+    <content type="html"><![CDATA[<p>I have just released first version of <code>git-svn</code> kata. It is good starting point for those who prefer to use git but are stuck with svn. At the moment there are only two kata, but soon will be much more. To start just clone my <a href="https://github.com/ssledz/gitsvnkata/tree/master">repo</a></p>
+
+<p><code>
+git clone git@github.com:ssledz/gitsvnkata.git
+</code></p>
+
+<p>and run first one</p>
+
+<p><code>
+cd kata-1-checkout-svn-project-std-layout
+./start-kata.sh
+</code></p>
+
+<p>All solutions are available <a href="https://github.com/ssledz/gitsvnkata/tree/kata-solutions">here</a></p>
+]]></content>
+  </entry>
+  
+</feed>
