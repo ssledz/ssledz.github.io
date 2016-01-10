@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2015-11-27T02:44:01+01:00</updated>
+  <updated>2016-01-10T15:22:54+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,82 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Write to an HFS+ USB Drive From a Synology NAS]]></title>
+    <link href="http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/"/>
+    <updated>2016-01-10T13:49:39+01:00</updated>
+    <id>http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas</id>
+    <content type="html"><![CDATA[<p>It is realy annoying that the newest version of Synolgy DSM (<code>5.2-5644 Update 1</code>) can’t handle properly <code>hfs+</code> hard drive device out of the box. Thanks to the fact that many users had the same problems as me before I found realy quickly handy article which shows how to make easy workaround. The trick is to disable journaling on the drive and then try to remount the device in nas with <code>ro</code> flag switched off.</p>
+
+<p>So to be able to write to an <code>HSF+</code> USB drvie you need first</p>
+
+<ul>
+  <li>disable journaling on the drive</li>
+  <li>connect your drive to nas</li>
+  <li>remount device with <code>ro</code> flag switched off</li>
+</ul>
+
+<h3 id="disabling-journaling-in-the-drive">Disabling journaling in the drive</h3>
+<p>To be able to do this you need to plug in your device to the mac (I couldn’t do this from my linux). Then to turn journaling off using <code>Disk Utility</code> do following:</p>
+
+<ul>
+  <li>open <code>Disk Utility</code> (located in <code>Applications/Utilities</code>).</li>
+  <li>select the disk device to disable journaling on.</li>
+  <li>choose <code>Disable Journaling</code> from the <code>File</code> menu.</li>
+</ul>
+
+<p>For someone this option could not be visible (Mac OS X 10.4 and later) then before clicking on the <code>File</code> menu press and hold <a href="http://www.macworld.co.uk/how-to/mac/what-where-option-key-mac-3462401/">Option</a> key</p>
+
+<p>More you can find <a href="https://support.apple.com/en-us/HT204435">here</a></p>
+
+<h3 id="remount-device-with-ro-flag-switched-off">Remount device with ro flag switched off</h3>
+
+<p>First log in as a root to the ds. Then have a look how the drive is mounted</p>
+
+<p><code>
+ds&gt; mount
+/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
+/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (ro,force,uid=1024,gid=100,umask=000)
+</code></p>
+
+<p>You can spot that the drive is mounted with the <code>ro</code>(read only) flag.</p>
+
+<p>Now unmount the drive.</p>
+
+<p><code>
+ds&gt; umount -f /dev/sdq2
+</code></p>
+
+<p>And remount so it is writable using the same info used when it was mounted automatically.</p>
+
+<p><code>
+ds&gt; mount -t hfsplus /dev/sdq2 /volumeUSB1/usbshare1-2
+</code></p>
+
+<p>Finally, you can notice that device is no longer mounted as read only.</p>
+
+<p><code>
+ds&gt; mount
+/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
+/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (0)
+</code></p>
+
+<p>To prove this try.</p>
+
+<p><code>
+ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
+ds&gt; mkdir /volumeUSB1/usbshare1-2/sampleDir
+ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
+sampleDir
+</code></p>
+
+<h3 id="note">Note</h3>
+
+<p>It is very important to switch off journaling in the drive. When you remount the drive with <code>ro</code> switched off and haven’t yet disabled the journaling in the drive you won’t be able to write anything to the disk though <code>mount</code> will print that the drive is mounted as writable.</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Java Development Environment With Vagrant - Part 1]]></title>

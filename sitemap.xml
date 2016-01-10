@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/</loc>
+    <lastmod>2016-01-10T13:49:39+01:00</lastmod>
+  </url>
+  <url>
     <loc>http://ssledz.github.io/blog/2015/11/27/git-svn-kata-first-release/</loc>
     <lastmod>2015-11-27T02:15:49+01:00</lastmod>
   </url>
@@ -111,5 +115,11 @@
   </url>
   <url>
     <loc>http://ssledz.github.io/blog/categories/kata/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/nas/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/mac/</loc>
   </url>
 </urlset>
