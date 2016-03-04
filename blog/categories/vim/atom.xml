@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vim | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/vim/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-03-04T02:35:16+01:00</updated>
+  <updated>2016-03-04T16:39:14+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -159,7 +159,7 @@ zf%
 
 <p>There is a one thing to note. Character following <code>zf</code> command - <code>%</code> is a motion command that moves cursor to the matching brace.</p>
 
-<p>To learn more about folding and generally about vim, I recomend to read <a href="https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&amp;search_version=service">Learning the Vi and Vim Editors</a></p>
+<p>To learn more about folding and generally about vim, I recommend to read <a href="https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&amp;search_version=service">Learning the Vi and Vim Editors</a></p>
 ]]></content>
   </entry>
   
