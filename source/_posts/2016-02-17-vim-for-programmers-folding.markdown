@@ -4,7 +4,6 @@ title: "Vim for programmers - folding"
 date: 2016-02-17 00:33:05 +0100
 comments: true
 categories: [vim]
-styles: [data-table]
 ---
 
 This is a first post in a series of how **Vim** can make programmer's life easier. **Vim** strikes a nice compromise between
@@ -91,4 +90,4 @@ zf%
 
 There is a one thing to note. Character following ```zf``` command - ```%``` is a motion command that moves cursor to the matching brace.
 
-To learn more about folding and generally about vim, I recomend to read [Learning the Vi and Vim Editors](https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&search_version=service)
+To learn more about folding and generally about vim, I recommend to read [Learning the Vi and Vim Editors](https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&search_version=service)
