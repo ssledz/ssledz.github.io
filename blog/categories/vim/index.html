@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Write to an HFS+ USB Drive From a Synology NAS - My Programmer's Road</title>
+  <title>Category: Vim - My Programmer's Road</title>
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="It is realy annoying that the newest version of Synolgy DSM (5.2-5644 Update 1) can’t handle properly hfs+ hard drive device out of the box. Thanks &hellip;">
+  <meta name="description" content="Category: vim">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/">
+  <link rel="canonical" href="http://ssledz.github.io/blog/categories/vim/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   
@@ -92,150 +92,36 @@ MathJax.Hub.Config({
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Write to an HFS+ USB Drive From a Synology NAS</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-01-10T13:49:39+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:49 pm</span></time>
-        
-      </p>
+    <h1 class="entry-title">Category: Vim</h1>
     
   </header>
-
-
-<div class="entry-content"><p>It is realy annoying that the newest version of Synolgy DSM (<code>5.2-5644 Update 1</code>) can’t handle properly <code>hfs+</code> hard drive device out of the box. Thanks to the fact that many users had the same problems as me before I found realy quickly handy article which shows how to make easy workaround. The trick is to disable journaling on the drive and then try to remount the device in nas with <code>ro</code> flag switched off.</p>
-
-<p>So to be able to write to an <code>HSF+</code> USB drvie you need first</p>
-
-<ul>
-  <li>disable journaling on the drive</li>
-  <li>connect your drive to nas</li>
-  <li>remount device with <code>ro</code> flag switched off</li>
-</ul>
-
-<h3 id="disabling-journaling-in-the-drive">Disabling journaling in the drive</h3>
-<p>To be able to do this you need to plug in your device to the mac (I couldn’t do this from my linux). Then to turn journaling off using <code>Disk Utility</code> do following:</p>
-
-<ul>
-  <li>open <code>Disk Utility</code> (located in <code>Applications/Utilities</code>).</li>
-  <li>select the disk device to disable journaling on.</li>
-  <li>choose <code>Disable Journaling</code> from the <code>File</code> menu.</li>
-</ul>
-
-<p>For someone this option could not be visible (Mac OS X 10.4 and later) then before clicking on the <code>File</code> menu press and hold <a href="http://www.macworld.co.uk/how-to/mac/what-where-option-key-mac-3462401/">Option</a> key</p>
-
-<p>More you can find <a href="https://support.apple.com/en-us/HT204435">here</a></p>
-
-<h3 id="remount-device-with-ro-flag-switched-off">Remount device with ro flag switched off</h3>
-
-<p>First log in as a root to the ds. Then have a look how the drive is mounted</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
-</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
-</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (ro,force,uid=1024,gid=100,umask=000)</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>You can spot that the drive is mounted with the <code>ro</code>(read only) flag.</p>
-
-<p>Now unmount the drive.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; umount -f /dev/sdq2</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>And remount so it is writable using the same info used when it was mounted automatically.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount -t hfsplus /dev/sdq2 /volumeUSB1/usbshare1-2</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Finally, you can notice that device is no longer mounted as read only.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
-</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
-</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (0)</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>To prove this try.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
-</span><span class="line">ds&gt; mkdir /volumeUSB1/usbshare1-2/sampleDir
-</span><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
-</span><span class="line">sampleDir</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="note">Note</h3>
-
-<p>It is very important to switch off journaling in the drive. When you remount the drive with <code>ro</code> switched off and haven’t yet disabled the journaling in the drive you won’t be able to write anything to the disk though <code>mount</code> will print that the drive is mounted as writable.</p>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Sławomir Śledź</span></span>
-
-      
+  <div id="blog-archives" class="category">
 
 
 
-
-<time class='entry-date' datetime='2016-01-10T13:49:39+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:49 pm</span></time>
-      
-
-<span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/mac/'>mac</a>, <a class='category' href='/blog/categories/nas/'>nas</a>
+  <h2>2016</h2>
+
+<article>
   
-</span>
+<h1><a href="/blog/2016/02/17/vim-for-programmers-folding/">Vim for Programmers - Folding</a></h1>
+<time datetime="2016-02-17T00:33:05+01:00" pubdate><span class='month'>Feb</span> <span class='day'>17</span> <span class='year'>2016</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/vim/'>vim</a></span>
+</footer>
 
 
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/" data-via="" data-counturl="http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2015/11/27/git-svn-kata-first-release/" title="Previous Post: Git-svn kata - First release">&laquo; Git-svn kata - First release</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2016/02/17/vim-for-programmers-folding/" title="Next Post: Vim for programmers - folding">Vim for programmers - folding &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -357,10 +243,7 @@ MathJax.Hub.Config({
       var disqus_shortname = 'ssledz';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/';
-        var disqus_url = 'http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

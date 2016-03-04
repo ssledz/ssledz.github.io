@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-01-10T15:22:54+01:00</updated>
+  <updated>2016-03-04T02:35:16+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,164 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Vim for Programmers - Folding]]></title>
+    <link href="http://ssledz.github.io/blog/2016/02/17/vim-for-programmers-folding/"/>
+    <updated>2016-02-17T00:33:05+01:00</updated>
+    <id>http://ssledz.github.io/blog/2016/02/17/vim-for-programmers-folding</id>
+    <content type="html"><![CDATA[<p>This is a first post in a series of how <strong>Vim</strong> can make programmer’s life easier. <strong>Vim</strong> strikes a nice compromise between
+simple editor and monolithic <strong>IDEs</strong>. I find this tool very helpful during my day to day developers tasks. I don’t
+treat it as a replacement for my favorite <strong>IDE</strong> but rather as a supporting tool. In this post I would like to
+introduce folding - very nice and useful feature.</p>
+
+<h3 id="folding">Folding</h3>
+<p>Folding lets you define which parts of the file you can see. For example in a method you can hide everything inside
+curly braces letting only definition of function be visible.</p>
+
+<p><img class="center" src="http://ssledz.github.io/images/custom/vim/vim-folding1.png" /></p>
+
+<p>When you use fold command, <strong>Vim</strong> hides given text and leaves in its place a one-line placeholder. The hidden text now
+can be managed by this placeholder. In a screenshot above, you can spot four folded methods~(there are four one-line
+placeholders). The first one - <em>fibonacci</em>, consists of 15 rows, takes an int as a parameter and returns a long.
+There is no limit on how many folds you can create. You can even create folds within folds~(nested folds).</p>
+
+<p><strong>Vim</strong> offers six ways to create folds:</p>
+
+<ul>
+  <li>manual - using <strong>Vim</strong> commands</li>
+  <li>indent - corresponding to the text indentation</li>
+  <li>expr - define folds with regular expressions</li>
+  <li>syntax - based on the file’s language syntax</li>
+  <li>diff - a difference between two files define folds</li>
+  <li>marker</li>
+</ul>
+
+<h3 id="the-fold-commands">The fold commands</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>zA</strong></td>
+      <td>Toggle the state of folds, recursively</td>
+    </tr>
+    <tr>
+      <td><strong>zC</strong></td>
+      <td>Close folds, recursively</td>
+    </tr>
+    <tr>
+      <td><strong>zD</strong></td>
+      <td>Delete folds, recursively</td>
+    </tr>
+    <tr>
+      <td><strong>zO</strong></td>
+      <td>Open folds, recursively</td>
+    </tr>
+    <tr>
+      <td><strong>zE</strong></td>
+      <td>Eliminate all folds</td>
+    </tr>
+    <tr>
+      <td><strong>zf</strong></td>
+      <td>Create a fold from the current line to the one where the following motion command takes a cursor</td>
+    </tr>
+    <tr>
+      <td>count<strong>zF</strong></td>
+      <td>Create a fold covering <em>count</em> lines, starting with the current line</td>
+    </tr>
+    <tr>
+      <td><strong>zM</strong></td>
+      <td>Set option <em>foldlevel</em> to 0</td>
+    </tr>
+    <tr>
+      <td><strong>zN</strong>, <strong>zn</strong></td>
+      <td>Set (zN) or reset (zn) the <em>foldenable</em> option</td>
+    </tr>
+    <tr>
+      <td><strong>za</strong></td>
+      <td>Toggle the state of one fold</td>
+    </tr>
+    <tr>
+      <td><strong>zc</strong></td>
+      <td>Close one fold</td>
+    </tr>
+    <tr>
+      <td><strong>zd</strong></td>
+      <td>Delete one fold</td>
+    </tr>
+    <tr>
+      <td><strong>zi</strong></td>
+      <td>Toggle the value of the <em>foldenable</em> option</td>
+    </tr>
+    <tr>
+      <td><strong>zj</strong> ,<strong>zk</strong></td>
+      <td>Move cursor to the start (zj) of the fold or to the end (zk) of the previous fold</td>
+    </tr>
+    <tr>
+      <td><strong>zm</strong>, <strong>zr</strong></td>
+      <td>Decrement (zm) or increment (zr) the value of the <em>foldlevel</em> option by one</td>
+    </tr>
+    <tr>
+      <td><strong>zo</strong></td>
+      <td>Open one fold</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="manual-folding">Manual folding</h3>
+
+<p>Suppose we want to hide 3 lines of the if statement in a fold</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">fibonacci</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">n</span><span class="o">;</span>
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">return</span> <span class="nf">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To do this just move cursor to the beginning of <code>if</code> statement and execute:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="mi">3</span><span class="n">zf</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The result should be similar to the one shown below</p>
+
+<p><img class="center" src="http://ssledz.github.io/images/custom/vim/vim-folding2.png" /></p>
+
+<p>Let’s try more sofisticated command - fold block of code. Position the cursor over the beginning or ending brace of a
+block of code and type:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">zf</span><span class="o">%</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="http://ssledz.github.io/images/custom/vim/vim-folding3.png" /></p>
+
+<p>There is a one thing to note. Character following <code>zf</code> command - <code>%</code> is a motion command that moves cursor to the matching brace.</p>
+
+<p>To learn more about folding and generally about vim, I recomend to read <a href="https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&amp;search_version=service">Learning the Vi and Vim Editors</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Write to an HFS+ USB Drive From a Synology NAS]]></title>
