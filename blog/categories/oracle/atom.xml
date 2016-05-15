@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Oracle | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/oracle/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-15T20:11:39+02:00</updated>
+  <updated>2016-05-15T20:24:18+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -63,17 +63,17 @@ Platform also provides an access to 2 other study tools</li>
   <li>Searchable Glossary - an instant access to the key terms you’ll need to know for the exam</li>
 </ul>
 
-<p>In the day before the exam I decided to go sleep early. 
+<p>The day before the exam I decided to go sleep early. 
 The exam lasted 150 minutes, and I had enough time to
 answer on all the questions. They weren’t difficult. I can say
 that the questions in a mockup exam from sybex were much harder. For example
 if the question was a multiple choice question, in a real exam 
-I was informed how many answers I needed to check, 
+I was informed how many answers I needed to choose, 
 in a mockup exam I weren’t.</p>
 
-<p>One hour after the exam I received an email that my exam results are available. 
+<p>One hour after the exam I received an email that my exam results were available. 
 My score was <code>97%</code>. Regarding the response from <code>Oracle</code> 
-I made a mistakes in a questions from the following exam objectives</p>
+I made mistakes in a questions from the following exam objectives:</p>
 
 <ul>
   <li>Define the scope of variables</li>
@@ -82,9 +82,9 @@ I made a mistakes in a questions from the following exam objectives</p>
 
 <p>It could sound strange that the experienced java developer made 
 mistakes from the such basic topics. But believe me that the real 
-intention of the test authors is to trick you in an unexpected way. 
+intention of authors of the test is to trick you in an unexpected way. 
 The question could seem to be about let’s say lambda syntax, but in real
-tests your knowledge about variable scoping. During taking tests you 
+it tests your knowledge about variable scoping. During taking tests you 
 need to be very careful and stay focused all the time.</p>
 ]]></content>
   </entry>
