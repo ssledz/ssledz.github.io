@@ -25,7 +25,7 @@ tutorials like
 In spite of my experience as a java programmer I decided to spend some 
 time to learn more about ``java 8`` to ensure that I would really pass the exam.
 
-My journey I have started with the book: [Oca: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808](https://www.goodreads.com/book/show/23059696-oca?from_search=true&search_version=service).
+My journey I have started with the book: [OCA: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808](https://www.goodreads.com/book/show/23059696-oca?from_search=true&search_version=service).
 It took me some time, I think one month, to go through all chapters.
 The book I was mainly reading during my way to work in metro, bus or tram.
 I can say that I was enjoying reading it though I have already known 
