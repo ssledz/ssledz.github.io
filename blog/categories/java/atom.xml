@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-03-04T16:39:14+01:00</updated>
+  <updated>2016-05-15T19:28:19+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,82 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Oracle Certified Associate Java SE 8 Programmer 1Z0-808 Exam - Review]]></title>
+    <link href="http://ssledz.github.io/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/"/>
+    <updated>2016-05-15T12:01:32+02:00</updated>
+    <id>http://ssledz.github.io/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review</id>
+    <content type="html"><![CDATA[<p>After successfully passed <a href="https://education.oracle.com/pls/web_prod-plq-dad/db_pages.getpage?page_id=5001&amp;get_params=p_exam_id:1Z0-808">Java SE 8 Programmer 1Z0-808 Exam</a>
+I would like to share my thoughts about the preparation and the exam.</p>
+
+<p>I passed the exam and earn the 
+<a href="https://www.youracclaim.com/badges/58fa8011-f1da-4a68-846c-b869ee04012b/public_url">badge</a> 
+on Dec 2015 - so almost half a year ago (since writing this post). 
+Before preparation I was playing already with <code>java 8</code> a little. 
+I have written two, maybe three applications which were using some 
+new hot features like <code>lambda</code>, <code>default methods</code> and <code>streams</code>.
+The whole knowledge how to do this I got mainly from oracle 
+tutorials like</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda Expressions</a></li>
+  <li><a href="https://docs.oracle.com/javase/tutorial/collections/streams/index.html">Aggregate Operations</a></li>
+  <li><a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">Default Methods</a></li>
+</ul>
+
+<p>In spite of my experience as a java programmer I decided to spent some 
+time to learn more about <code>java 8</code> to ensure that I will really pass the exam.</p>
+
+<p>My journey I have started with the book: <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">Oca: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>.
+It took me some time, I think one month, to go through all chapters.
+The book I was mainly reading during my way to work in metro, bus or tram.
+I can say that I was enjoying reading it though I have already known 
+most of the knowledge. It is written with a very simple language. I can say
+that this book could be understandable by peoples who speak english in an 
+intermediate level. It covers all the topics which can appear on 
+an exam. After finishing it I bought the voucher on an exam, taking place 
+a week later. I had one whole week to play around <code>java 8</code>, make some
+tests and review things read in a book. To practice tests I used 
+<a href="https://sybextestbanks.wiley.com/public/">sybex</a> platform. In order to 
+get an access to this platform you only need to own a book.</p>
+
+<p>On a site you can find 345 test questions divides into 3 sets</p>
+
+<ul>
+  <li>Assessment Test (20) - helps you focus your study to specific objectives</li>
+  <li>Chapter Tests (145) - taken from the Review Questions at the end of chapters in the book</li>
+  <li>Practice Exam (180) - provided to help you prepare for the certification test
+Platform also provides an access to 2 other study tools</li>
+  <li>Flashcards - help to reinforce your learning and provide last-minute test prep before the exam</li>
+  <li>Searchable Glossary - an instant access to the key terms you’ll need to know for the exam</li>
+</ul>
+
+<p>In the day before the exam I decided to go sleep early. 
+The exam lasted 150 minutes, and I had enough time to
+answer on all the questions. They weren’t difficult. I can say
+that the questions in a mockup exam from sybex were much harder. For example
+if the question was a multiple choice question, in a real exam 
+I was informed how many answers I needed to check, 
+in a mockup exam I weren’t.</p>
+
+<p>One hour after the exam I received an email that my exam results are available. 
+My score was <code>97%</code>. Regarding the response from <code>Oracle</code> 
+I made a mistakes in a questions from the following exam objectives</p>
+
+<ul>
+  <li>Define the scope of variables</li>
+  <li>Manipulate data using the StringBuilder class and methods</li>
+</ul>
+
+<p>It could sound strange that the experienced java developer made 
+mistakes from the such basic topics. But believe me that the real 
+intention of the test authors is to trick you in an unexpected way. 
+The question could seem to be about let’s say lambda syntax, but in real
+tests your knowledge about variable scoping. During taking tests you 
+need to be very careful and stay focused all the time.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Context Free Grammar Will Help Where Regex Pattern Fail - Is This Well Formed Array ?]]></title>
@@ -600,100 +676,6 @@ edcba</p>
 
 <p>```</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Puzzle - Write a Method to Compute All Permutations of a String]]></title>
-    <link href="http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/"/>
-    <updated>2015-08-08T21:06:54+02:00</updated>
-    <id>http://ssledz.github.io/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string</id>
-    <content type="html"><![CDATA[<h3 id="how-to-approche">How to Approche</h3>
-<p>When we hear a problem beginning with: ‘Write a method to compute all…’, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called ‘base case’ - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
-
-<h4 id="problem">Problem</h4>
-<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let’s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
-
-<p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code> 
-<code>
-perm('a')   = 'a'
-perm('b')   = 'b'
-perm('c')   = 'c'
-perm('ab')  = 'ab', 'ba'
-perm('ac')  = 'ac', 'ca'
-perm('bc')  = 'bc', 'cb'
-perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' 
-</code></p>
-
-<p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
-
-<p><code>
-perm('a')   = 'a'
-perm('b')   = 'b'
-perm('c')   = 'c'
-perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
-perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
-perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
-perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')
-</code></p>
-
-<p>where <code>|</code> means a concatenation of two strings.</p>
-
-<p>First three cases are called ‘base cases’ and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
-
-<h3 id="coding">Coding</h3>
-
-<p>```java
-    public static List<string> permute(String str) {</string></p>
-
-<pre><code>    if (str.length() == 1) {
-        List&lt;String&gt; ret = new LinkedList&lt;&gt;();
-        ret.add(str);
-        return ret;
-    }
-
-    List&lt;String&gt; permutations = new LinkedList&lt;&gt;();
-
-    for (int i = 0; i &lt; str.length(); i++) {
-        String left = "" + str.charAt(i);
-        StringBuilder subStr = new StringBuilder(str);
-        subStr.deleteCharAt(i);
-
-        List&lt;String&gt; subPermutations = permute(subStr.toString());
-
-        for (String perm : subPermutations) {
-            permutations.add(left + perm);
-        }
-
-    }
-
-    return permutations;
-    
-} ```
-</code></pre>
-
-<p>```java
-    public static void main(String[] args) {</p>
-
-<pre><code>    List&lt;String&gt; permutations = permute("abc");
-    System.out.println(String.format("permutations size: %d", permutations.size()));
-    for (String perm : permutations) {
-        System.out.println(perm);
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p><code>
-permutations size: 6
-abc
-acb
-bac
-bca
-cab
-cba
-</code></p>
 ]]></content>
   </entry>
   
