@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Certification | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/certification/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-15T19:28:19+02:00</updated>
+  <updated>2016-05-15T20:11:39+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -23,7 +23,7 @@ I would like to share my thoughts about the preparation and the exam.</p>
 
 <p>I passed the exam and earn the 
 <a href="https://www.youracclaim.com/badges/58fa8011-f1da-4a68-846c-b869ee04012b/public_url">badge</a> 
-on Dec 2015 - so almost half a year ago (since writing this post). 
+on Dec 2015 - so almost half year ago (since writing this post). 
 Before preparation I was playing already with <code>java 8</code> a little. 
 I have written two, maybe three applications which were using some 
 new hot features like <code>lambda</code>, <code>default methods</code> and <code>streams</code>.
@@ -36,8 +36,8 @@ tutorials like</p>
   <li><a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">Default Methods</a></li>
 </ul>
 
-<p>In spite of my experience as a java programmer I decided to spent some 
-time to learn more about <code>java 8</code> to ensure that I will really pass the exam.</p>
+<p>In spite of my experience as a java programmer I decided to spend some 
+time to learn more about <code>java 8</code> to ensure that I would really pass the exam.</p>
 
 <p>My journey I have started with the book: <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">Oca: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>.
 It took me some time, I think one month, to go through all chapters.
@@ -52,7 +52,7 @@ tests and review things read in a book. To practice tests I used
 <a href="https://sybextestbanks.wiley.com/public/">sybex</a> platform. In order to 
 get an access to this platform you only need to own a book.</p>
 
-<p>On a site you can find 345 test questions divides into 3 sets</p>
+<p>On a site you can find 345 test questions divided into 3 sets</p>
 
 <ul>
   <li>Assessment Test (20) - helps you focus your study to specific objectives</li>
