@@ -47,24 +47,24 @@ Platform also provides an access to 2 other study tools
 * Flashcards - help to reinforce your learning and provide last-minute test prep before the exam
 * Searchable Glossary - an instant access to the key terms you’ll need to know for the exam
 
-In the day before the exam I decided to go sleep early. 
+The day before the exam I decided to go sleep early. 
 The exam lasted 150 minutes, and I had enough time to
 answer on all the questions. They weren't difficult. I can say
 that the questions in a mockup exam from sybex were much harder. For example
 if the question was a multiple choice question, in a real exam 
-I was informed how many answers I needed to check, 
+I was informed how many answers I needed to choose, 
 in a mockup exam I weren't. 
 
-One hour after the exam I received an email that my exam results are available. 
+One hour after the exam I received an email that my exam results were available. 
 My score was ``97%``. Regarding the response from ``Oracle`` 
-I made a mistakes in a questions from the following exam objectives
+I made mistakes in a questions from the following exam objectives:
 
 * Define the scope of variables
 * Manipulate data using the StringBuilder class and methods
 
 It could sound strange that the experienced java developer made 
 mistakes from the such basic topics. But believe me that the real 
-intention of the test authors is to trick you in an unexpected way. 
+intention of authors of the test is to trick you in an unexpected way. 
 The question could seem to be about let's say lambda syntax, but in real
-tests your knowledge about variable scoping. During taking tests you 
+it tests your knowledge about variable scoping. During taking tests you 
 need to be very careful and stay focused all the time.
