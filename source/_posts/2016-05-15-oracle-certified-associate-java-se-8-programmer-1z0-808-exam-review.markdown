@@ -11,7 +11,7 @@ I would like to share my thoughts about the preparation and the exam.
 
 I passed the exam and earn the 
 [badge](https://www.youracclaim.com/badges/58fa8011-f1da-4a68-846c-b869ee04012b/public_url) 
-on Dec 2015 - so almost half a year ago (since writing this post). 
+on Dec 2015 - so almost half year ago (since writing this post). 
 Before preparation I was playing already with ``java 8`` a little. 
 I have written two, maybe three applications which were using some 
 new hot features like ``lambda``, ``default methods`` and ``streams``.
@@ -22,8 +22,8 @@ tutorials like
 * [Aggregate Operations](https://docs.oracle.com/javase/tutorial/collections/streams/index.html)
 * [Default Methods](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
 
-In spite of my experience as a java programmer I decided to spent some 
-time to learn more about ``java 8`` to ensure that I will really pass the exam.
+In spite of my experience as a java programmer I decided to spend some 
+time to learn more about ``java 8`` to ensure that I would really pass the exam.
 
 My journey I have started with the book: [Oca: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808](https://www.goodreads.com/book/show/23059696-oca?from_search=true&search_version=service).
 It took me some time, I think one month, to go through all chapters.
