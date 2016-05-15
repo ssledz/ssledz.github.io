@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-15T20:24:18+02:00</updated>
+  <updated>2016-05-15T23:26:09+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,63 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Oracle Certified Professional, Java SE 8 Programmer 1Z0-809 Exam - Review]]></title>
+    <link href="http://ssledz.github.io/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review/"/>
+    <updated>2016-05-15T19:34:09+02:00</updated>
+    <id>http://ssledz.github.io/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review</id>
+    <content type="html"><![CDATA[<p>Just after passing <a href="https://education.oracle.com/pls/web_prod-plq-dad/db_pages.getpage?page_id=5001&amp;get_params=p_exam_id:1Z0-808">Java SE 8 Programmer 1Z0-808 Exam</a>
+(about that you can read <a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">here</a>) 
+and being impressed by <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">OCA: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>,
+I decided to buy the newly released <a href="https://www.goodreads.com/book/show/23650477-ocp">OCP: Oracle Certified Professional Java Se 8 Programmer II Study Guide: Exam 1Z0-809</a>.
+It was a really good purchase.</p>
+
+<p>The book is awesome. It has a similar style and feel as the <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">OCA: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>.
+It covers many new features, in details, introduced in <code>java 8</code>.
+I learn a lot about <code>lambda</code>, <code>collection streams</code>, <code>date api</code> 
+and so on. I can tell you that this book was worth its money.</p>
+
+<p>It took me almost 4 months to go through this book. To be honest I read
+it two times. Same as previously (<a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">OCA - review</a>) 
+I was generally reading the book during my way to work. 
+First time I really haven’t paid attention on solving tests. 
+I have just gone through the book to better know
+<code>java 8</code>. After that I took a few weeks break. When I started solving
+test questions I noticed that I had a problem with <code>java API</code>. It is
+really annoying that the test exam requires from developer to remember
+api. In 2016 we have <code>ides</code>, written mainly for this purpose. Due this
+fact I started reading a book again. This time however, 
+I have been solving test question just after I read a chapter.</p>
+
+<p>In order to prepare to the final exam I used <a href="https://sybextestbanks.wiley.com/public/">sybex</a>
+platform. Due the fact that I bought the book I got an access to this
+site where I found 411 test questions divided into 3 sets:</p>
+
+<ul>
+  <li>Assessment Test (20) - helps you focus your study to specific objectives</li>
+  <li>Chapter Tests (211) - taken from the Review Questions at the end of chapters in the book</li>
+  <li>Practice Exam (180) - provided to help you prepare for the certification test</li>
+</ul>
+
+<p>Moreover I had an access to the following resources:</p>
+
+<ul>
+  <li>Flashcards - help to reinforce your learning and provide last-minute test prep before the exam</li>
+  <li>Searchable Glossary - instant access to the key terms you’ll need to know for the exam</li>
+  <li>Bonus Appendix - provides additional information about JavaScript with Nashorn, and 
+enables you to test your knowledge and understanding of this topic.</li>
+</ul>
+
+<p>The exam lasted 150 minutes. At the end of the exam I still haven’t 
+answered on the two questions. I can say that the exam was much more 
+difficult than the <a href="https://education.oracle.com/pls/web_prod-plq-dad/db_pages.getpage?page_id=5001&amp;get_params=p_exam_id:1Z0-808">Java SE 8 Programmer 1Z0-808 Exam</a>.</p>
+
+<p>After receiving the email that my exam results were available I browsed to 
+the <strong>CertView</strong> and it appeared that I scored <code>83%</code>.</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Oracle Certified Associate Java SE 8 Programmer 1Z0-808 Exam - Review]]></title>
@@ -39,7 +96,7 @@ tutorials like</p>
 <p>In spite of my experience as a java programmer I decided to spend some 
 time to learn more about <code>java 8</code> to ensure that I would really pass the exam.</p>
 
-<p>My journey I have started with the book: <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">Oca: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>.
+<p>My journey I have started with the book: <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">OCA: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>.
 It took me some time, I think one month, to go through all chapters.
 The book I was mainly reading during my way to work in metro, bus or tram.
 I can say that I was enjoying reading it though I have already known 
@@ -613,69 +670,6 @@ size: 16
 [b, c, d]
 [a, b, c, d]
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Puzzle - Write a Method to Reverse a String Using Recursion]]></title>
-    <link href="http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion/"/>
-    <updated>2015-08-09T20:25:16+02:00</updated>
-    <id>http://ssledz.github.io/blog/2015/08/09/puzzle-write-a-method-to-reverse-a-string-using-recursion</id>
-    <content type="html"><![CDATA[<h3 id="problem">Problem</h3>
-<p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a ‘base case’ which can’t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
-
-<p>So let’s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.
-<code>
-revers('a')     = 'a'
-revers('ab')    = 'ba'
-revers('abc')   = 'cba'
-revers('abcd')  = 'dcba'
-revers('abcde') = 'edcba'
-</code> 
-Based on that we can already write a recursive procedure.
-<code>
-revers('a')     = 'a'
-revers('ab')    = 'b'|revers('a')
-revers('abc')   = 'c'|revers('ab') 
-revers('abcd')  = 'd'|revers('abc')
-revers('abcde') = 'e'|revers('abcd')
-</code>
-To compute a reversed string for <code>'a'</code> we need to return that string and it is our ‘base case’. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
-
-<p>I think we are ready to write some code.</p>
-
-<h3 id="coding">Coding</h3>
-
-<p>```java
-    public static String revers(String arg) {</p>
-
-<pre><code>    if (arg.length() == 1) {
-        return arg;
-    }
-    return arg.charAt(arg.length() - 1) + revers(arg.substring(0, arg.length() - 1));
-
-} ```
-</code></pre>
-
-<p><code>java
-    public static void main(String[] args) {
-        System.out.println(revers("a"));
-        System.out.println(revers("ab"));
-        System.out.println(revers("abc"));
-        System.out.println(revers("abcd"));
-        System.out.println(revers("abcde"));
-    }
-</code></p>
-
-<p>```
-a
-ba
-cba
-dcba
-edcba</p>
-
-<p>```</p>
-
 ]]></content>
   </entry>
   
