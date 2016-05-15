@@ -38,7 +38,7 @@ tests and review things read in a book. To practice tests I used
 [sybex](https://sybextestbanks.wiley.com/public/) platform. In order to 
 get an access to this platform you only need to own a book. 
 
-On a site you can find 345 test questions divides into 3 sets
+On a site you can find 345 test questions divided into 3 sets
 
 * Assessment Test (20) - helps you focus your study to specific objectives
 * Chapter Tests (145) - taken from the Review Questions at the end of chapters in the book
