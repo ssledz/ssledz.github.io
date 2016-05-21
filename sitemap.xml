@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ssledz.github.io/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative/</loc>
+    <lastmod>2016-05-16T22:38:40+02:00</lastmod>
+  </url>
+  <url>
     <loc>http://ssledz.github.io/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review/</loc>
     <lastmod>2016-05-15T19:34:09+02:00</lastmod>
   </url>
@@ -142,5 +146,11 @@
   </url>
   <url>
     <loc>http://ssledz.github.io/blog/categories/certification/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/jvm/</loc>
+  </url>
+  <url>
+    <loc>http://ssledz.github.io/blog/categories/hotswap/</loc>
   </url>
 </urlset>

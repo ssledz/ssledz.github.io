@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jvm | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/jvm/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2016-05-21T14:27:22+02:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hot Swap in Java With DCEVM and HotSwapAgent - a JRebel Free Alternative]]></title>
+    <link href="http://ssledz.github.io/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative/"/>
+    <updated>2016-05-16T22:38:40+02:00</updated>
+    <id>http://ssledz.github.io/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative</id>
+    <content type="html"><![CDATA[<p>Reloading a bytecode in a virtual machine when application is running is very limited. In fact 
+HotSpot(TM) VM allows only changing method bodies. To address this problem some commercial and open source tools were 
+created. Among them is <em>Dynamic Code Evolution Virtual Machine</em> (<strong>DCEVM</strong>) and 
+<strong>HotSwapAgent</strong> - very promising open source tool.</p>
+
+<p>I have already some experience in using <strong>DCEVM</strong>. Some times ago I have been working for an insurance company where 
+I was using this modified vm to develop a code in a gosu language. <a href="https://gosu-lang.github.io/">Gosu</a> is another 
+JVM language. I remember that then hot swapping worked very well.</p>
+
+<p>Let’s try this tool. First we need to patch our current jvm.</p>
+
+<h3 id="installing-dynamic-code-evolution-vm">Installing Dynamic Code Evolution VM</h3>
+
+<p>In order to enhance current Java (JRE/JDK) installations with <strong>DCEVM</strong>
+you need to download the latest <a href="https://dcevm.github.io/">release</a> 
+of <strong>DCEVM</strong> installer for a given major java version,</p>
+
+<blockquote>
+  <p><code>java 7</code> and <code>java 8</code> are supported</p>
+</blockquote>
+
+<p>run the installer</p>
+
+<p><code>
+java -jar DCEVM-light-8u74-installer.jar
+</code></p>
+
+<p>then select a proper java installation directory on your disc and press <em>Install DCEVM as altjvm</em></p>
+
+<p><img class="center" src="/images/custom/dcevm-installer.png"></p>
+
+<p>That’s all really. Very simple isn’t it ?</p>
+
+<p>To validate the installation run:</p>
+
+<p><code>
+java -version
+</code></p>
+
+<p>and if everything went alright you should see something similar to below
+output:</p>
+
+<p><code>
+java version "1.8.0_91"
+Java(TM) SE Runtime Environment (build 1.8.0_91-b14)
+Dynamic Code Evolution 64-Bit Server VM (build 25.71-b01-dcevmlight-10, mixed mode)
+</code></p>
+
+<p>Note that in the third line instead of <code>Java HotSpot(TM)</code> we have 
+now <code>Dynamic Code Evolution</code>.</p>
+
+<h4 id="kind-of-installers">Kind of installers</h4>
+<p>Worth noting is the fact that there are two kind of installers</p>
+
+<ul>
+  <li><em>light</em></li>
+  <li>and <em>full</em></li>
+</ul>
+
+<p>The latter one supports more features (for example, it supports removal of superclasses),
+but because of the maintenance issues the <em>full</em> edition is available 
+for a fewer versions of jdk.</p>
+
+<h3 id="downloading-hotswapagent">Downloading HotswapAgent</h3>
+
+<p>HotswapAgent does the work of reloading resources and framework configuration. 
+So in order to have a support for reloading a spring bean definitions just 
+after a change occurs, we need to perform one more step - 
+download latest release of <a href="https://github.com/HotswapProjects/HotswapAgent/releases">hotswap-agent.jar</a>
+and put it anywhere. For example here: <code>~/bin/hotswap/hotswap-agent.jar</code>.</p>
+
+<h2 id="running-application-in-order-to-test-hot-swapping">Running application in order to test hot swapping</h2>
+
+<p>I will use <code>Main</code> and <code>Main2</code> classes to play with hot swapping:</p>
+
+<p>```java
+public class Main {</p>
+
+<pre><code>static class Foo {
+    int counter;
+
+    void foo() {
+        System.out.printf("foo - %08d", counter);
+        counter++;
+    }
+}
+
+static Foo foo = new Foo();
+
+static int counter = 0;
+
+static void mainLoop() {
+    System.out.printf("tick - %08d\t", counter++);
+    foo.foo();
+    System.out.println();
+}
+
+public static void main(String[] args) throws InterruptedException {
+    while (true) {
+        mainLoop();
+        Thread.sleep(2000);
+    }
+} } ```
+</code></pre>
+
+<p>And the second one:</p>
+
+<p>```java
+public class Main2 {</p>
+
+<pre><code>static class Foo {
+
+}
+
+static void mainLoop() {
+
+    String fields = Stream.of(Foo.class.getFields())
+            .map(f -&gt; f.getName())
+            .collect(Collectors.joining(",", "[", "]"));
+    String methods = Stream.of(Foo.class.getDeclaredMethods())
+            .map(m -&gt; m.getName())
+            .collect(Collectors.joining(",", "[", "]"));
+
+    System.out.printf("fields=%s\t methods=%s\n", fields, methods);
+
+}
+
+public static void main(String[] args) throws InterruptedException {
+    while (true) {
+        mainLoop();
+        Thread.sleep(2000);
+    }
+} } ```
+</code></pre>
+
+<p>I will test following use cases:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left">case</th>
+      <th style="text-align: center">works ?</th>
+      <th style="text-align: left">Test class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>1.</strong></td>
+      <td style="text-align: left">change body method</td>
+      <td style="text-align: center">YES</td>
+      <td style="text-align: left">Main</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>2.</strong></td>
+      <td style="text-align: left">add method</td>
+      <td style="text-align: center">YES</td>
+      <td style="text-align: left">Main</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>3.</strong></td>
+      <td style="text-align: left">add field</td>
+      <td style="text-align: center">YES</td>
+      <td style="text-align: left">Main</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>4.</strong></td>
+      <td style="text-align: left">remove field</td>
+      <td style="text-align: center">YES</td>
+      <td style="text-align: left">Main2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>5.</strong></td>
+      <td style="text-align: left">remove method</td>
+      <td style="text-align: center">YES</td>
+      <td style="text-align: left">Main2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="intellij-idea-settings">Intellij IDEA settings</h3>
+
+<p>All tests will be performed using Intellij IDEA. Ensure that following options are set</p>
+
+<ul>
+  <li>enable <a href="https://www.jetbrains.com/help/idea/2016.1/reloading-classes.html?origin=old_help">classes reloading</a></li>
+</ul>
+
+<p><img class="center" src="/images/custom/idea/dcevm-hotswap-settings.png"></p>
+
+<ul>
+  <li>pass <code>-XXaltjvm=dcevm</code> vm option to run/debug configuration</li>
+</ul>
+
+<p><img class="center" src="/images/custom/idea/dcevm-run-dbg-conf.png"></p>
+
+<h3 id="case-1--change-body-method">Case 1 : change body method</h3>
+
+<p>Run debug. In the console you should see following output:</p>
+
+<p><code>
+tick - 00000000	foo - 00000000
+tick - 00000001	foo - 00000001
+tick - 00000002	foo - 00000002
+tick - 00000003	foo - 00000003
+</code></p>
+
+<p>Then change <code>counter++;</code> to <code>counter+=2;</code> in <code>Foo</code> class.</p>
+
+<p>```java
+static class Foo {
+    int counter;</p>
+
+<pre><code>void foo() {
+    System.out.printf("foo - %08d", counter);
+    counter+=2;
+} } ```
+</code></pre>
+
+<p>Hit <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code> to compile and after few seconds you should spot that the classes were reloaded successfully</p>
+
+<p><code>
+tick - 00000004	foo - 00000004
+tick - 00000005	foo - 00000006
+tick - 00000006	foo - 00000008
+</code></p>
+
+<h3 id="case-2--add-method">Case 2 : add method</h3>
+
+<p>Revert all changes in <code>Main</code> class and run debug. Add method</p>
+
+<p><code>java
+void bar() {
+    System.out.printf("\tbar - %08d", counter);
+}
+</code></p>
+
+<p>to the <code>Foo</code> class and call it from the <code>mainLoop</code></p>
+
+<p><code>java
+static void mainLoop() {
+    System.out.printf("tick - %08d\t", counter++);
+    foo.foo();
+    foo.bar();
+    System.out.println();
+}
+</code></p>
+
+<p>Hit <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code> to compile.</p>
+
+<p><code>
+tick - 00000003	foo - 00000003
+tick - 00000004	foo - 00000004
+tick - 00000005	foo - 00000005	bar - 00000006
+tick - 00000006	foo - 00000006	bar - 00000007
+tick - 00000007	foo - 00000007	bar - 00000008
+</code></p>
+
+<p>Classes were reloaded successfully.</p>
+
+<h3 id="case-3--add-field">Case 3 : add field</h3>
+
+<p>Revert all changes in <code>Main</code> class and run debug. Add field <code>int counter2</code> to <code>Foo</code> class and append following
+two statements to the end of <code>foo</code> method.</p>
+
+<p><code>java
+System.out.printf("\tcounter2 - %08d", counter2);
+counter2++;
+</code></p>
+
+<p><code>Foo</code> class should look following</p>
+
+<p>```java
+static class Foo {
+    int counter;</p>
+
+<pre><code>int counter2;
+
+void foo() {
+    System.out.printf("foo - %08d", counter);
+    counter++;
+    System.out.printf("\tcounter2 - %08d", counter2);
+    counter2++;
+} } ```
+</code></pre>
+
+<p>Hit <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code> to compile. And appears</p>
+
+<p><code>
+tick - 00000002	foo - 00000002
+tick - 00000003	foo - 00000003
+tick - 00000004	foo - 00000004	counter2 - 00000000
+tick - 00000005	foo - 00000005	counter2 - 00000001
+tick - 00000006	foo - 00000006	counter2 - 00000002
+</code></p>
+
+<p>that this kind of change was also reloaded successfully.</p>
+
+<h3 id="case-4--remove-field">Case 4 : remove field</h3>
+
+<p>Run debug. In the console you should see following output:</p>
+
+<p><code>
+fields=[]	 methods=[]
+fields=[]	 methods=[]
+fields=[]	 methods=[]
+</code></p>
+
+<p>Then add two public fields <code>int number</code> and <code>String name</code> to the <code>Foo</code> class.</p>
+
+<p><code>java
+static class Foo {
+    public int number;
+    public String name;
+}
+</code></p>
+
+<p>Hit <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code> to compile, and after few seconds…</p>
+
+<p><code>
+fields=[]	 methods=[]
+fields=[number,name]	 methods=[]
+fields=[number,name]	 methods=[]
+</code></p>
+
+<p>Then remove <code>number</code> field and hit again <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code>.</p>
+
+<p><code>
+fields=[number,name]	 methods=[]
+fields=[name]	 methods=[]
+fields=[name]	 methods=[]
+</code></p>
+
+<p>The change was reloaded.</p>
+
+<h3 id="case-5--remove-method">Case 5 : remove method</h3>
+
+<p>Revert all changes in <code>Main2</code> class and run debug. Add</p>
+
+<ul>
+  <li>public field <code>String name</code></li>
+  <li>public method <code>String getName()</code></li>
+</ul>
+
+<p>to the <code>Foo</code> class. Then hit <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code> to compile, and after few seconds…</p>
+
+<p><code>
+fields=[]	 methods=[]
+fields=[name]	 methods=[getName]
+fields=[name]	 methods=[getName]
+</code></p>
+
+<p>Then remove <code>getName()</code> method and hit again <code>&lt;ctr&gt;+&lt;shift&gt;+&lt;F9&gt;</code>.</p>
+
+<p><code>
+fields=[name]	 methods=[getName]
+fields=[name]	 methods=[]
+fields=[name]	 methods=[]
+</code></p>
+
+<p>Seems that this change was also reloaded successfully.</p>
+
+<h2 id="notes">Notes</h2>
+
+<p>During the play with hot swapping in Intellij IDEA you could notice that for some circumstances code would not be 
+reloaded. Intellij IDEA has a following limitation about which you need to be aware:</p>
+
+<blockquote>
+  <p>the old code is still used until the VM exits the obsolete stack frame</p>
+</blockquote>
+
+<p>About that you can read <a href="http://stackoverflow
+.com/questions/32507900/hotswap-dcevm-doesnt-work-in-intellij-idea-community-version">here</a></p>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><a href="https://dcevm.github.io/">DCEVM</a></li>
+  <li><a href="http://www.hotswapagent.org/quick-start">HotswapAgent Quick start</a></li>
+  <li><a href="https://github.com/HotswapProjects">HotswapProjects</a></li>
+  <li><a href="http://stackoverflow.com/questions/32507900/hotswap-dcevm-doesnt-work-in-intellij-idea-community-version">Hotswap/DCEVM doesn’t work in Intellij IDEA (Community Version)</a></li>
+  <li><a href="https://wiki.wocommunity.org/display/WOL/Using+DCEVM+and+Hotswap+for+rapid+turnaround">Using DCEVM and Hotswap for rapid turnaround</a></li>
+</ul>
+]]></content>
+  </entry>
+  
+</feed>

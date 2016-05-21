@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="Preface
-Writing a method to generate the nth Fibonacci number is not a rocket science. The recursive formula for that is very simple and can be &hellip;">
+Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,6 +94,470 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/17/context-free-grammar-will-help-where-regex-pattern-fail-is-this-well-formed-array/">Context Free Grammar Will Help Where Regex Pattern Fail - Is This Well Formed Array ?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-17T00:04:55+02:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:04 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3 id="preface">Preface</h3>
+<p>Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had needed to answer on one simple question. Is given expression a <strong>well formed array</strong>? He was searching for a ready to use regular expression but he failed, because this puzzle can’t be solved using regex engine. Why, I will explain later but now I can say that this puzzle can be easily solved using <strong>Context free grammar</strong>.</p>
+
+<h3 id="well-formed-array">Well formed array</h3>
+<p>You can ask what does the <strong>well formed array</strong> mean ? I will try to answer by providing some positive and negative examples of such arrays.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[1 2 [-34 7] 34]
+</span><span class="line">[1 2 [-34] [7] 34]
+</span><span class="line">[1 2 [-34 [7] 34]]
+</span><span class="line">[1 2[-34[7]34]]
+</span><span class="line">[]
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Above are well formed arrays. In opposite below are expressions which are not syntactically consistent with the definition of well formed array.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[1 2 -34 7] 34]
+</span><span class="line">[1 2 [-34 [7] 34]
+</span><span class="line">[][]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Studying those examples we can try to answer on this question. So well formed array is an expression which fulfills following requirements</p>
+
+<ul>
+  <li>first, no blank, character is an open brace <code>'['</code></li>
+  <li>the last no blank character needs to be a closed brace</li>
+  <li>inside array, integers and other well formed arrays can appear</li>
+  <li>integers are separated with at least one blank character</li>
+</ul>
+
+<h3 id="why-not-regex-">Why not regex ?</h3>
+<p>Let’s simplified our example. Let’s say that we want to write a regular expression which will generate following words <script type="math/tex">w=( [^n\quad ]^n\quad|\quad n >= 1 )</script></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[]
+</span><span class="line">[[]]
+</span><span class="line">[[]]
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>You can notice that the mention above strings are a subset of the set of strings which we want to parse. And here I don’t have also good news. We can’t use regex engine to parse such strings.
+Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finite Automata (FA)</strong> can’t count how many <code>'['</code> we have already used and check that the same number of <code>']'</code> must appear just after the last <code>'['</code>. <strong>FA</strong> doesn’t have stack to remember such things. If You are curious about formal proof you can try to google <strong>Pumping Lemma</strong> phrase. <strong>Pumping Lemma</strong> provides You a useful tool to proof if a given language (set of words which fulfill given conditions) is not a regular.</p>
+
+<h3 id="context-free-grammar">Context free grammar</h3>
+<p>I have already mentioned that to solve our problem (if a given array is well formed) we need to write a parser of some <strong>context free grammar</strong>. The model of <strong>Context free grammar</strong> is a <strong>Finite Automata</strong> with a <strong>stack</strong>. Thanks to this an Automat is able to remember some facts that have happened (e.g count braces). To write a parser we need first to write down a grammar for expression of <strong>well formed array</strong>. To do this I will use <strong>ebnf</strong> (Extended Backus–Naur Form) form.</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">array = "[", { array-body }, "]" 
+</span><span class="line">array-body = number | array
+</span><span class="line">number = [ "-" ], digit, { digit }
+</span><span class="line">digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Now we are ready to write a parser.  To be precise I will use top-down parsing strategy which let me directly transform written above grammar into set of recursively called procedures.</p>
+
+<h3 id="parser">Parser</h3>
+
+<p>It is a good manner to split parser into 2 parts</p>
+
+<ul>
+  <li>lexer</li>
+  <li>parser</li>
+</ul>
+
+<p>Lexer is responsible for grouping letters into tokens. In our grammar we have 4 kinds of tokens</p>
+
+<ul>
+  <li><code>'['</code> (<strong>LB</strong>)</li>
+  <li><code>']'</code> (<strong>RB</strong>)</li>
+  <li>number (<strong>NUMBER</strong>)</li>
+  <li>end - token informing that there is no letter left on input  (<strong>END</strong>)</li>
+</ul>
+
+<p>Tokens are expressed by a class <code>Token</code> written below</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Token</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">enum</span> <span class="n">Type</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">LB</span><span class="o">,</span> <span class="n">RB</span><span class="o">,</span> <span class="n">NUMBER</span><span class="o">,</span> <span class="n">END</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Type</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">,</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">Type</span> <span class="nf">getType</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">type</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Override</span>
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="kd">final</span> <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">(</span><span class="s">&quot;Token[&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;type=&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">type</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;, value=&#39;&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="sc">&#39;\&#39;&#39;</span><span class="o">);</span>
+</span><span class="line">        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">&#39;]&#39;</span><span class="o">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="lexer">Lexer</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Lexer</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">current</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">String</span> <span class="n">input</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="nf">Lexer</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">input</span> <span class="o">=</span> <span class="n">input</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">char</span> <span class="nf">getChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">current</span><span class="o">++);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">unputChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">current</span><span class="o">--;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">hasNextChar</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">current</span> <span class="o">&lt;</span> <span class="n">input</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">Token</span> <span class="nf">next</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(!</span><span class="n">hasNextChar</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">END</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;[&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">,</span> <span class="s">&quot;[&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;]&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">RB</span><span class="o">,</span> <span class="s">&quot;]&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;-&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">s</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">unputChar</span><span class="o">();</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">StringBuilder</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">();</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">hasNextChar</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="n">c</span> <span class="o">=</span> <span class="n">getChar</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">Character</span><span class="o">.</span><span class="na">isDigit</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">unputChar</span><span class="o">();</span>
+</span><span class="line">                <span class="k">break</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">return</span> <span class="k">new</span> <span class="nf">Token</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">,</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span> <span class="o">:</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="parser-1">Parser</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Parser</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="n">Lexer</span> <span class="n">lexer</span><span class="o">;</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">Token</span> <span class="n">currentToken</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">match</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">type</span> <span class="o">==</span> <span class="n">currentToken</span><span class="o">.</span><span class="na">getType</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="n">Type</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(!</span><span class="n">match</span><span class="o">(</span><span class="n">type</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Should be %s is %s&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">.</span><span class="na">name</span><span class="o">(),</span> <span class="n">currentToken</span><span class="o">.</span><span class="na">getType</span><span class="o">().</span><span class="na">name</span><span class="o">()));</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">currentToken</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">array</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">match</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">NUMBER</span><span class="o">);</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">match</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">LB</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">array</span><span class="o">();</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="k">break</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">RB</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">parse</span><span class="o">(</span><span class="n">String</span> <span class="n">line</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">lexer</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Lexer</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+</span><span class="line">        <span class="n">currentToken</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">array</span><span class="o">();</span>
+</span><span class="line">        <span class="n">consume</span><span class="o">(</span><span class="n">Type</span><span class="o">.</span><span class="na">END</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isWellFormedArray</span><span class="o">(</span><span class="n">String</span> <span class="n">line</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">parse</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+</span><span class="line">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%s is not a proper array because %s&quot;</span><span class="o">,</span> <span class="n">line</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">()));</span>
+</span><span class="line">            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParserTest</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="nd">@Test</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testIsWellFormedArray</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">Parser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parser</span><span class="o">();</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 -34 7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34] [7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 [7] 34]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2 [-34 [7] 34]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[][]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">false</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[[]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">        <span class="n">assertThat</span><span class="o">(</span><span class="n">parser</span><span class="o">.</span><span class="na">isWellFormedArray</span><span class="o">(</span><span class="s">&quot;[1 2[-34[7]34]]&quot;</span><span class="o">),</span> <span class="n">equalTo</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -788,6 +1252,10 @@ MathJax.Hub.Config({
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative/">Hot Swap in Java With DCEVM and HotSwapAgent - a JRebel Free Alternative</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review/">Oracle Certified Professional, Java SE 8 Programmer 1Z0-809 Exam - Review</a>
       </li>
     
@@ -803,15 +1271,11 @@ MathJax.Hub.Config({
         <a href="/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/">Write to an HFS+ USB Drive From a Synology NAS</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/11/27/git-svn-kata-first-release/">Git-svn Kata - First Release</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 134.28571428571428%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 108.57142857142857%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 117.14285714285714%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 108.57142857142857%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 108.57142857142857%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 108.57142857142857%'>dynamic programming(1)</a> <a href='/blog/categories/git' style='font-size: 108.57142857142857%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 108.57142857142857%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 108.57142857142857%'>github(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(7)</a> <a href='/blog/categories/kata' style='font-size: 108.57142857142857%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 125.71428571428572%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 125.71428571428572%'>linux(3)</a> <a href='/blog/categories/mac' style='font-size: 108.57142857142857%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 108.57142857142857%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 108.57142857142857%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 117.14285714285714%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 108.57142857142857%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 108.57142857142857%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 134.28571428571428%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 134.28571428571428%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 125.71428571428572%'>review(3)</a> <a href='/blog/categories/svn' style='font-size: 108.57142857142857%'>svn(1)</a> <a href='/blog/categories/vagrant' style='font-size: 108.57142857142857%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 108.57142857142857%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 117.14285714285714%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 117.14285714285714%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 122.5%'>linux(3)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 130.0%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 130.0%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
