@@ -114,10 +114,14 @@ MathJax.Hub.Config({
 
 <div class="entry-content"><p><code>tmux</code> is a great tool. I have been using it since I think half year. 
 Before I used to use <code>screen</code>, but only to manage my remote shells. Now I am using <code>tmux</code> for
-local and remote shell management. In order to make a switch from <code>screen</code> to <code>tmux</code> smooth 
+local and remote shell management.</p>
+
+<p>In order to make a switch from <code>screen</code> to <code>tmux</code> smooth 
 I decided to remap default binding for <em>prefix</em> from <em>C-b</em> to <em>C-a</em> (like in screen). This caused
 that one of my favorite shortcuts - <code>C-a</code> for going back to the beginning of the line, 
-stopped working. Recently I have discovered that making:</p>
+stopped working.</p>
+
+<p>Recently I have discovered that making:</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">bind C-a send-prefix</span></code></pre></td></tr></table></div></figure></notextile></div>

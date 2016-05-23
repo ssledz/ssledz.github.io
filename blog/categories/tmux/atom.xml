@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tmux | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/tmux/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-23T02:23:28+02:00</updated>
+  <updated>2016-05-23T02:26:02+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -20,10 +20,14 @@
     <id>http://ssledz.github.io/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a</id>
     <content type="html"><![CDATA[<p><code>tmux</code> is a great tool. I have been using it since I think half year. 
 Before I used to use <code>screen</code>, but only to manage my remote shells. Now I am using <code>tmux</code> for
-local and remote shell management. In order to make a switch from <code>screen</code> to <code>tmux</code> smooth 
+local and remote shell management.</p>
+
+<p>In order to make a switch from <code>screen</code> to <code>tmux</code> smooth 
 I decided to remap default binding for <em>prefix</em> from <em>C-b</em> to <em>C-a</em> (like in screen). This caused
 that one of my favorite shortcuts - <code>C-a</code> for going back to the beginning of the line, 
-stopped working. Recently I have discovered that making:</p>
+stopped working.</p>
+
+<p>Recently I have discovered that making:</p>
 
 <p><code>
 bind C-a send-prefix
