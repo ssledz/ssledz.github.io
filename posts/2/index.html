@@ -9,8 +9,17 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Preface
-Some times ago I was scanning Stackoverflow to find a puzzle to solve, and I found one guy was trying to write a piece of software which had &hellip;">
+  <meta name="description" content="When You get something like that
+1
+2
+3
+4
+5
+6
+7
+8
+## Pushing generated _deploy website
+To git@github.com:ssledz/ssledz.github.io.git ! [rejected] &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,6 +103,65 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/01/octopress-pushing-error-to-github/">Octopress Pushing Error to GitHub</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-01T00:40:41+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>12:40 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When You get something like that</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">## Pushing generated _deploy website
+</span><span class="line">To git@github.com:ssledz/ssledz.github.io.git
+</span><span class="line"> ! [rejected]        master -&gt; master (non-fast-forward)
+</span><span class="line">error: failed to push some refs to 'git@github.com:ssledz/ssledz.github.io.git'
+</span><span class="line">hint: Updates were rejected because the tip of your current branch is behind
+</span><span class="line">hint: its remote counterpart. Integrate the remote changes (e.g.
+</span><span class="line">hint: 'git pull ...') before pushing again.
+</span><span class="line">hint: See the 'Note about fast-forwards' in 'git push --help' for details.</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>just do following</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd </span>_deploy
+</span><span class="line">git reset --hard origin/master
+</span><span class="line"><span class="nb">cd</span> ..
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>and try again</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate
+</span><span class="line">rake deploy
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1252,6 +1320,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a/">Howto Going Back to the Beginning of the Line in Tmux After Remapping Prefix to C-a</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative/">Hot Swap in Java With DCEVM and HotSwapAgent - a JRebel Free Alternative</a>
       </li>
     
@@ -1267,15 +1339,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
         <a href="/blog/2016/02/17/vim-for-programmers-folding/">Vim for Programmers - Folding</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/">Write to an HFS+ USB Drive From a Synology NAS</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 122.5%'>linux(3)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 130.0%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 130.0%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 130.0%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 130.0%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
