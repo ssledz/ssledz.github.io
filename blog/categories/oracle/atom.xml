@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Oracle | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/oracle/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-23T02:26:02+02:00</updated>
+  <updated>2016-06-11T01:37:13+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -19,7 +19,7 @@
     <updated>2016-05-15T19:34:09+02:00</updated>
     <id>http://ssledz.github.io/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review</id>
     <content type="html"><![CDATA[<p>Just after passing <a href="https://education.oracle.com/pls/web_prod-plq-dad/db_pages.getpage?page_id=5001&amp;get_params=p_exam_id:1Z0-808">Java SE 8 Programmer 1Z0-808 Exam</a>
-(about that you can read <a href="{% post_url 2016-05-15-oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review %}">here</a>) 
+(about that you can read <a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">here</a>) 
 and being impressed by <a href="https://www.goodreads.com/book/show/23059696-oca?from_search=true&amp;search_version=service">OCA: Oracle Certified Associate Java Se 8 Programmer I Study Guide: Exam 1z0-808</a>,
 I decided to buy the newly released <a href="https://www.goodreads.com/book/show/23650477-ocp">OCP: Oracle Certified Professional Java Se 8 Programmer II Study Guide: Exam 1Z0-809</a>.
 It was a really good purchase.</p>
@@ -30,7 +30,7 @@ I learn a lot about <code>lambda</code>, <code>collection streams</code>, <code>
 and so on. I can tell you that this book was worth its money.</p>
 
 <p>It took me almost 4 months to go through this book. To be honest I read
-it two times. Same as previously (<a href="{% post_url 2016-05-15-oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review %}">OCA - review</a>) 
+it two times. Same as previously (<a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">OCA - review</a>) 
 I was generally reading the book during my way to work. 
 First time I really haven’t paid attention on solving tests. 
 I have just gone through the book to better know

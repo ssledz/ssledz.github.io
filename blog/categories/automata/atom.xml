@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Automata | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/automata/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-23T02:26:02+02:00</updated>
+  <updated>2016-06-11T01:37:13+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -24,7 +24,7 @@
 
 <p>After taking a final exam I have earned <code>Statement of Accomplishment</code> attached below.</p>
 
-<p>{% img center /images/custom/coursera/automata-statement-of-accomplishment.png %}</p>
+<p><img class="center" src="/images/custom/coursera/automata-statement-of-accomplishment.png"></p>
 ]]></content>
   </entry>
   

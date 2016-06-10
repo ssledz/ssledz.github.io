@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Jvm | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/jvm/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-05-23T02:26:02+02:00</updated>
+  <updated>2016-06-11T01:37:13+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -47,7 +47,7 @@ java -jar DCEVM-light-8u74-installer.jar
 
 <p>then select a proper java installation directory on your disc and press <em>Install DCEVM as altjvm</em></p>
 
-<p>{% img center /images/custom/dcevm-installer.png %}</p>
+<p><img class="center" src="/images/custom/dcevm-installer.png"></p>
 
 <p>That’s all really. Very simple isn’t it ?</p>
 
@@ -206,13 +206,13 @@ public static void main(String[] args) throws InterruptedException {
   <li>enable <a href="https://www.jetbrains.com/help/idea/2016.1/reloading-classes.html?origin=old_help">classes reloading</a></li>
 </ul>
 
-<p>{% img center /images/custom/idea/dcevm-hotswap-settings.png %}</p>
+<p><img class="center" src="/images/custom/idea/dcevm-hotswap-settings.png"></p>
 
 <ul>
   <li>pass <code>-XXaltjvm=dcevm</code> vm option to run/debug configuration</li>
 </ul>
 
-<p>{% img center /images/custom/idea/dcevm-run-dbg-conf.png %}</p>
+<p><img class="center" src="/images/custom/idea/dcevm-run-dbg-conf.png"></p>
 
 <h3 id="case-1--change-body-method">Case 1 : change body method</h3>
 
