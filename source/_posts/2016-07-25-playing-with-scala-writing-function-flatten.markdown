@@ -3,7 +3,7 @@ layout: post
 title: "Playing with scala - writing function : flatten"
 date: 2016-07-25 00:25:57 +0200
 comments: true
-categories: [scala, functional-programming]
+categories: [scala, functional-programming, recursion, puzzle]
 ---
 
 Few weeks ago since now :) I started participating in a course __'Functional Programming Principles in Scala'__ by 
