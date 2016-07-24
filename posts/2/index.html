@@ -9,17 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="When You get something like that
-1
-2
-3
-4
-5
-6
-7
-8
-## Pushing generated _deploy website
-To git@github.com:ssledz/ssledz.github.io.git ! [rejected] &hellip;">
+  <meta name="description" content="Virtual Disk Image (VDI) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +93,53 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/13/virtual-box-vdi-compaction/">Virtual Box VDI Compaction</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-13T10:00:43+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Virtual Disk Image (<code>VDI</code>) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it is time for compaction.</p>
+
+<ol>
+  <li>Install zerofree tool (<code>apt-get install zerofree</code>).</li>
+  <li>Remove unused files (<code>apt-get autoremove</code>, <code>apt-get autoclean</code>, <code>orphaner --guess-all</code>).</li>
+  <li>Reboot the guest system in single user mode (Grub menu will appear if you press and hold <code>Shift</code> during starting, 
+then hit <code>e</code> when Grub boot appear and append <code>single</code> option to the Grub boot parameters).</li>
+  <li>Remount filesystems as readonly (<code>mount -n -o remount,ro -t auto /dev/sda1 /</code>).</li>
+  <li>Fill unused block with zeros (<code>zerofree /dev/sda1</code>). It’s time consuming operation. If You have other disk devices (e.g. <code>/dev/sda5</code>) then also perform <code>zerofree</code> on each one.</li>
+  <li>Shutdown the system (<code>poweroff</code>).</li>
+  <li>Compact VDI files on the host system (<code>VBoxManage modifyhd my.vdi compact</code>). It’s time consuming operation.</li>
+</ol>
+
+<p>Instead points 1,3-5 to fill free space with zeros You can do following (You don’t need to boot in single user mode)</p>
+
+<ol>
+  <li><code>sudo dd if=/dev/zero of=/bigemptyfile bs=4096k</code></li>
+  <li><code>sudo rm -rf /bigemptyfile</code></li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1320,6 +1357,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/07/25/playing-with-scala-writing-function-flatten/">Playing With Scala - Writing Function : Flatten</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a/">Howto Going Back to the Beginning of the Line in Tmux After Remapping Prefix to C-a</a>
       </li>
     
@@ -1335,15 +1376,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
         <a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">Oracle Certified Associate Java SE 8 Programmer 1Z0-808 Exam - Review</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/02/17/vim-for-programmers-folding/">Vim for Programmers - Folding</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 130.0%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 130.0%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 130.0%'>puzzle(4)</a> <a href='/blog/categories/recursion' style='font-size: 130.0%'>recursion(4)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 107.5%'>scala(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
@@ -1357,6 +1394,8 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
   <ul>
     <li>
+            <a href='http://www.goodreads.com/user_status/show/102737592' target='blank'>Slavik is finished with Learning Shell Scripting</a>
+            <span class='tiny'>(2016-07-20)</span></li><li>
             <a href='http://www.goodreads.com/user_status/show/99018464' target='blank'>Slavik is 32% done with Programming Scala</a>
             <span class='tiny'>(2016-06-09)</span></li><li>
             <a href='http://www.goodreads.com/user_status/show/96750386' target='blank'>Slavik is 27% done with Scala for the Impatient</a>
@@ -1364,8 +1403,6 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
             <a href='http://www.goodreads.com/user_status/show/96750258' target='blank'>Slavik is 24% done with Java Concurrency in</a>
             <span class='tiny'>(2016-05-15)</span></li><li>
             <a href='http://www.goodreads.com/user_status/show/96750108' target='blank'>Slavik is 20% done with Programming for the Java¿</a>
-            <span class='tiny'>(2016-05-15)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/96750033' target='blank'>Slavik is 15% done with Programming Scala</a>
             <span class='tiny'>(2016-05-15)</span></li>
   </ul>
 </section>
@@ -1401,15 +1438,6 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
 
 
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/slawomir.sledz?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
 
 
   
@@ -1439,15 +1467,6 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </script>
 
 
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id; js.async = true;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
 
 
 

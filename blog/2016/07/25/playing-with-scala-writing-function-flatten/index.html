@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Productivity - My Programmer's Road</title>
+  <title>Playing With Scala - Writing Function : Flatten - My Programmer's Road</title>
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Category: productivity">
+  <meta name="description" content="Few weeks ago since now :) I started participating in a course ‘Functional Programming Principles in Scala’ by Martin Odersky. I have already &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ssledz.github.io/blog/categories/productivity/">
+  <link rel="canonical" href="http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -92,36 +92,128 @@ MathJax.Hub.Config({
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Productivity</h1>
+    
+      <h1 class="entry-title">Playing With Scala - Writing Function : Flatten</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-25T00:25:57+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:25 am</span></time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Few weeks ago since now :) I started participating in a course <strong>‘Functional Programming Principles in Scala’</strong> by 
+<strong>Martin Odersky</strong>. I have already completed 4 weeks (course consists of 6 weeks) and I can tell honestly that this is 
+the best course I’ve ever been doing.</p>
 
-  
-  <h2>2015</h2>
+<p>My knowledge about scala is still increasing !</p>
 
-<article>
-  
-<h1><a href="/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">Java Development Environment With Vagrant - Part 1</a></h1>
-<time datetime="2015-11-08T16:06:35+01:00" pubdate><span class='month'>Nov</span> <span class='day'>08</span> <span class='year'>2015</span></time>
+<p>Below you can find a sample of what I can now do. The problem is to implement function
+<code>flatten(xs: List[Any]): List[Any]</code> which takes a list of anything an tries to flatten it. For example</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/productivity/'>productivity</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>, <a class='category' href='/blog/categories/virtual-box/'>virtual box</a>, <a class='category' href='/blog/categories/virtualization/'>virtualization</a></span>
-</footer>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="n">flatten</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="mi">2</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">))))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<p>should return a following list</p>
 
-</article>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div><script src="https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js"></script>
+<noscript><pre><code>/**
+  * Created by ssledz on 25.07.16.
+  */
+object Flatten {
+
+  def flatten(xs: List[Any]): List[Any] = xs match {
+    case List() =&gt; Nil
+    case y :: ys =&gt; {
+      y match {
+        case z :: zs =&gt; flatten(z :: zs)
+        case _ =&gt; List(y)
+      }
+    } ::: flatten(ys)
+    case _ =&gt; List(xs)
+
+  }
+
+  def main(args: Array[String]) {
+    List(
+      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
+      flatten(List(1, 2, 3)),
+      flatten(List(List(1, 2), 3, List(4))),
+      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
+    ) foreach println
+  }
+
+}</code></pre></noscript></div>
+
+<p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
+for this course !</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Sławomir Śledź</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-07-25T00:25:57+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:25 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/functional-programming/'>functional-programming</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/" data-via="" data-counturl="http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a/" title="Previous Post: Howto going back to the beginning of the line in tmux after remapping prefix to C-a">&laquo; Howto going back to the beginning of the line in tmux after remapping prefix to C-a</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -257,7 +349,10 @@ MathJax.Hub.Config({
       var disqus_shortname = 'ssledz';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/';
+        var disqus_url = 'http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

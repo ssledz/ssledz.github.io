@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-06-11T01:37:13+02:00</updated>
+  <updated>2016-07-25T00:54:55+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Playing With Scala - Writing Function : Flatten]]></title>
+    <link href="http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/"/>
+    <updated>2016-07-25T00:25:57+02:00</updated>
+    <id>http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten</id>
+    <content type="html"><![CDATA[<p>Few weeks ago since now :) I started participating in a course <strong>‘Functional Programming Principles in Scala’</strong> by 
+<strong>Martin Odersky</strong>. I have already completed 4 weeks (course consists of 6 weeks) and I can tell honestly that this is 
+the best course I’ve ever been doing.</p>
+
+<p>My knowledge about scala is still increasing !</p>
+
+<p>Below you can find a sample of what I can now do. The problem is to implement function
+<code>flatten(xs: List[Any]): List[Any]</code> which takes a list of anything an tries to flatten it. For example</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="n">flatten</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="mi">2</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">))))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>should return a following list</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div><script src="https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js"></script>
+<noscript><pre><code>/**
+  * Created by ssledz on 25.07.16.
+  */
+object Flatten {
+
+  def flatten(xs: List[Any]): List[Any] = xs match {
+    case List() =&gt; Nil
+    case y :: ys =&gt; {
+      y match {
+        case z :: zs =&gt; flatten(z :: zs)
+        case _ =&gt; List(y)
+      }
+    } ::: flatten(ys)
+    case _ =&gt; List(xs)
+
+  }
+
+  def main(args: Array[String]) {
+    List(
+      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
+      flatten(List(1, 2, 3)),
+      flatten(List(List(1, 2), 3, List(4))),
+      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
+    ) foreach println
+  }
+
+}</code></pre></noscript></div>
+
+<p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
+for this course !</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Howto Going Back to the Beginning of the Line in Tmux After Remapping Prefix to C-a]]></title>
