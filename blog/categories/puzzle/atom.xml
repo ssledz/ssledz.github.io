@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Puzzle | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/puzzle/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-07-25T00:54:55+02:00</updated>
+  <updated>2016-07-25T00:59:07+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,65 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Playing With Scala - Writing Function : Flatten]]></title>
+    <link href="http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten/"/>
+    <updated>2016-07-25T00:25:57+02:00</updated>
+    <id>http://ssledz.github.io/blog/2016/07/25/playing-with-scala-writing-function-flatten</id>
+    <content type="html"><![CDATA[<p>Few weeks ago since now :) I started participating in a course <strong>‘Functional Programming Principles in Scala’</strong> by 
+<strong>Martin Odersky</strong>. I have already completed 4 weeks (course consists of 6 weeks) and I can tell honestly that this is 
+the best course I’ve ever been doing.</p>
+
+<p>My knowledge about scala is still increasing !</p>
+
+<p>Below you can find a sample of what I can now do. The problem is to implement function
+<code>flatten(xs: List[Any]): List[Any]</code> which takes a list of anything an tries to flatten it. For example</p>
+
+<p><code>scala
+flatten(List(List(1, 1), 2, List(3, List(5, 8))))
+</code></p>
+
+<p>should return a following list</p>
+
+<p><code>scala
+List[Any] = List(1, 1, 2, 3, 5, 8)
+</code></p>
+
+<p><div><script src='https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js'></script>
+<noscript><pre><code>/**
+  * Created by ssledz on 25.07.16.
+  */
+object Flatten {
+
+  def flatten(xs: List[Any]): List[Any] = xs match {
+    case List() =&gt; Nil
+    case y :: ys =&gt; {
+      y match {
+        case z :: zs =&gt; flatten(z :: zs)
+        case _ =&gt; List(y)
+      }
+    } ::: flatten(ys)
+    case _ =&gt; List(xs)
+
+  }
+
+  def main(args: Array[String]) {
+    List(
+      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
+      flatten(List(1, 2, 3)),
+      flatten(List(List(1, 2), 3, List(4))),
+      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
+    ) foreach println
+  }
+
+}</code></pre></noscript></div>
+</p>
+
+<p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
+for this course !</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Puzzle - Write a Method to Generate the Nth Fibonacci Number]]></title>
