@@ -23,6 +23,9 @@ started reading a book __"Programming in Scala Second Edition" by Martin Odersky
 and I found it very helpful. Currently (in the time of writing this post) I have done __"Parallel programming"__ 
 course and already enrolled for a __"Big Data Analysis with Scala and Spark"__ (still waiting for course publishing)
 
+I think the knowledge I acquired, thanks to those courses and book, is sufficient to start writing and reading programs
+ in scala. Of course it takes some time to be as proficient as in java but I am little closer to this target each day. 
+
 ###Resources
 The aim of this section is to gather the valuable resources regarding scala.
 
