@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Scala | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/scala/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-12-09T11:53:16+01:00</updated>
+  <updated>2016-12-09T12:02:40+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -34,6 +34,9 @@ but this was not an end of my journey. I started participating in another course
 started reading a book <strong>“Programming in Scala Second Edition” by Martin Odersky, Lex Spoon, Bill Venners</strong> 
 and I found it very helpful. Currently (in the time of writing this post) I have done <strong>“Parallel programming”</strong> 
 course and already enrolled for a <strong>“Big Data Analysis with Scala and Spark”</strong> (still waiting for course publishing)</p>
+
+<p>I think the knowledge I acquired, thanks to those courses and book, is sufficient to start writing and reading programs
+ in scala. Of course it takes some time to be as proficient as in java but I am little closer to this target each day.</p>
 
 <h3 id="resources">Resources</h3>
 <p>The aim of this section is to gather the valuable resources regarding scala.</p>
