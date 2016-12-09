@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Learning | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/learning/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2016-07-25T00:59:07+02:00</updated>
+  <updated>2016-12-09T11:53:16+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Learning Scala - My Insights]]></title>
+    <link href="http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/"/>
+    <updated>2016-11-08T13:32:38+01:00</updated>
+    <id>http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights</id>
+    <content type="html"><![CDATA[<p>It passed almost 5 months since I have been learning <em>Scala</em> programming language. This learning is a part of bigger 
+path which I decided to go through to be more familiar with current trends in <em>big data</em>, <em>machine learning</em> and 
+<em>cloud computing</em>.</p>
+
+<p>When I decided to start learning scala the first question coming into my mind was how to start ?</p>
+
+<p>Because I am rather a fun of books, I bought one - <strong>“Programming Scala: Scalability = Functional Programming + Objects” 
+by Dean Wampler and Alex Payne”</strong> and started reading…. but this was not a good idea. The book I have chosen was 
+written in not an easy going style and I think was too hard for the beginning. After few hundreds of pages I felt lost.
+At the same time on <em>coursera</em> <strong>‘Functional Programming Principles in Scala’</strong> course was reactivated.
+Not thinking too much I signed in and started participating. After few weeks I earn a certificate of accomplishment 
+but this was not an end of my journey. I started participating in another course 
+<strong>“Functional Program Design in Scala”</strong> from the same author (Martin Odersky) as the previous one. In parallel I have 
+started reading a book <strong>“Programming in Scala Second Edition” by Martin Odersky, Lex Spoon, Bill Venners</strong> 
+and I found it very helpful. Currently (in the time of writing this post) I have done <strong>“Parallel programming”</strong> 
+course and already enrolled for a <strong>“Big Data Analysis with Scala and Spark”</strong> (still waiting for course publishing)</p>
+
+<h3 id="resources">Resources</h3>
+<p>The aim of this section is to gather the valuable resources regarding scala.</p>
+
+<p><strong>Online courses</strong></p>
+
+<ul>
+  <li><a href="https://www.coursera.org/learn/progfun1">Functional Programming Principles in Scala</a></li>
+  <li><a href="https://www.coursera.org/learn/progfun2">Functional Program Design in Scala</a></li>
+  <li><a href="https://www.coursera.org/learn/parprog1">Parallel programming</a></li>
+</ul>
+
+<p><strong>Books</strong></p>
+
+<ul>
+  <li><a href="http://www.goodreads.com/book/show/5680904-programming-in-scala">Programming in Scala by Martin Odersky, Lex Spoon, Bill Venners</a></li>
+  <li><a href="https://www.goodreads.com/book/show/11335855-scala-for-the-impatient">Scala for the Impatient</a></li>
+  <li><a href="https://www.goodreads.com/book/show/22491889-programming-scala">Programming Scala: Scalability = Functional Programming + Objects</a></li>
+</ul>
+
+<p><strong>Cheat sheets</strong></p>
+
+<ul>
+  <li><a href="https://www.coursera.org/learn/progfun2/supplement/BDqfw/cheat-sheet">Scala cheat sheet</a></li>
+  <li><a href="https://www.coursera.org/learn/progfun2/supplement/H8MtC/reactive-cheat-sheet">Scala reactive cheat sheet</a></li>
+  <li><a href="http://docs.scala-lang.org/cheatsheets/">Scala cheat sheet from scala-lang.org</a></li>
+  <li><a href="https://gist.github.com/ssledz/c1c1ae9b9401d8c2455ae01d9045b2d5">Scala cheat sheet written by me</a></li>
+</ul>
+
+<p><strong>Tutorials</strong></p>
+
+<ul>
+  <li><a href="http://www.scala-lang.org/docu/files/ScalaByExample.pdf">Scala By Example</a></li>
+  <li><a href="https://twitter.github.io/scala_school/index.html">Scala School</a></li>
+  <li><a href="http://docs.scala-lang.org/tutorials/tour/tour-of-scala.html">Tour of scala</a></li>
+</ul>
+
+<p><strong>Libs</strong></p>
+
+<ul>
+  <li><a href="https://github.com/rickynils/scalacheck/blob/master/doc/UserGuide.md">Scalacheck</a></li>
+  <li><a href="https://scalameter.github.io/">ScalaMeter</a></li>
+  <li><a href="http://akka.io/docs/">Akka</a></li>
+</ul>
+
+<p><strong>Other</strong></p>
+
+<ul>
+  <li><a href="http://stackoverflow.com/tags/scala/info">scala on stackoverflow</a></li>
+</ul>
+
+<h3 id="first-steps">First steps</h3>
+<p>My recommendation about ordering of going through the resources for beginners:</p>
+
+<ol>
+  <li><a href="https://www.coursera.org/learn/progfun1">Functional Programming Principles in Scala</a></li>
+  <li><a href="http://www.goodreads.com/book/show/5680904-programming-in-scala">Programming in Scala by Martin Odersky, Lex Spoon, Bill Venners</a></li>
+  <li><a href="https://www.coursera.org/learn/progfun2">Functional Program Design in Scala</a></li>
+  <li><a href="https://www.coursera.org/learn/parprog1">Parallel programming</a></li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Oracle Certified Professional, Java SE 8 Programmer 1Z0-809 Exam - Review]]></title>

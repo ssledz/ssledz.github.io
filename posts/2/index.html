@@ -9,7 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Virtual Disk Image (VDI) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it &hellip;">
+  <meta name="description" content="Preface This post describes my development environment driven by Vagrant (Full description what can be found there is here). You can ask why Vagrant &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +21,6 @@
   <link rel="canonical" href="http://ssledz.github.io/posts/2/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <link href="/atom.xml" rel="alternate" title="My Programmer's Road" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -30,6 +29,7 @@
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -93,6 +93,246 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">Java Development Environment With Vagrant - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-08T16:06:35+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:06 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3 id="preface">Preface</h3>
+
+<p>This post describes my development environment driven by Vagrant (Full description what can be found there is <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">here</a>). You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
+
+<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
+
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it? One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
+
+<h3 id="vagrant-providers">Vagrant Providers</h3>
+
+<p>Vagrant has an ability to manage some of machine types like</p>
+
+<ul>
+  <li><code>VirtualBox</code></li>
+  <li><code>VMware</code></li>
+  <li><code>Docker</code></li>
+  <li><code>Hyper-V</code></li>
+</ul>
+
+<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
+
+<h3 id="vagrant-installation">Vagrant Installation</h3>
+
+<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
+
+<h3 id="setting-development-environment">Setting development environment</h3>
+
+<p>To set up java development environment You need just type the following bunch of commands</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
+</span><span class="line">cd vagrant-boxes/java-dev-environment
+</span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure>
+
+<p>Now vagrant box image is downloading from the box repository and then installation script <code>provision.sh</code> will be called.</p>
+
+<p>The <code>provision.sh</code> trace can look following</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">==&gt; default: Creating directories
+</span><span class="line">==&gt; default:     Creating bin directory
+</span><span class="line">==&gt; default:     Creating public_html directory
+</span><span class="line">==&gt; default:     Creating servers directory
+</span><span class="line">==&gt; default: Installing packages
+</span><span class="line">==&gt; default:     apt-get update
+</span><span class="line">==&gt; default:     Installing vim
+</span><span class="line">==&gt; default:     Installing git
+</span><span class="line">==&gt; default: Installing mc
+</span><span class="line">==&gt; default:     Installing libssl-dev libreadline-dev zlib1g-dev
+</span><span class="line">==&gt; default:     Installing make g++
+</span><span class="line">==&gt; default:     Installing apg
+</span><span class="line">==&gt; default:     Installing mysql-server
+</span><span class="line">==&gt; default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
+</span><span class="line">==&gt; default:         Restarting mysql
+</span><span class="line">==&gt; default:     Installing nginx-core ssl-cert
+</span><span class="line">==&gt; default:         Creating /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Enabling /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Restarting nginx
+</span><span class="line">==&gt; default: Downloading jdks
+</span><span class="line">==&gt; default:     jdk-5u22-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-6u45-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-7u80-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-8u65-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default: Installing jdks
+</span><span class="line">==&gt; default:     Extracting jdk-5u22-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-6u45-linux-x64.tar.gz
+</span><span class="line">==&gt; default: Extracting jdk-7u80-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-8u65-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default: Installing apache-maven
+</span><span class="line">==&gt; default:     Downloading apache-maven-3.3.3-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-maven
+</span><span class="line">==&gt; default: Installing apache-ant
+</span><span class="line">==&gt; default:     Downloading apache-ant-1.9.6-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-ant
+</span><span class="line">==&gt; default: Installing gradle
+</span><span class="line">==&gt; default:     Downloading gradle-2.8-bin.zip
+</span><span class="line">==&gt; default:     Extracting gradle-2.8-bin.zip using unzip
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link gradle
+</span><span class="line">==&gt; default: Installing sbt
+</span><span class="line">==&gt; default:     Downloading sbt-0.13.9.tgz
+</span><span class="line">==&gt; default:     Extracting sbt-0.13.9.tgz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link sbt
+</span><span class="line">==&gt; default: Installing environment managers (for Java, Ruby, node.js and Python) 
+</span><span class="line">==&gt; default:     Installing jenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.jenv
+</span><span class="line">==&gt; default:         Setting environment variables
+</span><span class="line">==&gt; default:         Make build tools jenv aware
+</span><span class="line">==&gt; default:             ant plugin activated
+</span><span class="line">==&gt; default:             maven plugin activated
+</span><span class="line">==&gt; default:             gradle plugin activated
+</span><span class="line">==&gt; default:             sbt plugin activated
+</span><span class="line">==&gt; default:     Installing rbenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.rbenv
+</span><span class="line">==&gt; default:         Installing plugins that provide rbenv install
+</span><span class="line">==&gt; default:     Installing nodenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.nodenv
+</span><span class="line">==&gt; default:         Installing plugins that provide nodenv install
+</span><span class="line">==&gt; default:     Installing pyenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.pyenv
+</span><span class="line">==&gt; default: Updating .bashrc
+</span><span class="line">==&gt; default: Install runtimes using environment managers
+</span><span class="line">==&gt; default:     Install java
+</span><span class="line">==&gt; default:     Set jdk 1.8 globally
+</span><span class="line">==&gt; default:     Install ruby
+</span><span class="line">==&gt; default:     Install node.js
+</span><span class="line">==&gt; default:     install python
+</span><span class="line">==&gt; default: Installing apache-tomcat
+</span><span class="line">==&gt; default:     Downloading apache-tomcat-8.0.28.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-tomcat
+</span><span class="line">==&gt; default:     Creating apache-tomcat /bin/setenv.sh
+</span><span class="line">==&gt; default:     Copying tomcat-users.xml to apache-tomcat/conf
+</span><span class="line">==&gt; default:     Creating /etc/init.d/tomcat script
+</span><span class="line">==&gt; default:     Starting tomcat</span></code></pre></td></tr></table></div></figure>
+
+<p>To loggin to the machine do</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">vagrant ssh</span></code></pre></td></tr></table></div></figure>
+
+<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
+
+<p>More about how to use this setting to develop in the next post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -163,7 +403,7 @@ then hit <code>e</code> when Grub boot appear and append <code>single</code> opt
 
 
   <div class="entry-content"><p>When You get something like that</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -178,21 +418,21 @@ then hit <code>e</code> when Grub boot appear and append <code>single</code> opt
 </span><span class="line">hint: Updates were rejected because the tip of your current branch is behind
 </span><span class="line">hint: its remote counterpart. Integrate the remote changes (e.g.
 </span><span class="line">hint: 'git pull ...') before pushing again.
-</span><span class="line">hint: See the 'Note about fast-forwards' in 'git push --help' for details.</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">hint: See the 'Note about fast-forwards' in 'git push --help' for details.</span></code></pre></td></tr></table></div></figure>
 <p>just do following</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 </pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd </span>_deploy
 </span><span class="line">git reset --hard origin/master
 </span><span class="line"><span class="nb">cd</span> ..
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>and try again</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 </pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate
 </span><span class="line">rake deploy
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 </div>
   
   
@@ -226,7 +466,7 @@ then hit <code>e</code> when Grub boot appear and append <code>single</code> opt
 
 <h3 id="well-formed-array">Well formed array</h3>
 <p>You can ask what does the <strong>well formed array</strong> mean ? I will try to answer by providing some positive and negative examples of such arrays.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -237,14 +477,14 @@ then hit <code>e</code> when Grub boot appear and append <code>single</code> opt
 </span><span class="line">[1 2 [-34 [7] 34]]
 </span><span class="line">[1 2[-34[7]34]]
 </span><span class="line">[]
-</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure>
 <p>Above are well formed arrays. In opposite below are expressions which are not syntactically consistent with the definition of well formed array.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">[1 2 -34 7] 34]
 </span><span class="line">[1 2 [-34 [7] 34]
-</span><span class="line">[][]</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">[][]</span></code></pre></td></tr></table></div></figure>
 <p>Studying those examples we can try to answer on this question. So well formed array is an expression which fulfills following requirements</p>
 
 <ul>
@@ -256,27 +496,27 @@ then hit <code>e</code> when Grub boot appear and append <code>single</code> opt
 
 <h3 id="why-not-regex-">Why not regex ?</h3>
 <p>Let’s simplified our example. Let’s say that we want to write a regular expression which will generate following words <script type="math/tex">w=( [^n\quad ]^n\quad|\quad n >= 1 )</script></p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">[]
 </span><span class="line">[[]]
 </span><span class="line">[[]]
-</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">[[[]]]</span></code></pre></td></tr></table></div></figure>
 <p>You can notice that the mention above strings are a subset of the set of strings which we want to parse. And here I don’t have also good news. We can’t use regex engine to parse such strings.
 Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finite Automata (FA)</strong> can’t count how many <code>'['</code> we have already used and check that the same number of <code>']'</code> must appear just after the last <code>'['</code>. <strong>FA</strong> doesn’t have stack to remember such things. If You are curious about formal proof you can try to google <strong>Pumping Lemma</strong> phrase. <strong>Pumping Lemma</strong> provides You a useful tool to proof if a given language (set of words which fulfill given conditions) is not a regular.</p>
 
 <h3 id="context-free-grammar">Context free grammar</h3>
 <p>I have already mentioned that to solve our problem (if a given array is well formed) we need to write a parser of some <strong>context free grammar</strong>. The model of <strong>Context free grammar</strong> is a <strong>Finite Automata</strong> with a <strong>stack</strong>. Thanks to this an Automat is able to remember some facts that have happened (e.g count braces). To write a parser we need first to write down a grammar for expression of <strong>well formed array</strong>. To do this I will use <strong>ebnf</strong> (Extended Backus–Naur Form) form.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">array = "[", { array-body }, "]" 
 </span><span class="line">array-body = number | array
 </span><span class="line">number = [ "-" ], digit, { digit }
-</span><span class="line">digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;</span></code></pre></td></tr></table></div></figure>
 <p>Now we are ready to write a parser.  To be precise I will use top-down parsing strategy which let me directly transform written above grammar into set of recursively called procedures.</p>
 
 <h3 id="parser">Parser</h3>
@@ -299,7 +539,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
 <p>Tokens are expressed by a class <code>Token</code> written below</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -361,11 +601,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 <h4 id="lexer">Lexer</h4>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -497,11 +737,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 <h4 id="parser-1">Parser</h4>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -619,8 +859,8 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</span></code></pre></td></tr></table></div></figure>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -656,7 +896,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 </div>
   
   
@@ -687,14 +927,14 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
   <div class="entry-content"><h3 id="preface">Preface</h3>
 <p>Writing a method to generate the nth Fibonacci number is not a rocket science. The recursive formula for that is very simple and can be written following:</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">fibonacci(0) = 0
 </span><span class="line">fibonacci(1) = 1
-</span><span class="line">fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)</span></code></pre></td></tr></table></div></figure>
 <p>The n-th Fibonacci number is just the sum of two previous Fibonacci numbers and the first and second formula are our ‘base cases’. Based on this we can write a method <code>public static long slowFibonacci(int n)</code></p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -712,9 +952,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="k">return</span> <span class="nf">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">slowFibonacci</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">);</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>You have already noticed that instead of writing fibonacci I have written slowFibonacci. There is a reason for that and You may guessing that probably we can do something with this method to make it much faster and You have right. There is a quite usful programming method which we can use to improve the performance of this method. However before doing this let’s try to write a method call stack trace for let’s say 5th Fibonacci number.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -758,7 +998,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="o">--</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
 </span><span class="line"><span class="o">-</span><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
 </span><span class="line"><span class="n">slowFibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>The number of dashes means how many delayed operations is on the stack. Dash followed by the ‘&gt;’ (‘-&gt;’) means that the operation can be computed (return value is provided) and removed from the stack.</p>
 
 <p>You can notice that the same operations are evaluated many times, for example <code>slowFibonacci(2)</code> is computed 3 times. It is obvious waste of cpu resources. What can we do to use previously computed value instead of evaluating it again and again ?</p>
@@ -769,7 +1009,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 <p>What does it mean for us ? Each already solved subproblem (computed i-th Fibonacci number) can be saved in the let’s say global array and if the same solution is needed just simply look for it in that table.</p>
 
 <h3 id="coding">Coding</h3>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -831,9 +1071,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>Call stack trace for this tuned method is following</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -859,11 +1099,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">3</span>
 </span><span class="line"><span class="o">-</span><span class="n">fibonacci</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">2</span>
 </span><span class="line"><span class="n">fibonacci</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">5</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>You can notice that the number of calls is much smaller then for <code>slowFibonacci(5)</code>.</p>
 
 <p>At the end I would like to present a simple benchmark</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -875,7 +1115,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="nl">Duration:</span> <span class="mi">0</span><span class="o">,</span><span class="mi">000000</span><span class="n">s</span>
 </span><span class="line"><span class="nf">slowFibonacci</span><span class="o">(</span><span class="mi">45</span><span class="o">)</span> <span class="o">=</span> <span class="mi">1134903170</span>
 </span><span class="line"><span class="nl">Duration:</span> <span class="mi">7</span><span class="o">,</span><span class="mi">893000</span><span class="n">s</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 <p>To compute 45-th Fibonacci number for <code>fibonacci</code> it takes 2ms and for <code>slowFibonacci</code> it takes 7.8s so a savings are significant.</p>
 </div>
   
@@ -907,7 +1147,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
   <div class="entry-content"><h3 id="problem">Problem</h3>
 <p>Write a method <code>public static Set&lt;Set&lt;String&gt;&gt; subsets(Set&lt;String&gt; set)</code> which returns all subsets of a given set. From mathematics point of view we need to compute the power set of the given set. The number of such subsets can be easily computed because it just 2 to the power of ‘number of element in a set’. So for a set consisting of <code>3</code> elements it is 8.  To proceed let’s write some examples.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -924,10 +1164,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">subsets({'a','c'}) = {} + {'a'} + {'c'} + {'a','c'}
 </span><span class="line">subsets({'a','b'}) = {} + {'a'} + {'b'} + {'a','b'}
 </span><span class="line">
-</span><span class="line">subsets({'a', 'b', 'c'}) = {} + {'a'} + {'a','b'} + {'a','c'} + {'a','b','c'} + {'b'} + {'b','c'} + {'c'}</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">subsets({'a', 'b', 'c'}) = {} + {'a'} + {'a','b'} + {'a','c'} + {'a','b','c'} + {'b'} + {'b','c'} + {'c'}</span></code></pre></td></tr></table></div></figure>
 
 <p>Based on that we can notice a following pattern</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -940,10 +1180,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">subsets({'b','c'})     = subset({'b'}) + subset({'c'}) + {'b','c'}
 </span><span class="line">subsets({'a','c'})     = subset({'a'}) + subset({'c'}) + {'a','c'}
 </span><span class="line">subsets({'a','b'})     = subset({'a'}) + subset({'b'}) + {'a','b'}
-</span><span class="line">subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">subsets({'a','b','c'}) = subsets({'b','c'}) + subsets({'a','c'}) + subsets({'a','b'}) + {'a','b','c'}</span></code></pre></td></tr></table></div></figure>
 
 <h3 id="coding">Coding</h3>
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -989,9 +1229,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1009,9 +1249,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sub</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1045,7 +1285,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
 </span><span class="line"><span class="o">[</span><span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
 </span><span class="line"><span class="o">[</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">c</span><span class="o">,</span> <span class="n">d</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 </div>
   
   
@@ -1078,7 +1318,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 <p>I bet that everyone who is reading this know how to write a method to revers the string, but does everyone know how to do it using recursion ? To face such puzzle it it always a good idea to write first some results for given arguments and try to find a pattern. There always must be a ‘base case’ which can’t be divided into subproblems. We also need to discover a procedure which solves bigger problem using its smaller subproblems.</p>
 
 <p>So let’s say we need to write a method <code>public static String revers(String arg)</code> which for a given argument returns a reversed string. Below I have written some examples.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1087,9 +1327,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">revers('ab')    = 'ba'
 </span><span class="line">revers('abc')   = 'cba'
 </span><span class="line">revers('abcd')  = 'dcba'
-</span><span class="line">revers('abcde') = 'edcba'</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">revers('abcde') = 'edcba'</span></code></pre></td></tr></table></div></figure>
 <p>Based on that we can already write a recursive procedure.</p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1098,14 +1338,14 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">revers('ab')    = 'b'|revers('a')
 </span><span class="line">revers('abc')   = 'c'|revers('ab') 
 </span><span class="line">revers('abcd')  = 'd'|revers('abc')
-</span><span class="line">revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">revers('abcde') = 'e'|revers('abcd')</span></code></pre></td></tr></table></div></figure>
 <p>To compute a reversed string for <code>'a'</code> we need to return that string and it is our ‘base case’. In other cases to compute a reversed string we need to get the last char and concatenate it with the reversed string without that last character.</p>
 
 <p>I think we are ready to write some code.</p>
 
 <h3 id="coding">Coding</h3>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1121,9 +1361,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">revers</span><span class="o">(</span><span class="n">arg</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">arg</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1137,9 +1377,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcd&quot;</span><span class="o">));</span>
 </span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">revers</span><span class="o">(</span><span class="s">&quot;abcde&quot;</span><span class="o">));</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1149,7 +1389,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="n">cba</span>
 </span><span class="line"><span class="n">dcba</span>
 </span><span class="line"><span class="n">edcba</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 </div>
   
@@ -1186,7 +1426,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 <p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let’s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
 
 <p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code></p>
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1199,11 +1439,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">perm('ab')  = 'ab', 'ba'
 </span><span class="line">perm('ac')  = 'ac', 'ca'
 </span><span class="line">perm('bc')  = 'bc', 'cb'
-</span><span class="line">perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' </span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' </span></code></pre></td></tr></table></div></figure>
 
 <p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1216,7 +1456,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
 </span><span class="line">perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
 </span><span class="line">perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
-</span><span class="line">perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')</span></code></pre></td></tr></table></div></figure>
 
 <p>where <code>|</code> means a concatenation of two strings.</p>
 
@@ -1224,7 +1464,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
 <h3 id="coding">Coding</h3>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1276,9 +1516,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">    <span class="k">return</span> <span class="n">permutations</span><span class="o">;</span>
 </span><span class="line">
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1294,9 +1534,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">perm</span><span class="o">);</span>
 </span><span class="line">    <span class="o">}</span>
 </span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -1310,7 +1550,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </span><span class="line"><span class="n">bca</span>
 </span><span class="line"><span class="n">cab</span>
 </span><span class="line"><span class="n">cba</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 </div>
   
   
@@ -1329,32 +1569,12 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 <aside class="sidebar">
   
     <section>
-  <h1>About Me</h1>
-  <p>Sławomir Śledź, jee consultant at <a href="https://www.hays.pl/">Hays</a></p>
-</section>
-
-<section>
-	<span>
-		<img src="http://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Gravatar of Sławomir Śledź " title="Gravatar of Sławomir Śledź" />
-	</span>
-</section>
-<section>
-    <h1>Certificates</h1>
-    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="58fa8011-f1da-4a68-846c-b869ee04012b"></div>
-    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="d5492e6e-9cb6-4665-b131-973bf8204190"></div>
-    <script type="text/javascript">
-        (function() {
-            var s = document.createElement('script');
-            s.type = 'text/javascript';
-            s.async = true;
-            s.src = '//www.youracclaim.com/assets/utilities/embed.js';
-            var o = document.getElementsByTagName('script')[0];
-            o.parentNode.insertBefore(s, o);
-        })();
-    </script>
-</section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/08/learning-scala-my-insights/">Learning Scala - My Insights</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/07/25/playing-with-scala-writing-function-flatten/">Playing With Scala - Writing Function : Flatten</a>
@@ -1372,39 +1592,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
         <a href="/blog/2016/05/15/oracle-certified-professional-java-se-8-programmer-1z0-809-exam-review/">Oracle Certified Professional, Java SE 8 Programmer 1Z0-809 Exam - Review</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/05/15/oracle-certified-associate-java-se-8-programmer-1z0-808-exam-review/">Oracle Certified Associate Java SE 8 Programmer 1Z0-808 Exam - Review</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 122.5%'>learning(3)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 107.5%'>scala(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
-</section>
-
-<section>
-<h1>Stack Overflow</h1>
-<a href="http://stackoverflow.com/users/3726554/slavik" target="_blank">
-<img src="http://stackoverflow.com/users/flair/3726554.png?theme=clean" width="208" height="58" alt="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-</a>
-</section>
-
-<section class='goodreads-aside'>
-  <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
-  <ul>
-    <li>
-            <a href='http://www.goodreads.com/user_status/show/102737592' target='blank'>Slavik is finished with Learning Shell Scripting</a>
-            <span class='tiny'>(2016-07-20)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/99018464' target='blank'>Slavik is 32% done with Programming Scala</a>
-            <span class='tiny'>(2016-06-09)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/96750386' target='blank'>Slavik is 27% done with Scala for the Impatient</a>
-            <span class='tiny'>(2016-05-15)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/96750258' target='blank'>Slavik is 24% done with Java Concurrency in</a>
-            <span class='tiny'>(2016-05-15)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/96750108' target='blank'>Slavik is 20% done with Programming for the Java¿</a>
-            <span class='tiny'>(2016-05-15)</span></li>
-  </ul>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 115.0%'>scala(2)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
@@ -1436,6 +1628,40 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+<section>
+  <h1>About Me</h1>
+  <p>Sławomir Śledź, jee consultant at <a href="https://www.hays.pl/">Hays</a></p>
+</section>
+
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Gravatar of Sławomir Śledź " title="Gravatar of Sławomir Śledź" />
+	</span>
+</section>
+
+<section>
+<h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/3726554/slavik" target="_blank">
+<img src="http://stackoverflow.com/users/flair/3726554.png?theme=clean" width="208" height="58" alt="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+</section>
+
+<section class='goodreads-aside'>
+  <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
+  <ul>
+    <li>
+            <a href='http://www.goodreads.com/user_status/show/113261596' target='blank'>Slavik is finished with Learning Spark</a>
+            <span class='tiny'>(2016-11-19)</span></li><li>
+            <a href='http://www.goodreads.com/user_status/show/113261595' target='blank'>Slavik is finished with Learning Spark</a>
+            <span class='tiny'>(2016-11-19)</span></li><li>
+            <a href='http://www.goodreads.com/user_status/show/112541249' target='blank'>Slavik is finished with Programming in Scala</a>
+            <span class='tiny'>(2016-11-10)</span></li><li>
+            <a href='http://www.goodreads.com/user_status/show/111361458' target='blank'>Slavik is finished with Getting Started with SBT</a>
+            <span class='tiny'>(2016-10-26)</span></li><li>
+            <a href='http://www.goodreads.com/user_status/show/111359875' target='blank'>Slavik is 72% done with Getting Started with SBT</a>
+            <span class='tiny'>(2016-10-26)</span></li>
+  </ul>
+</section>
 
 
 <section class="googleplus">
@@ -1448,7 +1674,21 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 </section>
 
 
-
+<section>
+    <h1>Certificates</h1>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="58fa8011-f1da-4a68-846c-b869ee04012b"></div>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="d5492e6e-9cb6-4665-b131-973bf8204190"></div>
+    <script type="text/javascript">
+        (function() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = '//www.youracclaim.com/assets/utilities/embed.js';
+            var o = document.getElementsByTagName('script')[0];
+            o.parentNode.insertBefore(s, o);
+        })();
+    </script>
+</section>
   
 </aside>
 
