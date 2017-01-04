@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Bash | My Programmer's Road]]></title>
+  <link href="http://ssledz.github.io/blog/categories/bash/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2017-01-04T16:43:11+01:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How to Pass Arrays as Parameters in Bash]]></title>
+    <link href="http://ssledz.github.io/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/"/>
+    <updated>2017-01-04T15:34:05+01:00</updated>
+    <id>http://ssledz.github.io/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash</id>
+    <content type="html"><![CDATA[<p>Let’s say we have a function in bash which simply iterates through all elements from array and prints them on 
+the standard output.</p>
+
+<p><code>
+printElems() {
+  for e in ${arr[@]}; do 
+    echo $e
+  done
+}
+</code></p>
+
+<p>We can call this function in the following way</p>
+
+<p><code>
+arr=(el1 el2 el3 el4)
+printElems
+</code></p>
+
+<p>If we want to call function with other parameters we need to update arr variable accordingly</p>
+
+<p><code>
+arr=(el1 el2 el3 el4)
+printElems
+arr=(el5 el6 el7 el8)
+</code></p>
+
+<p>So far so good. But what if we want to make our <code>printElems</code> function generic and put it to the separate file. Is
+ it wise 
+enough to stay with our solution to maintain <code>arr</code> variable in global scope ? The answer is - it depends on the size
+ of 
+the project. It is obvious that maintaining global variables is cumbersome in projects which are getting bigger and 
+bigger during their lifetime. So that is there any smart way to improve our function to not pollute the global scope ?</p>
+
+<p>The answer is yes, and in this task will help us bash feature called ‘<strong>indirect variable reference</strong>’.</p>
+
+<p>Below is an improved version of <code>printElem</code> function. A new function (<code>printElems2</code>) is not dealing with global 
+variable at
+ all. In fact the function receives a variable name and thx to the indirect reference operator <code>$(!variable_name)</code>
+ the value of the function parameter is set to local variable called <code>my_arr</code>.</p>
+
+<p><code>
+printElems2() {
+  local my_arr=${!1}
+  for e in ${my_arr[@]}; do 
+    echo $e
+  done
+}
+</code></p>
+
+<p>```
+arr1=(el1 el2 el3 el4)
+arr2=(el5 el6 el7 el8)</p>
+
+<p>printElems2 arr1[@]
+printElems2 arr2[@]</p>
+
+<p>```</p>
+
+<p>More information about ‘indirect variable reference’ feature you 
+can find <a href="http://www.tldp.org/LDP/abs/html/ivr.html#IVRREF">here</a></p>
+]]></content>
+  </entry>
+  
+</feed>

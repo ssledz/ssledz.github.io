@@ -9,22 +9,11 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Below can be found a simple sbt setup for a spark application in scala. Directory layout 1
+  <meta name="description" content="Let’s say we have a function in bash which simply iterates through all elements from array and prints them on the standard output. 1
 2
 3
 4
-5
-6
-7
-8
-9
-10
-11
-find .
-.
-./build.sbt
-./src/main
-./ &hellip;">
+5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +97,105 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/">How to Pass Arrays as Parameters in Bash</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-01-04T15:34:05+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>3:34 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Let’s say we have a function in bash which simply iterates through all elements from array and prints them on 
+the standard output.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">printElems() {
+</span><span class="line">  for e in ${arr[@]}; do 
+</span><span class="line">    echo $e
+</span><span class="line">  done
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure>
+
+<p>We can call this function in the following way</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">arr=(el1 el2 el3 el4)
+</span><span class="line">printElems</span></code></pre></td></tr></table></div></figure>
+
+<p>If we want to call function with other parameters we need to update arr variable accordingly</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">arr=(el1 el2 el3 el4)
+</span><span class="line">printElems
+</span><span class="line">arr=(el5 el6 el7 el8)</span></code></pre></td></tr></table></div></figure>
+
+<p>So far so good. But what if we want to make our <code>printElems</code> function generic and put it to the separate file. Is
+ it wise 
+enough to stay with our solution to maintain <code>arr</code> variable in global scope ? The answer is - it depends on the size
+ of 
+the project. It is obvious that maintaining global variables is cumbersome in projects which are getting bigger and 
+bigger during their lifetime. So that is there any smart way to improve our function to not pollute the global scope ?</p>
+
+<p>The answer is yes, and in this task will help us bash feature called ‘<strong>indirect variable reference</strong>’.</p>
+
+<p>Below is an improved version of <code>printElem</code> function. A new function (<code>printElems2</code>) is not dealing with global 
+variable at
+ all. In fact the function receives a variable name and thx to the indirect reference operator <code>$(!variable_name)</code>
+ the value of the function parameter is set to local variable called <code>my_arr</code>.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">printElems2() {
+</span><span class="line">  local my_arr=${!1}
+</span><span class="line">  for e in ${my_arr[@]}; do 
+</span><span class="line">    echo $e
+</span><span class="line">  done
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">arr1=(el1 el2 el3 el4)
+</span><span class="line">arr2=(el5 el6 el7 el8)
+</span><span class="line">
+</span><span class="line">printElems2 arr1[@]
+</span><span class="line">printElems2 arr2[@]
+</span></code></pre></td></tr></table></div></figure>
+
+<p>More information about ‘indirect variable reference’ feature you 
+can find <a href="http://www.tldp.org/LDP/abs/html/ivr.html#IVRREF">here</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1447,47 +1535,6 @@ block of code and type:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/11/27/git-svn-kata-first-release/">Git-svn Kata - First Release</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-11-27T02:15:49+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:15 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I have just released first version of <code>git-svn</code> kata. It is good starting point for those who prefer to use git but are stuck with svn. At the moment there are only two kata, but soon will be much more. To start just clone my <a href="https://github.com/ssledz/gitsvnkata/tree/master">repo</a></p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/gitsvnkata.git</span></code></pre></td></tr></table></div></figure>
-
-<p>and run first one</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">cd kata-1-checkout-svn-project-std-layout
-</span><span class="line">./start-kata.sh</span></code></pre></td></tr></table></div></figure>
-
-<p>All solutions are available <a href="https://github.com/ssledz/gitsvnkata/tree/kata-solutions">here</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1501,6 +1548,10 @@ block of code and type:</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/">How to Pass Arrays as Parameters in Bash</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2017/01/04/simple-sbt-setup-for-spark-project/">Simple Sbt Setup for Spark Project</a>
@@ -1518,15 +1569,11 @@ block of code and type:</p>
         <a href="/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a/">Howto Going Back to the Beginning of the Line in Tmux After Remapping Prefix to C-a</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/05/16/hot-swap-in-java-with-dcevm-and-hotswapagent-a-jrebel-free-alternative/">Hot Swap in Java With DCEVM and HotSwapAgent - a JRebel Free Alternative</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 122.5%'>scala(3)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 107.5%'>bash(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 122.5%'>scala(3)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
