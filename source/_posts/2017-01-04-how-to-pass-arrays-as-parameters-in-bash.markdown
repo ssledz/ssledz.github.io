@@ -32,14 +32,16 @@ printElems
 arr=(el5 el6 el7 el8)
 ```
 
-So far so good. But what if we want to make our printElems function generic and put it to the separate file. Is it wise 
-enough to stay with our solution to maintain arr variable in global scope ? The answer is - it depends on the size of 
+So far so good. But what if we want to make our ```printElems``` function generic and put it to the separate file. Is
+ it wise 
+enough to stay with our solution to maintain ```arr``` variable in global scope ? The answer is - it depends on the size
+ of 
 the project. It is obvious that maintaining global variables is cumbersome in projects which are getting bigger and 
 bigger during their lifetime. So that is there any smart way to improve our function to not pollute the global scope ?
 
-The answer is yes, and in this task will help us bash feature called 'indirect variable reference'.
+The answer is yes, and in this task will help us bash feature called '**indirect variable reference**'.
 
-Below is an improved version of ```printElem``` function. A new function~(```printElems2```) is not dealing with global 
+Below is an improved version of ```printElem``` function. A new function (```printElems2```) is not dealing with global 
 variable at
  all. In fact the function receives a variable name and thx to the indirect reference operator ```$(!variable_name)```
  the value of the function parameter is set to local variable called ```my_arr```.
