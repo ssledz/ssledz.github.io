@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Simple Sbt Setup For Spark Project"
-date: 2017-01-04 13:03:14 +0100
+date: 2017-01-04 18:03:14 +0100
 comments: true
 categories: [scala, spark]
 ---

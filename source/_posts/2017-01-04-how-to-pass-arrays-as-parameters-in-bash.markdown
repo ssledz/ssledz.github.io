@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "How To Pass Arrays As Parameters in Bash"
-date: 2017-01-04 15:34:05 +0100
+date: 2017-01-04 20:34:05 +0100
 comments: true
 categories: [bash]
 ---
