@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-04T16:43:11+01:00</updated>
+  <updated>2017-01-04T16:51:13+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -37,35 +37,7 @@ flatten(List(List(1, 1), 2, List(3, List(5, 8))))
 List[Any] = List(1, 1, 2, 3, 5, 8)
 </code></p>
 
-<p><div><script src='https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js'></script>
-<noscript><pre><code>/**
-  * Created by ssledz on 25.07.16.
-  */
-object Flatten {
-
-  def flatten(xs: List[Any]): List[Any] = xs match {
-    case List() =&gt; Nil
-    case y :: ys =&gt; {
-      y match {
-        case z :: zs =&gt; flatten(z :: zs)
-        case _ =&gt; List(y)
-      }
-    } ::: flatten(ys)
-    case _ =&gt; List(xs)
-
-  }
-
-  def main(args: Array[String]) {
-    List(
-      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
-      flatten(List(1, 2, 3)),
-      flatten(List(List(1, 2), 3, List(4))),
-      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
-    ) foreach println
-  }
-
-}</code></pre></noscript></div>
-</p>
+<p>{% gist fa5227685dda83e8b895ac9578a206b6 %}</p>
 
 <p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
 for this course !</p>

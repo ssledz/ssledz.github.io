@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vim | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/vim/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-04T16:43:11+01:00</updated>
+  <updated>2017-01-04T16:51:13+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -27,7 +27,7 @@ introduce folding - very nice and useful feature.</p>
 <p>Folding lets you define which parts of the file you can see. For example in a method you can hide everything inside
 curly braces letting only definition of function be visible.</p>
 
-<p><img class="center" src="/images/custom/vim/vim-folding1.png"></p>
+<p>{% img center /images/custom/vim/vim-folding1.png %}</p>
 
 <p>When you use fold command, <strong>Vim</strong> hides given text and leaves in its place a one-line placeholder. The hidden text now
 can be managed by this placeholder. In a screenshot above, you can spot four folded methods~(there are four one-line
@@ -146,7 +146,7 @@ public static long fibonacci(int n) {</p>
 
 <p>The result should be similar to the one shown below</p>
 
-<p><img class="center" src="/images/custom/vim/vim-folding2.png"></p>
+<p>{% img center /images/custom/vim/vim-folding2.png %}</p>
 
 <p>Let’s try more sofisticated command - fold block of code. Position the cursor over the beginning or ending brace of a
 block of code and type:</p>
@@ -155,7 +155,7 @@ block of code and type:</p>
 zf%
 </code></p>
 
-<p><img class="center" src="/images/custom/vim/vim-folding3.png"></p>
+<p>{% img center /images/custom/vim/vim-folding3.png %}</p>
 
 <p>There is a one thing to note. Character following <code>zf</code> command - <code>%</code> is a motion command that moves cursor to the matching brace.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Bash | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-04T16:43:11+01:00</updated>
+  <updated>2017-01-04T16:51:13+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[How to Pass Arrays as Parameters in Bash]]></title>
     <link href="http://ssledz.github.io/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/"/>
-    <updated>2017-01-04T15:34:05+01:00</updated>
+    <updated>2017-01-04T20:34:05+01:00</updated>
     <id>http://ssledz.github.io/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash</id>
     <content type="html"><![CDATA[<p>Let’s say we have a function in bash which simply iterates through all elements from array and prints them on 
 the standard output.</p>
