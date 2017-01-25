@@ -30,6 +30,7 @@ If we want to call function with other parameters we need to update arr variable
 arr=(el1 el2 el3 el4)
 printElems
 arr=(el5 el6 el7 el8)
+printElems
 ```
 
 So far so good. But what if we want to make our ```printElems``` function generic and put it to the separate file. Is
