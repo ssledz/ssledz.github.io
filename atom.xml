@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-04T16:50:20+01:00</updated>
+  <updated>2017-01-25T03:59:17+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -336,7 +336,7 @@ object Flatten {
     case List() =&gt; Nil
     case y :: ys =&gt; {
       y match {
-        case z :: zs =&gt; flatten(z :: zs)
+        case z: List[Any] =&gt; flatten(z)
         case _ =&gt; List(y)
       }
     } ::: flatten(ys)

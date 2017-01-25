@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Spark | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/spark/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-04T16:51:13+01:00</updated>
+  <updated>2017-01-25T03:59:17+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -38,17 +38,24 @@ find .
 <p>```</p>
 
 <p>build.sbt
-```
-name := “spark-simple-app”</p>
-
-<p>version := “1.0”</p>
-
-<p>scalaVersion := “2.11.8”</p>
-
-<p>val sparkVersion = “2.1.0”</p>
-
-<p>libraryDependencies += “org.apache.spark” %% “spark-core” % sparkVersion
-```</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>name := “spark-simple-app”&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;version := “1.0”&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;scalaVersion := “2.11.8”&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;val sparkVersion = “2.1.0”&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;libraryDependencies += “org.apache.spark” %% “spark-core” % sparkVersion</span></code></pre></td></tr></table></div></figure></p>
 
 <p>log4j.properties
 <code>
@@ -60,33 +67,56 @@ log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: 
 </code></p>
 
 <p>WordCountExample.scala
-```
-package pl.softech</p>
-
-<p>import org.apache.spark.{SparkConf, SparkContext}</p>
-
-<p>object WordCountExample {</p>
-
-<p>def main(args: Array[String]) {</p>
-
-<pre><code>val conf = new SparkConf().setAppName("spark-simple-app").setMaster("local[*]")
-
-val sc = new SparkContext(conf)
-
-val textFile = sc.textFile("src/main/resources/words.txt")
-
-val counts = textFile.flatMap(line =&gt; line.split(" "))
-  .map(word =&gt; (word, 1))
-  .reduceByKey(_ + _)
-  .sortBy(-_._2)
-
-printf(counts.collect().mkString("\n"))
-
-sc.stop()   }
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package pl.softech&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;import org.apache.spark.{SparkConf, SparkContext}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;object WordCountExample {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;def main(args: Array[String]) {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;val conf = new SparkConf().setAppName("spark-simple-app").setMaster("local[*]")
+</span><span class='line'>
+</span><span class='line'>val sc = new SparkContext(conf)
+</span><span class='line'>
+</span><span class='line'>val textFile = sc.textFile("src/main/resources/words.txt")
+</span><span class='line'>
+</span><span class='line'>val counts = textFile.flatMap(line =&gt; line.split(" "))
+</span><span class='line'>  .map(word =&gt; (word, 1))
+</span><span class='line'>  .reduceByKey(_ + _)
+</span><span class='line'>  .sortBy(-_._2)
+</span><span class='line'>
+</span><span class='line'>printf(counts.collect().mkString("\n"))
+</span><span class='line'>
+</span><span class='line'>sc.stop()   }
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}</span></code></pre></td></tr></table></div></figure></p>
 
 <p>Sources can be found <a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/spark-simple-template">here</a></p>
 ]]></content>
