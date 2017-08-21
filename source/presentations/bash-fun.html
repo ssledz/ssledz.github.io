@@ -3,10 +3,10 @@ layout: slide
 title: "Functional programming in Bash"
 reveal:
     theme: league
-    controls: false
-    progress: false
+    controls: true
+    progress: true
     history: true
-    transition: default
+    transition: slide
     center: true
 ---
 
@@ -50,5 +50,118 @@ reveal:
     </section>
 </section>
 
-<section>Slide 1</section>
+<section>
+
+    <section>
+
+        <h3>Bash</h3>
+        <p>
+            Bash is an sh-compatible command language interpreter that executes commands read
+            from the standard input or from a file.
+        </p>
+
+        <aside class="notes">
+            Programming language through which a user communicates with the operating system or an application
+        </aside>
+
+    </section>
+
+    <section>
+        <h3>Strong sides</h3>
+
+        <ul>
+            <li>easy to learn</li>
+            <li>available out of the box on most linux distributions</li>
+            <li>piping</li>
+            <li>flexible i/o redirection</li>
+            <li>painless concurrency</li>
+            <li>simple type system (everything is a string)</li>
+            <li>local variables, read only variables (but who is using them ?)</li>
+        </ul>
+
+    </section>
+
+    <section>
+        <h3>Weak sides</h3>
+
+        <ul>
+            <li>arrays suck</li>
+            <li>associative arrays (dictionaries) suck</li>
+            <li>syntax for if, for, while, case,... statements is hard to remember</li>
+            <li>many traps for beginners</li>
+            <li>is slow</li>
+            <li>global variables</li>
+            <li>debugging is painful</li>
+            <li>functions can only return numbers (status code)</li>
+        </ul>
+
+        <aside class="notes">
+            <ul>
+                <li>associative arrays since bash 4</li>
+            </ul>
+        </aside>
+
+    </section>
+    <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+        <h4>Common mistakes</h4>
+        <p>
+            What does echo should print ?
+        </p>
+        <pre><code class="hljs" data-trim contenteditable>
+                cnt=0; cat /proc/meminfo | while read line; do
+
+                    cnt=$((cnt+1))
+
+                done
+
+                echo $cnt
+        </code></pre>
+    </section>
+
+    <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+        <h4>Common mistakes</h4>
+        <p>
+            Now echo prints correctly the number of lines of the meminfo pseudo file.
+        </p>
+        <pre><code class="hljs" data-trim contenteditable>
+                cnt=0; while read line; do
+
+                    cnt=$((cnt+1))
+
+                done < /proc/meminfo
+
+                echo $cnt
+        </code></pre>
+    </section>
+
+    <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+        <h4>Common mistakes</h4>
+        <p>
+            Does it print 'xxx' ?
+        </p>
+        <pre><code class="hljs" data-trim contenteditable>
+                echo -n 'xxx' | while read line; do
+
+                    echo $line;
+
+                done
+        </code></pre>
+    </section>
+
+    <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+        <h4>Common mistakes</h4>
+        <p>
+            Now it prints 'xxx' !
+        </p>
+        <pre><code class="hljs" data-trim contenteditable>
+                 echo -n 'xxx' | while read line || [ -n "$line" ]; do
+
+                    echo $line;
+
+                 done
+        </code></pre>
+    </section>
+
+</section>
+
 <section>Slide 2</section>

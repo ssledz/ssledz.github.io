@@ -55,12 +55,13 @@
                 transition: '{{ page.reveal.transition }}', // none/fade/slide/convex/concave/zoom
 
 				dependencies: [
-                    { src: '/assets/reveal.js-3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-                    { src: '/assets/reveal.js-3.5.0/plugin/zoom-js/zoom.js', async: true },
-					{ src: '/assets/reveal.js-3.5.0/plugin/markdown/marked.js' },
-					{ src: '/assets/reveal.js-3.5.0/plugin/markdown/markdown.js' },
-					{ src: '/assets/reveal.js-3.5.0/plugin/notes/notes.js', async: true },
-					{ src: '/assets/reveal.js-3.5.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+	                { src: '/assets/reveal.js-3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+    	            { src: '/assets/reveal.js-3.5.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        	        { src: '/assets/reveal.js-3.5.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            	    { src: '/assets/reveal.js-3.5.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/zoom-js/zoom.js', async: true },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/notes/notes.js', async: true }
 				]
 			});
 		</script>
