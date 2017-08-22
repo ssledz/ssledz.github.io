@@ -257,27 +257,27 @@ reveal:
         Available on GitHub <i class="fa fa-github"></i>&nbsp;<a href="https://github.com/ssledz/bash-fun">bash-fun</a>
     </p>
 
-    <pre class="fragment current-visible"><code class="hljs" data-trim contenteditable>
+    <div class="fragment fade-up">
+        <p>
+            download <a href="https://raw.githubusercontent.com/ssledz/bash-fun/master/src/fun.sh">fun.sh</a> and
+        </p>
+
+        <pre><code class="hljs" data-trim contenteditable>
+            #!/bin/bash
+            . fun.sh
+
+            seq 1 4 | sum
+        </code></pre>
+    </div>
+
+    <pre class="fragment fade-up"><code class="hljs" data-trim contenteditable>
         #!/bin/bash
         . <(curl -Ls goo.gl/8JeMbR)
 
         seq 1 4 | sum
     </code></pre>
 
-    <div class="fragment current-visible">
-    <p>
-        download <a href="https://raw.githubusercontent.com/ssledz/bash-fun/master/src/fun.sh">fun.sh</a> and
-    </p>
-
-    <pre><code class="hljs" data-trim contenteditable>
-        #!/bin/bash
-        . fun.sh
-
-        seq 1 4 | sum
-    </code></pre>
-    </div>
-
-    <div class="fragment current-visible">
+    <div class="fragment fade-up">
         <pre><code class="hljs" data-trim contenteditable>
             #!/bin/bash
             . <(test -e fun.sh || curl -Ls goo.gl/8JeMbR > fun.sh; cat fun.sh)
@@ -289,30 +289,234 @@ reveal:
 </section>
 
 <section>
-    <h4>Example of usage</h4>
+    <h3>fun-bash a quick start...</h3>
+
+    <p>
+        You can use <b>bash-import</b> to load <b>bash-fun</b>
+    </p>
+
     <pre><code class="hljs" data-trim contenteditable>
+        #!/bin/bash
+
+        BASH_REP=https://raw.githubusercontent.com/ssledz/bash-repo/master
+
+        . <(curl -s $BASH_REP/__import.sh 2>/dev/null)
+
+        import pl.softech/fun/1.0.0 as f
+
+        seq 1 4 | f.sum
+    </code></pre>
+
+    <p>
+        Available on GitHub <i class="fa fa-github"></i>&nbsp;
+        <a href="https://github.com/ssledz/bash-import">bash-import</a>
+    </p>
+</section>
+
+<section>
+    <section>
+        <h4>Example of usage</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+            #!/bin/bash
+            . fun.sh
+            backup_dir=/home/adserver/backup
+            max_backups=10 # adserver-active-1080-2017-05-22T134440
+
+            prepare() {
+                local a=$1; echo $a
+                echo $a | strip adserver-active- | strip 1081- | strip 1080-
+            }
+
+            ls -1 $backup_dir | grep adserver-active- \
+                | map λ a . 'prepare $a' \
+                | buff λ a b . 'date=$(echo $b | cut -dT -f1); tup $a $date' \
+                | sort -t ',' -k2 -r | drop $max_backups \
+                | map λ a . 'echo -n $backup_dir/; tupl $a' | xargs rm -rf
+        </code></pre>
+    </section>
+    <section>
+        <h4>Example of usage - test data</h4>
+        <pre><code class="hljs" data-trim contenteditable>
 #!/bin/bash
+xargs mkdir << EOF
+  adserver-active-1080-2017-05-22T134440
+  adserver-active-1080-2017-05-23T143705
+  adserver-active-1080-2017-05-29T110500
+  adserver-active-1080-2017-05-30T110812
+  adserver-active-1080-2017-06-20T130354
+EOF
+        </code></pre>
+    </section>
+</section>
 
-. fun.sh
+<section>
+    <h4>List of available functions</h4>
+    <p>v<b>1.0.1</b></p>
+    <table>
+        <tbody>
+        <tr>
+            <td>add</td>
+            <td>append</td>
+            <td>buff</td>
+            <td>curry</td>
+            <td>div</td>
+            <td>drop</td>
 
-backup_dir=/home/adserver/backup
-max_backups=10
+        </tr>
+        <tr>
+            <td>factorial</td>
+            <td>filter</td>
+            <td>foldl</td>
+            <td>foldr</td>
+            <td>head</td>
+            <td>join</td>
+        </tr>
+        <tr>
+            <td>lambda</td>
+            <td>last</td>
+            <td>list</td>
+            <td>map</td>
+            <td>mod</td>
+            <td>mul</td>
+        </tr>
+        <tr>
+            <td>prepend</td>
+            <td>product</td>
+            <td>ret</td>
+            <td>revers_str</td>
+            <td>revers</td>
+            <td>scanl</td>
+        </tr>
+        <tr>
+            <td>splitc</td>
+            <td>strip</td>
+            <td>sub</td>
+            <td>sum</td>
+            <td>tail</td>
+            <td>take</td>
+        </tr>
+        <tr>
+            <td>try</td>
+            <td>tupl</td>
+            <td>tupr</td>
+            <td>tup</td>
+            <td>tupx</td>
+            <td>unlist</td>
+        </tr>
+        <tr>
+            <td>zip</td>
+            <td>λ</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
 
-ls -1 $backup_dir | grep adserver-active- \
-  | map λ a . 'echo $a; echo $a | strip adserver-active-1080- | strip adserver-active-1081-' \
-  | buff λ a b . 'date=$(echo $b | cut -dT -f1); tup $a $date' \
-  | sort -t ',' -k2 -r \
-  | drop $max_backups \
-  | map λ a . 'echo -n $backup_dir/; tupl $a' \
-  | xargs rm -rf
-    </code></pre>
+<section>
+    <section>
+        <h4>Functions list/unlist</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Functions take/drop/tail/head/last</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function join</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function map</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Function filter</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function foldl/foldr</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Functions tup/tupl/tupr</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function buff</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function zip</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function curry</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function try</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+    <section>
+        <h4>Function scanl</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+TODO
+        </code></pre>
+    </section>
+</section>
+
+<section>
+    <h4>fun-sh core concept</h4>
     <pre><code class="hljs" data-trim contenteditable>
-> ls  /home/adserver/backup | head -5
-
-adserver-active-1080-2017-05-22T134440
-adserver-active-1080-2017-05-23T143705
-adserver-active-1080-2017-05-29T110500
-adserver-active-1080-2017-05-30T110812
-adserver-active-1080-2017-06-20T130354
+lambda() {
+  lam() {
+    local arg
+    while [[ $# -gt 0 ]]; do
+      arg="$1"; shift
+      if [[ $arg = '.' ]]; then
+        echo "$@"
+        return
+      else
+        echo "read $arg;"
+      fi
+    done
+  }
+  eval $(lam "$@")
+}
     </code></pre>
+</section>
+
+<section>
+    <h2>Resources</h2>
+    <ul>
+        <li><a href="http://quasimal.com/posts/2012-05-21-funsh.html">Functional programming in sh</a></li>
+        <li><a href="?print-pdf" target="_blank">slides</a></li>
+        <li><a href="?print-pdf&showNotes=true" target="_blank">slides & speaker notes</a></li>
+    </ul>
+</section>
+
+<section>
+    <p>Thank you -:)</p>
 </section>
