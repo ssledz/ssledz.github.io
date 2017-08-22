@@ -177,12 +177,142 @@ reveal:
 <section>
     <section>
         <h3>Functional programming</h3>
-        <p>TODO : shortly about functional programming</p>
+        <p>In computer science, <em>functional programming</em> is a programming paradigm—a style of building the structure
+            and elements of computer programs—that treats computation as the evaluation of mathematical
+            functions and avoids changing-state and mutable data.</p>
+
+        <aside class="notes">
+            <ul>
+                <li>programming done with expressions or declarations instead of statements</li>
+                <li>output of the function depends only on the arguments</li>
+            </ul>
+        </aside>
+
     </section>
     <section>
         <h4>Good parts</h4>
+        <ul>
+            <li>easier to understand and predict the behavior of a program</li>
+            <li class="fragment fade-up">plays extremely nice with the rising multi-core technology (concurrency)</li>
+            <li class="fragment fade-up">many algorithms can be defined in recursive manner</li>
+            <li class="fragment fade-up">more concise code (comparing to imperative style)</li>
+            <li class="fragment fade-up">better readable code - encourage decoupling / modular design (comparing to imperative style)</li>
+        </ul>
+
+        <aside class="notes">
+            <p>
+                thanks to the fact that there is no state and no data mutation it is easier to write concurrent programs
+            </p>
+        </aside>
+
+    </section>
+    <section>
+        <h4>Good parts...</h4>
+        <ul>
+            <li>employs some really nice abstractions to solve problems in very generic way (monads, option, lazy, memo, pattern matching, currying)</li>
+            <li class="fragment fade-up">make you think about problems in more abstract / mathematical way</li>
+        </ul>
+
+        <aside class="notes">
+            <p>
+                <b>Currying</b> is when you break down a function that takes multiple arguments into a series
+                of functions that take part of the arguments.
+            </p>
+
+            <p>
+                <b>Memoization</b> is a technique for optimizing functions.  Every time a memoized function
+                is called the result is caches with reference to the given parameters.
+            </p>
+
+        </aside>
+
     </section>
     <section>
         <h4>Bad parts</h4>
+
+        <ul>
+            <li>real-world programs are not stateless</li>
+            <li class="fragment fade-up">
+                with immutable data structures you have cheap thread safety at the cost of memory consumption
+            </li>
+            <li class="fragment fade-up">
+                usually programs are shorter and easier to read except the cases where
+                they are longer and harder to read <span class="fragment highlight-red">:)</span> (depends on the experience)
+            </li>
+            <li class="fragment fade-up">
+                productivity goes up in order to hire very expensive programmers who
+                know how to program in a functional style
+            </li>
+            <li class="fragment fade-up">
+                it takes some time to be efficient in functional programming
+            </li>
+        </ul>
     </section>
+</section>
+
+<section>
+    <h3>fun-bash a quick start</h3>
+
+    <p>
+        Available on GitHub <i class="fa fa-github"></i>&nbsp;<a href="https://github.com/ssledz/bash-fun">bash-fun</a>
+    </p>
+
+    <pre class="fragment current-visible"><code class="hljs" data-trim contenteditable>
+        #!/bin/bash
+        . <(curl -Ls goo.gl/8JeMbR)
+
+        seq 1 4 | sum
+    </code></pre>
+
+    <div class="fragment current-visible">
+    <p>
+        download <a href="https://raw.githubusercontent.com/ssledz/bash-fun/master/src/fun.sh">fun.sh</a> and
+    </p>
+
+    <pre><code class="hljs" data-trim contenteditable>
+        #!/bin/bash
+        . fun.sh
+
+        seq 1 4 | sum
+    </code></pre>
+    </div>
+
+    <div class="fragment current-visible">
+        <pre><code class="hljs" data-trim contenteditable>
+            #!/bin/bash
+            . <(test -e fun.sh || curl -Ls goo.gl/8JeMbR > fun.sh; cat fun.sh)
+
+            seq 1 4 | sum
+        </code></pre>
+    </div>
+
+</section>
+
+<section>
+    <h4>Example of usage</h4>
+    <pre><code class="hljs" data-trim contenteditable>
+#!/bin/bash
+
+. fun.sh
+
+backup_dir=/home/adserver/backup
+max_backups=10
+
+ls -1 $backup_dir | grep adserver-active- \
+  | map λ a . 'echo $a; echo $a | strip adserver-active-1080- | strip adserver-active-1081-' \
+  | buff λ a b . 'date=$(echo $b | cut -dT -f1); tup $a $date' \
+  | sort -t ',' -k2 -r \
+  | drop $max_backups \
+  | map λ a . 'echo -n $backup_dir/; tupl $a' \
+  | xargs rm -rf
+    </code></pre>
+    <pre><code class="hljs" data-trim contenteditable>
+> ls  /home/adserver/backup | head -5
+
+adserver-active-1080-2017-05-22T134440
+adserver-active-1080-2017-05-23T143705
+adserver-active-1080-2017-05-29T110500
+adserver-active-1080-2017-05-30T110812
+adserver-active-1080-2017-06-20T130354
+    </code></pre>
 </section>
