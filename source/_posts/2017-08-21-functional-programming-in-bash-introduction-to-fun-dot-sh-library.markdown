@@ -6,7 +6,7 @@ comments: true
 categories: [bash, functional-programming]
 ---
 
-Slides for lunch to learn (l2l) session are available [here](presentations/bash-fun.html).
+Slides for Lunch2Learn (L2L) session are available [here](presentations/bash-fun.html).
 
 ### Resources
 
