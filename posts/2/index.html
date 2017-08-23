@@ -9,7 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="I have just released first version of git-svn kata. It is good starting point for those who prefer to use git but are stuck with svn. At the moment &hellip;">
+  <meta name="description" content="It is realy annoying that the newest version of Synolgy DSM (5.2-5644 Update 1) can’t handle properly hfs+ hard drive device out of the box. Thanks &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,6 +93,104 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/">Write to an HFS+ USB Drive From a Synology NAS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-01-10T13:49:39+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It is realy annoying that the newest version of Synolgy DSM (<code>5.2-5644 Update 1</code>) can’t handle properly <code>hfs+</code> hard drive device out of the box. Thanks to the fact that many users had the same problems as me before I found realy quickly handy article which shows how to make easy workaround. The trick is to disable journaling on the drive and then try to remount the device in nas with <code>ro</code> flag switched off.</p>
+
+<p>So to be able to write to an <code>HSF+</code> USB drvie you need first</p>
+
+<ul>
+  <li>disable journaling on the drive</li>
+  <li>connect your drive to nas</li>
+  <li>remount device with <code>ro</code> flag switched off</li>
+</ul>
+
+<h3 id="disabling-journaling-in-the-drive">Disabling journaling in the drive</h3>
+<p>To be able to do this you need to plug in your device to the mac (I couldn’t do this from my linux). Then to turn journaling off using <code>Disk Utility</code> do following:</p>
+
+<ul>
+  <li>open <code>Disk Utility</code> (located in <code>Applications/Utilities</code>).</li>
+  <li>select the disk device to disable journaling on.</li>
+  <li>choose <code>Disable Journaling</code> from the <code>File</code> menu.</li>
+</ul>
+
+<p>For someone this option could not be visible (Mac OS X 10.4 and later) then before clicking on the <code>File</code> menu press and hold <a href="http://www.macworld.co.uk/how-to/mac/what-where-option-key-mac-3462401/">Option</a> key</p>
+
+<p>More you can find <a href="https://support.apple.com/en-us/HT204435">here</a></p>
+
+<h3 id="remount-device-with-ro-flag-switched-off">Remount device with ro flag switched off</h3>
+
+<p>First log in as a root to the ds. Then have a look how the drive is mounted</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
+</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
+</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (ro,force,uid=1024,gid=100,umask=000)</span></code></pre></td></tr></table></div></figure>
+
+<p>You can spot that the drive is mounted with the <code>ro</code>(read only) flag.</p>
+
+<p>Now unmount the drive.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; umount -f /dev/sdq2</span></code></pre></td></tr></table></div></figure>
+
+<p>And remount so it is writable using the same info used when it was mounted automatically.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount -t hfsplus /dev/sdq2 /volumeUSB1/usbshare1-2</span></code></pre></td></tr></table></div></figure>
+
+<p>Finally, you can notice that device is no longer mounted as read only.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
+</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
+</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (0)</span></code></pre></td></tr></table></div></figure>
+
+<p>To prove this try.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
+</span><span class="line">ds&gt; mkdir /volumeUSB1/usbshare1-2/sampleDir
+</span><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
+</span><span class="line">sampleDir</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="note">Note</h3>
+
+<p>It is very important to switch off journaling in the drive. When you remount the drive with <code>ro</code> switched off and haven’t yet disabled the journaling in the drive you won’t be able to write anything to the disk though <code>mount</code> will print that the drive is mounted as writable.</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1474,167 +1572,9 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/">Puzzle - Write a Method to Compute All Permutations of a String</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-08T21:06:54+02:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:06 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3 id="how-to-approche">How to Approche</h3>
-<p>When we hear a problem beginning with: ‘Write a method to compute all…’, it is often a good candidate for recursion. By definition recursive solutions are built of solving subproblems. Simply speaking when we need to compute <code>f(n)</code>, we need first to solve a problem for <code>f(n-1)</code>, to solve the problem for <code>f(n-1)</code> we need to do the same for <code>f(n-2)</code> and so on. Always at the end we need to face so called ‘base case’ - <code>f(0)</code> or <code>f(1)</code>, which is the most easiest subproblem. Good news is that for this problem we know a solution and  many times it is just a hard coded value.</p>
-
-<h4 id="problem">Problem</h4>
-<p>Our task is to write a function <code>List&lt;String&gt;perm(String str)</code> which will return all permutations of a string given in the argument. To proceed let’s think how this problem can be splitted into smaller subproblems and how to connect those problems in the recursive way.</p>
-
-<p>To find a pattern we will write all permutations of following strings <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, <code>'ab'</code>, <code>'ac'</code>, <code>'bc'</code>, <code>'abc'</code></p>
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">perm('a')   = 'a'
-</span><span class="line">perm('b')   = 'b'
-</span><span class="line">perm('c')   = 'c'
-</span><span class="line">perm('ab')  = 'ab', 'ba'
-</span><span class="line">perm('ac')  = 'ac', 'ca'
-</span><span class="line">perm('bc')  = 'bc', 'cb'
-</span><span class="line">perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' </span></code></pre></td></tr></table></div></figure>
-
-<p>If You have some experience in solving such puzzles You probably noticed a following pattern</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">perm('a')   = 'a'
-</span><span class="line">perm('b')   = 'b'
-</span><span class="line">perm('c')   = 'c'
-</span><span class="line">perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
-</span><span class="line">perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
-</span><span class="line">perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
-</span><span class="line">perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')</span></code></pre></td></tr></table></div></figure>
-
-<p>where <code>|</code> means a concatenation of two strings.</p>
-
-<p>First three cases are called ‘base cases’ and as I mentioned before they can be easily solved. A permutation of a string containing one character is just the same string. At this point of analysis we can now try to write a small program which will solve our problem.</p>
-
-<h3 id="coding">Coding</h3>
-
-<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">permute</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
-</span><span class="line">        <span class="n">ret</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
-</span><span class="line">    <span class="o">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class="line">        <span class="n">String</span> <span class="n">left</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
-</span><span class="line">        <span class="n">StringBuilder</span> <span class="n">subStr</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuilder</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
-</span><span class="line">        <span class="n">subStr</span><span class="o">.</span><span class="na">deleteCharAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
-</span><span class="line">
-</span><span class="line">        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">subPermutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="n">subStr</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-</span><span class="line">
-</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">subPermutations</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">            <span class="n">permutations</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">perm</span><span class="o">);</span>
-</span><span class="line">        <span class="o">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="o">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">return</span> <span class="n">permutations</span><span class="o">;</span>
-</span><span class="line">
-</span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">permutations</span> <span class="o">=</span> <span class="n">permute</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">);</span>
-</span><span class="line">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;permutations size: %d&quot;</span><span class="o">,</span> <span class="n">permutations</span><span class="o">.</span><span class="na">size</span><span class="o">()));</span>
-</span><span class="line">    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">permutations</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">perm</span><span class="o">);</span>
-</span><span class="line">    <span class="o">}</span>
-</span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="n">permutations</span> <span class="nl">size:</span> <span class="mi">6</span>
-</span><span class="line"><span class="n">abc</span>
-</span><span class="line"><span class="n">acb</span>
-</span><span class="line"><span class="n">bac</span>
-</span><span class="line"><span class="n">bca</span>
-</span><span class="line"><span class="n">cab</span>
-</span><span class="line"><span class="n">cba</span>
-</span></code></pre></td></tr></table></div></figure>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/posts/3">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1647,6 +1587,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/">Functional Programming in Bash - Introduction to fun.sh Library</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/">How to Pass Arrays as Parameters in Bash</a>
@@ -1664,15 +1608,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
         <a href="/blog/2016/07/25/playing-with-scala-writing-function-flatten/">Playing With Scala - Writing Function : Flatten</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/05/23/howto-going-back-to-the-beginning-of-the-line-in-tmux-after-remapping-prefix-to-c-a/">Howto Going Back to the Beginning of the Line in Tmux After Remapping Prefix to C-a</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 107.5%'>bash(1)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 107.5%'>functional-programming(1)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 122.5%'>scala(3)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 115.0%'>functional-programming(2)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 137.5%'>recursion(5)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 122.5%'>scala(3)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>
@@ -1725,17 +1665,7 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
 <section class='goodreads-aside'>
   <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
   <ul>
-    <li>
-            <a href='http://www.goodreads.com/user_status/show/119787051' target='blank'>Slavik is 35% done with Groovy in Action</a>
-            <span class='tiny'>(2017-01-24)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/113261596' target='blank'>Slavik is finished with Learning Spark</a>
-            <span class='tiny'>(2016-11-19)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/113261595' target='blank'>Slavik is finished with Learning Spark</a>
-            <span class='tiny'>(2016-11-19)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/112541249' target='blank'>Slavik is finished with Programming in Scala</a>
-            <span class='tiny'>(2016-11-10)</span></li><li>
-            <a href='http://www.goodreads.com/user_status/show/111361458' target='blank'>Slavik is finished with Getting Started with SBT</a>
-            <span class='tiny'>(2016-10-26)</span></li>
+    
   </ul>
 </section>
 

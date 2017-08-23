@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Bash | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-01-25T04:08:44+01:00</updated>
+  <updated>2017-08-23T03:40:30+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Functional Programming in Bash - Introduction to fun.sh Library]]></title>
+    <link href="http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/"/>
+    <updated>2017-08-21T00:28:33+02:00</updated>
+    <id>http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library</id>
+    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="presentations/bash-fun.html">here</a>.</p>
+
+<h3 id="resources">Resources</h3>
+
+<ul>
+  <li><a href="https://github.com/ssledz/bash-fun">bash-fun</a></li>
+  <li><a href="https://github.com/ssledz/bash-import">bash-import</a></li>
+  <li><a href="https://github.com/ssledz/bash-repo">bash-repo</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How to Pass Arrays as Parameters in Bash]]></title>
