@@ -6,6 +6,10 @@ comments: true
 categories: [bash, functional-programming]
 ---
 
+Slides for lunch to learn (l2l) session are available [here](presentations/bash-fun.html).
+
 ### Resources
 
-* [slides](presentations/bash-fun.html)
+* [bash-fun](https://github.com/ssledz/bash-fun)
+* [bash-import](https://github.com/ssledz/bash-import)
+* [bash-repo](https://github.com/ssledz/bash-repo)
