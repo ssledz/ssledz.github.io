@@ -141,7 +141,7 @@ object Flatten {
     case List() =&gt; Nil
     case y :: ys =&gt; {
       y match {
-        case z :: zs =&gt; flatten(z :: zs)
+        case z: List[Any] =&gt; flatten(z)
         case _ =&gt; List(y)
       }
     } ::: flatten(ys)

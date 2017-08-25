@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-08-23T03:40:30+02:00</updated>
+  <updated>2017-08-25T11:14:32+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/"/>
     <updated>2017-08-21T00:28:33+02:00</updated>
     <id>http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library</id>
-    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="presentations/bash-fun.html">here</a>.</p>
+    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="http://ssledz.github.io/presentations/bash-fun.html">here</a>.</p>
 
 <h3 id="resources">Resources</h3>
 
@@ -355,7 +355,7 @@ object Flatten {
     case List() =&gt; Nil
     case y :: ys =&gt; {
       y match {
-        case z :: zs =&gt; flatten(z :: zs)
+        case z: List[Any] =&gt; flatten(z)
         case _ =&gt; List(y)
       }
     } ::: flatten(ys)
