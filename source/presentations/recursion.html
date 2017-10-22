@@ -1,0 +1,153 @@
+---
+layout: slide
+title: "Recursion - recursive procedure, recursive process, iterative process, tail recursion"
+reveal:
+theme: league
+controls: true
+progress: true
+history: true
+transition: slide
+center: true
+---
+
+<section>
+    <section>
+        <h2>{{ page.title }}</h2>
+
+        <p>How to approach</p>
+
+        <p>
+            <small>L2L Warszawa 2017</small>
+        </p>
+
+        <aside class="notes">
+            <ul>
+                <li>30 minutes talk</li>
+            </ul>
+        </aside>
+    </section>
+    <section>
+        <h3>About me</h3>
+
+        <p>Sławomir Śledź</p>
+
+        <img src="https://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Sławomir Śledź"
+             style="border: 1px; border-radius: 20px">
+
+        <p>Senior Java Developer</p>
+
+        <p><i class="fa fa-github"></i>&nbsp;<a href="http://ssledz.github.io">ssledz.github.io</a></p>
+    </section>
+    <section>
+        <h2>The Talk</h2>
+    </section>
+</section>
+
+<section>
+    <h2>Recursive procedure</h2>
+    <p>
+        Informal definition says that recursive procedure is a procedure which calls itself.
+    </p>
+    <p>
+        Can be defined by two properties:
+    </p>
+    <ul>
+        <li>a simple base case - termination scenario (does not use recursion)</li>
+        <li>a set of rules that reduce all other cases toward the base case</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Procedure vs Process</h2>
+
+    <p>A procedure is a set of steps based on a set of rules. (step-by-step description of the process)</p>
+    <p>A process is a running of procedure, involving following the rules and performing the steps. (activity)</p>
+
+    <aside class="notes">
+        <p>An analogy: a procedure is like a written recipe; running a procedure is like actually preparing the meal.</p>
+        <p>COMPUTATION: a process that takes place inside a computer</p>
+    </aside>
+
+</section>
+
+<section>
+    <h2>Example of recursive procedure</h2>
+    <pre><code class="hljs" data-trim contenteditable>
+                n! = n * (n - 1) * (n - 2)...3 * 2 * 1
+    </code></pre>
+    <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    if n == 1 or n == 0:
+                        return 1
+                    return n * factorial(n - 1)
+    </code></pre>
+</section>
+
+<section>
+    <h2>Linear recursive process</h2>
+    <pre><code class="hljs" data-trim contenteditable>
+                (factorial 6)
+                (* 6 (factorial 5))
+                (* 6 (* 5 (factorial 4)))
+                (* 6 (* 5 (* 4 (factorial 3))))
+                (* 6 (* 5 (* 4 (* 3 (factorial 2)))))
+                (* 6 (* 5 (* 4 (* 3 (* 2 (factorial 1))))))
+                (* 6 (* 5 (* 4 (* 3 (* 2 1)))))
+                (* 6 (* 5 (* 4 (* 3 2))))
+                (* 6 (* 5 (* 4 6)))
+                (* 6 (* 5 24))
+                (* 6 120)
+                720
+    </code></pre>
+</section>
+
+<section>
+    <h2>Observation</h2>
+    <ul>
+        <li>extension proceeds as if the process is building a chain of deferred operations</li>
+        <li>reduction occurs when operations are actually performed</li>
+    </ul>
+    <p>Such process is called recursive process</p>
+    <p>
+        When the length of deferred operations is increasing proprtional to n then such process is called
+        'linear recursive process'
+    </p>
+</section>
+
+<section>
+    <h2>Factorial v2</h2>
+    <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+    </code></pre>
+</section>
+
+<section>
+    <h2>Linear iterative process</h2>
+    <pre><code class="hljs" data-trim contenteditable>
+                (factorial 6)
+                (fact-iter 1 1 6)
+                (fact-iter 1 2 6)
+                (fact-iter 2 3 6)
+                (fact-iter 6 4 6)
+                (fact-iter 24 4 6)
+                (fact-iter 120 6 6)
+                (fact-iter 720 7 6)
+                720
+    </code></pre>
+</section>
+
+<section>
+    <h2>Resources</h2>
+    <ul>
+        <li><a href="http://ssledz.github.io">todo</a></li>
+    </ul>
+</section>
+
+<section>
+    <p>Thank you -:)</p>
+</section>
