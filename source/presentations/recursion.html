@@ -2,12 +2,12 @@
 layout: slide
 title: "Recursion - recursive procedure, recursive process, iterative process, tail recursion"
 reveal:
-theme: league
-controls: true
-progress: true
-history: true
-transition: slide
-center: true
+    theme: league
+    controls: true
+    progress: true
+    history: true
+    transition: slide
+    center: true
 ---
 
 <section>
@@ -44,7 +44,7 @@ center: true
 </section>
 
 <section>
-    <h2>Recursive procedure</h2>
+    <h3>Recursive procedure</h3>
     <p>
         Informal definition says that recursive procedure is a procedure which calls itself.
     </p>
@@ -58,20 +58,21 @@ center: true
 </section>
 
 <section>
-    <h2>Procedure vs Process</h2>
+    <h3>Procedure vs Process</h3>
 
     <p>A procedure is a set of steps based on a set of rules. (step-by-step description of the process)</p>
     <p>A process is a running of procedure, involving following the rules and performing the steps. (activity)</p>
 
     <aside class="notes">
-        <p>An analogy: a procedure is like a written recipe; running a procedure is like actually preparing the meal.</p>
+        <p>An analogy: a procedure is like a written recipe; running a procedure is like actually preparing the
+            meal.</p>
         <p>COMPUTATION: a process that takes place inside a computer</p>
     </aside>
 
 </section>
 
 <section>
-    <h2>Example of recursive procedure</h2>
+    <h3>Example of recursive procedure</h3>
     <pre><code class="hljs" data-trim contenteditable>
                 n! = n * (n - 1) * (n - 2)...3 * 2 * 1
     </code></pre>
@@ -84,7 +85,7 @@ center: true
 </section>
 
 <section>
-    <h2>Linear recursive process</h2>
+    <h3>Linear recursive process</h3>
     <pre><code class="hljs" data-trim contenteditable>
                 (factorial 6)
                 (* 6 (factorial 5))
@@ -102,20 +103,25 @@ center: true
 </section>
 
 <section>
-    <h2>Observation</h2>
+    <h3>Observation</h3>
     <ul>
-        <li>extension proceeds as if the process is building a chain of deferred operations</li>
-        <li>reduction occurs when operations are actually performed</li>
+        <li>expansion proceeds as if the process is building a chain of deferred operations</li>
+        <li>contraction occurs when operations are actually performed</li>
     </ul>
     <p>Such process is called recursive process</p>
     <p>
-        When the length of deferred operations is increasing proprtional to n then such process is called
-        'linear recursive process'
+        When the length of deferred operations is increasing proportional to number of arguments
+        then such process is called 'linear recursive process'
     </p>
+    <aside class="notes">
+        <p>
+            Interpreter needs to trace procedure calls which have to be executed later (Call stack is used).
+        </p>
+    </aside>
 </section>
 
 <section>
-    <h2>Factorial v2</h2>
+    <h3>Factorial v2</h3>
     <pre><code class="hljs" data-trim contenteditable>
                 def factorial(n):
                     def fact_iter(product, counter, max_count):
@@ -124,10 +130,17 @@ center: true
                         return fact_iter(counter * product, counter + 1, max_count)
                     return fact_iter(1, 1, n)
     </code></pre>
+
+    Computation can be described following:
+    <pre><code class="hljs" data-trim contenteditable>
+                product = product * counter
+                counter = counter + 1
+    </code></pre>
+
 </section>
 
 <section>
-    <h2>Linear iterative process</h2>
+    <h3>Linear iterative process</h3>
     <pre><code class="hljs" data-trim contenteditable>
                 (factorial 6)
                 (fact-iter 1 1 6)
@@ -142,9 +155,204 @@ center: true
 </section>
 
 <section>
+    <section>
+        <h3>Observation</h3>
+        <ul>
+            <li>shape of the process does not extend or reduce</li>
+            <li>
+                for each step, in order to fully describe the state we need only those variables:
+                <ul>
+                    <li>product</li>
+                    <li>counter</li>
+                    <li>max_count</li>
+                </ul>
+            </li>
+            <li>last action of the procedure does not need to build up a new call frame</li>
+        </ul>
+        <p>Such process is called iterative process</p>
+        <aside class="notes">
+            <p>
+                Anytime we stop the process between 2 steps, we can resume passing only 3 variables
+                to the interpreter.
+            </p>
+        </aside>
+    </section>
+    <section>
+        <h3>Observation - cd</h3>
+
+        <p>
+            Iterative process can be described by a fixed number of state variables.
+        </p>
+
+        <p>
+            When the number of steps of the iterative process is a linear function of the argument then
+            such process is called 'linear iterative process'
+        </p>
+
+        <p>
+            If an implementation of procedure generates 'linear iterative process' then we call it tail recursive.
+        </p>
+    </section>
+</section>
+
+<section>
+    <h3>Recursive vs Iterative - Summary</h3>
+
+    <table>
+        <tbody>
+            <tr>
+                <td></td>
+                <td>recursive</td>
+                <td>iterative</td>
+            </tr>
+            <tr>
+               <td>shape</td>
+                <td>extends and then reduces</td>
+                <td>the same</td>
+            </tr>
+            <tr>
+                <td>state</td>
+                <td>is hidden by interpreter</td>
+                <td>can be described by fixed number of state variables</td>
+            </tr>
+            <tr>
+                <td>space requirement</td>
+                <td>depends on arguments (call stack is used)</td>
+                <td>constant</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <section>
+        <h3>Tail recursive optimization</h3>
+        Supported out of the box by:
+        <ul>
+            <li>Common Lisp (Lisp dialect)</li>
+            <li>Scheme (Lisp dialect)</li>
+            <li>Racket (Lisp dialect)</li>
+            <li>Scala</li>
+            <li>Kotlin</li>
+            <li>Lua</li>
+            <li>Tcl</li>
+            <li>Perl</li>
+            <li>Elixir (runs on Erlang vm)</li>
+            <li>JavaScript - ECMAScript 6.0</li>
+        </ul>
+    </section>
+    <section>
+        <h3>Other common languages</h3>
+        <p>
+        Can describe iterative processes only by resorting to special-purpose looping constructs:
+        </p>
+        <ul>
+            <li>do</li>
+            <li>repeat</li>
+            <li>until</li>
+            <li>for</li>
+            <li>while</li>
+        </ul>
+    </section>
+</section>
+
+<section>
+    <h3>Tree recursion</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                Fib(0) = 0
+                Fib(1) = 1
+                Fib(n) = Fib(n - 1) + Fib(n - 2)
+    </code></pre>
+    <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    if n == 0 or n == 1:
+                        return n
+                    return fib(n - 1) + fib(n - 2)
+    </code></pre>
+</section>
+
+<section>
+    <h3>Tree recursion</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                                fib(5)
+                               /      \
+                              /        \
+                             /          \
+                        fib(4)           \
+                       /     \            \
+                 fib(3)      fib(2)        \
+                /    \      /     \         \
+           fib(2)   fib(1) fib(1)  fib(0)    fib(3)
+           /    \      |      |       |      /    \
+     fib(1)  fib(0)    1      1       0   fib(2)  fib(1)
+       |       |                         /    \      |
+       1       0                    fib(1)   fib(0)  1
+                                       |        |
+                                       1        0
+    </code></pre>
+</section>
+
+<section>
+    <section>
+        <h3>Observation</h3>
+
+        <p>
+            Many redundant computation.
+        </p>
+
+        <p>
+            Process shaped like tree
+        </p>
+    </section>
+    <section>
+        <h3>How to approach ?</h3>
+        <ul>
+            <li>Try to rewrite to have iterative process</li>
+            <li>Dynamic programming
+                <ul>
+                    <li>problem must have an optimal substructure</li>
+                    <li>implementation - memoization</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h4>Dynamic programming</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    memo = {}
+                    def fibc(n):
+                        if n in memo:
+                            return memo[n]
+                        if n == 0 or n == 1:
+                            return n
+                        memo[n - 1] = fibc(n - 1)
+                        memo[n - 2] = fibc(n - 2)
+                        return memo[n - 1] + memo[n - 2]
+                    return fibc(n)
+    </code></pre>
+    </section>
+    <section>
+        <h4>Iterative version</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    def fib_iter(a, b, count):
+                        if count == 0:
+                            return b
+                        return fib_iter(a + b, a, count -1)
+                    return fib_iter(1, 0, n)
+    </code></pre>
+    </section>
+
+</section>
+
+<section>
     <h2>Resources</h2>
     <ul>
-        <li><a href="http://ssledz.github.io">todo</a></li>
+        <li><a href="https://mitpress.mit.edu/sicp/chapter1/node12.html">Linear Recursion and Iteration</a></li>
+        <li><a href="https://mitpress.mit.edu/sicp/chapter1/node13.html">Tree Recursion</a></li>
+        <li><a href="http://community.schemewiki.org/?iterative-processes">Recursive and Iterative Procedures and Processes</a></li>
+        <li><a href="http://blog.moertel.com/posts/2013-06-12-recursion-to-iteration-4-trampolines.html">Tricks of the trade: Recursion to Iteration, Part 4: The Trampoline</a></li>
     </ul>
 </section>
 
