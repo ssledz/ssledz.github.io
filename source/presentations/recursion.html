@@ -492,6 +492,112 @@ reveal:
         <li>How to approach</li>
         <li>Some examples</li>
     </ul>
+</section>
+
+<section>
+    <h3>How to recognize that we deal with recursion</h3>
+    <p>A good hint is that problem appears to be built off sub-problems</p>
+    <p>Problems beginning with</p>
+    <ul>
+        <li>compute the nth... (generate nth Fibonacci number)</li>
+        <li>compute/print/return all... (return all subsets of a set)</li>
+        <li>list the first n...</li>
+    </ul>
+</section>
+
+<section>
+    <h3>How to approach in order to solve the problem</h3>
+    <p>Recursive solutions, by definition, are  build off solutions to sub-problems</p>
+    <p>Many time this means simply to compute f(n) by</p>
+    <ul>
+        <li>adding something</li>
+        <li>removing something</li>
+        <li>changing the solution for f(n-1)</li>
+        <li>or doing something more complicated :)</li>
+    </ul>
+</section>
+
+<section>
+    <h3>Some guidelines</h3>
+    <ul>
+        <li>
+            think about what the sub-problem is, how many sub-problems does f(n) depend on
+            (in a fibonacci - 2, linked list - 1)
+        </li>
+        <li>
+            solve for a 'base case', so if you need to compute for f(n), first compute it for f(0) or f(1) - this
+            is a usually hard-coded value
+        </li>
+        <li>solve for f(2)</li>
+        <li>
+            understand how to solve for f(3) using f(2) - understand how to translate a solution
+            for sub-problems into real solution
+        </li>
+        <li>generalize for f(n)</li>
+    </ul>
+    <aside class="notes">
+        <p>
+            This is a 'bottom-up recursion'
+        </p>
+        <p>
+            'Top down' - jump directly into breaking f(n) into its sub-problems
+        </p>
+    </aside>
+</section>
+
+<section>
+    <section>
+        <h3>Examples</h3>
+        <ul>Compute all permutation of a string</ul>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <p>Trying to find a pattern and solving for f(0), f(1), f(2)</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('a')   = 'a'
+                perm('b')   = 'b'
+                perm('c')   = 'c'
+                perm('ab')  = 'ab', 'ba'
+                perm('ac')  = 'ac', 'ca'
+                perm('bc')  = 'bc', 'cb'
+                perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
+    </code></pre>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <p>Trying to solve for f(3) using f(2)</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('a')   = 'a'
+                perm('b')   = 'b'
+                perm('c')   = 'c'
+                perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
+                perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
+                perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
+                perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')
+    </code></pre>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def perm(str):
+                    if len(str) == 1:
+                        return [str]
+                    perms = []
+                    for i in range(0, len(str)):
+                        sub_str = str[:i] + str[(i+1):]
+                        sub_perms = perm(sub_str)
+                        for sub_perm in sub_perms:
+                            perms.append(str[i] + sub_perm)
+                    return perms
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('abc')
+                ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+        </code></pre>
+    </section>
 
 </section>
 
