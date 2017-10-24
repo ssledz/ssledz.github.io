@@ -347,12 +347,106 @@ reveal:
 </section>
 
 <section>
+    <section>
+        <h3>How to convert recursive function to iterative in 4 steps</h3>
+        <p>Steps</p>
+        <ul>
+            <li>try to convert all recursive calls into tail calls (If you can't try another method)</li>
+            <li>introduce one-shot loop around the function body</li>
+            <li>convert tail calls into continue statements</li>
+            <li>make cleanup</li>
+        </ul>
+    </section>
+    <section>
+        <h4>Step 1</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    if n == 1 or n == 0:
+                        return 1
+                    return n * factorial(n - 1)
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Step 2</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        while True:
+                            if counter > max_count:
+                                return product
+                            return fact_iter(counter * product, counter + 1, max_count)
+                            break
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Step 3</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        while True:
+                            if counter > max_count:
+                                return product
+                            (product, counter, max_count) = (counter * product, counter + 1, max_count)
+                            continue
+                            break
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Step 4a</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        while counter <= max_count:
+                            (product, counter, max_count) = (counter * product, counter + 1, max_count)
+                        return product
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Step 4b</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    product = 1
+                    counter = 1
+                    while counter <= n:
+                        (product, counter) = (counter * product, counter + 1)
+                    return product
+        </code></pre>
+    </section>
+</section>
+
+<section>
+    <h3>Optimization tail call through Trampoline</h3>
+    <p>Simply - a piece of code that repeatedly calls functions</p>
+    <aside class="notes">
+        <p>
+            All functions are entered via the trampoline. When a function has to call another,
+            instead of calling it directly it provides the address of the function to be called,
+            the arguments to be used, and so on, to the trampoline.
+            This ensures that the stack does not grow and iteration can continue indefinitely.
+        </p>
+    </aside>
+</section>
+
+<section>
     <h2>Resources</h2>
     <ul>
         <li><a href="https://mitpress.mit.edu/sicp/chapter1/node12.html">Linear Recursion and Iteration</a></li>
         <li><a href="https://mitpress.mit.edu/sicp/chapter1/node13.html">Tree Recursion</a></li>
         <li><a href="http://community.schemewiki.org/?iterative-processes">Recursive and Iterative Procedures and Processes</a></li>
         <li><a href="http://blog.moertel.com/posts/2013-06-12-recursion-to-iteration-4-trampolines.html">Tricks of the trade: Recursion to Iteration, Part 4: The Trampoline</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Tail_call">Tail call</a></li>
+
     </ul>
 </section>
 
