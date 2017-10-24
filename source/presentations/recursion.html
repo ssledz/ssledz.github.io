@@ -39,28 +39,28 @@ reveal:
         <p><i class="fa fa-github"></i>&nbsp;<a href="http://ssledz.github.io">ssledz.github.io</a></p>
     </section>
     <section>
-        <h2>The Talk</h2>
+        <h3>The Talk</h3>
         <ul>
             <li>
                 Recursion in theory
                 <ul>
                     <li>recursive procedure/function</li>
                     <li>recursive process</li>
-                    <li>tree recursive, linear recursive, iterative process</li>
                     <li>recursion call to iteration transformation</li>
                 </ul>
             </li>
             <li>
                 Practical approach to solve recursive problems
                 <ul>
-                    <li>How to recognize</li>
-                    <li>How to approach</li>
-                    <li>Some examples</li>
+                    <li>how to recognize</li>
+                    <li>how to approach</li>
+                    <li>some examples</li>
                 </ul>
             </li>
             <li>
                 Backup slides
                 <ul>
+                    <li>tree recursion</li>
                     <li>trampoline</li>
                 </ul>
             </li>
@@ -394,96 +394,7 @@ reveal:
     </section>
 </section>
 
-<section>
-    <h3>Tree recursion</h3>
-    <p>Fibonacci numbers</p>
-    <pre><code class="hljs" data-trim contenteditable>
-                Fib(0) = 0
-                Fib(1) = 1
-                Fib(n) = Fib(n - 1) + Fib(n - 2)
-    </code></pre>
-    <pre><code class="hljs" data-trim contenteditable>
-                def fib(n):
-                    if n == 0 or n == 1:
-                        return n
-                    return fib(n - 1) + fib(n - 2)
-    </code></pre>
-</section>
 
-<section>
-    <h3>Tree recursion</h3>
-    <pre><code class="hljs" data-trim contenteditable>
-                                fib(5)
-                               /      \
-                              /        \
-                             /          \
-                        fib(4)           \
-                       /     \            \
-                 fib(3)      fib(2)        \
-                /    \      /     \         \
-           fib(2)   fib(1) fib(1)  fib(0)    fib(3)
-           /    \      |      |       |      /    \
-     fib(1)  fib(0)    1      1       0   fib(2)  fib(1)
-       |       |                         /    \      |
-       1       0                    fib(1)   fib(0)  1
-                                       |        |
-                                       1        0
-    </code></pre>
-</section>
-
-<section>
-    <section>
-        <h3>Observation</h3>
-
-        <p>
-            Many redundant computation.
-        </p>
-
-        <p>
-            Process shaped like tree
-        </p>
-    </section>
-    <section>
-        <h3>How to approach ?</h3>
-        <ul>
-            <li>Try to rewrite to have iterative process</li>
-            <li>Dynamic programming
-                <ul>
-                    <li>problem must have an optimal substructure</li>
-                    <li>implementation - memoization</li>
-                </ul>
-            </li>
-        </ul>
-    </section>
-    <section>
-        <h4>Dynamic programming</h4>
-        <pre><code class="hljs" data-trim contenteditable>
-                def fib(n):
-                    memo = {}
-                    def fibc(n):
-                        if n in memo:
-                            return memo[n]
-                        if n == 0 or n == 1:
-                            return n
-                        memo[n - 1] = fibc(n - 1)
-                        memo[n - 2] = fibc(n - 2)
-                        return memo[n - 1] + memo[n - 2]
-                    return fibc(n)
-    </code></pre>
-    </section>
-    <section>
-        <h4>Iterative version</h4>
-        <pre><code class="hljs" data-trim contenteditable>
-                def fib(n):
-                    def fib_iter(a, b, count):
-                        if count == 0:
-                            return b
-                        return fib_iter(a + b, a, count -1)
-                    return fib_iter(1, 0, n)
-    </code></pre>
-    </section>
-
-</section>
 
 <section>
     <h3>Practical approach to solve recursive problems</h3>
@@ -602,17 +513,113 @@ reveal:
 </section>
 
 <section>
-    <h3>Optimization tail call through Trampoline</h3>
-    <p>Simply - a piece of code that repeatedly calls functions</p>
-    <aside class="notes">
+    <section>
+        <h3>Backup slides</h3>
+        <ul>
+            <li>tree recursion</li>
+            <li>trampoline</li>
+        </ul>
+    </section>
+    <section>
+        <h3>Tree recursion</h3>
+        <p>Fibonacci numbers</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                Fib(0) = 0
+                Fib(1) = 1
+                Fib(n) = Fib(n - 1) + Fib(n - 2)
+    </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    if n == 0 or n == 1:
+                        return n
+                    return fib(n - 1) + fib(n - 2)
+    </code></pre>
+    </section>
+    <section>
+        <h3>Tree recursion</h3>
+        <pre><code class="hljs" data-trim contenteditable>
+                                fib(5)
+                               /      \
+                              /        \
+                             /          \
+                        fib(4)           \
+                       /     \            \
+                 fib(3)      fib(2)        \
+                /    \      /     \         \
+           fib(2)   fib(1) fib(1)  fib(0)    fib(3)
+           /    \      |      |       |      /    \
+     fib(1)  fib(0)    1      1       0   fib(2)  fib(1)
+       |       |                         /    \      |
+       1       0                    fib(1)   fib(0)  1
+                                       |        |
+                                       1        0
+        </code></pre>
+    </section>
+    <section>
+        <h3>Observation</h3>
+
         <p>
-            All functions are entered via the trampoline. When a function has to call another,
-            instead of calling it directly it provides the address of the function to be called,
-            the arguments to be used, and so on, to the trampoline.
-            This ensures that the stack does not grow and iteration can continue indefinitely.
+            Many redundant computation.
         </p>
-    </aside>
+
+        <p>
+            Process shaped like tree
+        </p>
+    </section>
+    <section>
+        <h3>How to approach ?</h3>
+        <ul>
+            <li>Try to rewrite to have iterative process</li>
+            <li>Dynamic programming
+                <ul>
+                    <li>problem must have an optimal substructure</li>
+                    <li>implementation - memoization</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h4>Dynamic programming</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    memo = {}
+                    def fibc(n):
+                        if n in memo:
+                            return memo[n]
+                        if n == 0 or n == 1:
+                            return n
+                        memo[n - 1] = fibc(n - 1)
+                        memo[n - 2] = fibc(n - 2)
+                        return memo[n - 1] + memo[n - 2]
+                    return fibc(n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Iterative version</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    def fib_iter(a, b, count):
+                        if count == 0:
+                            return b
+                        return fib_iter(a + b, a, count -1)
+                    return fib_iter(1, 0, n)
+    </code></pre>
+    </section>
+    <section>
+        <h3>Tail call optimization through trampoline</h3>
+        <p>Simply - a piece of code that repeatedly calls functions</p>
+        <aside class="notes">
+            <p>
+                All functions are entered via the trampoline. When a function has to call another,
+                instead of calling it directly it provides the address of the function to be called,
+                the arguments to be used, and so on, to the trampoline.
+                This ensures that the stack does not grow and iteration can continue indefinitely.
+            </p>
+        </aside>
+    </section>
 </section>
+
+
 
 <section>
     <h2>Resources</h2>
