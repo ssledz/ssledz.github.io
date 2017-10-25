@@ -459,7 +459,11 @@ reveal:
 <section>
     <section>
         <h3>Examples</h3>
-        <ul>Compute all permutation of a string</ul>
+        <ul>
+            <li>Compute all permutation of a string (on slides)</li>
+            <li><a href="{% post_url 2015-08-08-puzzle-write-a-method-to-compute-all-permutations-of-a-string %}">Compute all permutations of a string in Java</a></li>
+            <li><a href="{% post_url 2015-08-09-puzzle-write-a-method-that-return-all-subsets-of-a-set %}">Return all subset of a set in Java</a></li>
+        </ul>
     </section>
 
     <section>
@@ -607,7 +611,25 @@ reveal:
     </section>
     <section>
         <h3>Tail call optimization through trampoline</h3>
-        <p>Simply - a piece of code that repeatedly calls functions</p>
+        <p>Trampoline is a piece of code that repeatedly calls functions</p>
+
+        <p>Here is what the trampoline does</p>
+        <ul>
+            <li>call function <span style="color:greenyellow"><strong>f</strong></span></li>
+            <li>if function <span style="color:greenyellow"><strong>f</strong></span> wants to make a recursive call to itself, it returns the instruction -
+                <span style="color:deepskyblue"><strong>call(f)(*args, **kwds)</strong></span>
+            </li>
+            <li>trampoline interprets the instruction, and calls <span style="color:greenyellow"><strong>f</strong></span> back</li>
+            <li>
+                this process repeats until <span style="color:greenyellow"><strong>f</strong></span> wants to return a
+                final result <span style="color:deepskyblue"><strong>z</strong></span>,
+                then it returns instruction <span style="color:yellow"><strong>result(z)</strong></span></li>
+            <li>
+                trampoline interprets instruction <span style="color:yellow"><strong>result(z)</strong></span>
+                by returning <span style="color:deepskyblue"><strong>z</strong></span> to its caller
+            </li>
+        </ul>
+
         <aside class="notes">
             <p>
                 All functions are entered via the trampoline. When a function has to call another,
@@ -616,6 +638,65 @@ reveal:
                 This ensures that the stack does not grow and iteration can continue indefinitely.
             </p>
         </aside>
+    </section>
+    <section>
+        <h3>Example of transformation</h3>
+
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <pre><code class="hljs" data-trim contenteditable>
+                def call(f):
+                    def g(*args, **kwds):
+                        return f, args, kwds
+                    return g
+                def result(value):
+                    return None, value, None
+
+                def with_trampoline(f):
+                    @functools.wraps(f)
+                    def g(*args, **kwds):
+                        h = f
+                        while h is not None:
+                            h, args, kwds = h(*args, **kwds)
+                        return args
+                    return g
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial2(n):
+                    def fact(product, counter, max_count):
+                        if counter > max_count:
+                            return result(product)
+                        return call(fact)(counter * product, counter + 1, max_count)
+                    return with_trampoline(fact)(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h3>Running code</h3>
+        <pre><code class="hljs" data-trim contenteditable>
+                factorial(1000)
+
+                File "sample.py", line 16, in fact_iter
+                    return fact_iter(counter * product, counter + 1, max_count)
+                File "sample.py", line 16, in fact_iter
+                    return fact_iter(counter * product, counter + 1, max_count)
+                File "sample.py", line 14, in fact_iter
+                    if counter > max_count:
+                RecursionError: maximum recursion depth exceeded in comparison
+        </code></pre>
+
+        <pre><code class="hljs" data-trim contenteditable>
+                factorial2(1000)
+
+                # 1000! = ...
+        </code></pre>
     </section>
 </section>
 
@@ -629,6 +710,8 @@ reveal:
         <li><a href="http://community.schemewiki.org/?iterative-processes">Recursive and Iterative Procedures and Processes</a></li>
         <li><a href="http://blog.moertel.com/posts/2013-06-12-recursion-to-iteration-4-trampolines.html">Tricks of the trade: Recursion to Iteration, Part 4: The Trampoline</a></li>
         <li><a href="https://en.wikipedia.org/wiki/Tail_call">Tail call</a></li>
+        <li><a href="{% post_url 2015-08-08-puzzle-write-a-method-to-compute-all-permutations-of-a-string %}">Compute all permutations of a string in Java</a></li>
+        <li><a href="{% post_url 2015-08-09-puzzle-write-a-method-that-return-all-subsets-of-a-set %}">Return all subset of a set in Java</a></li>
 
     </ul>
 </section>
