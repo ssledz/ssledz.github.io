@@ -1,0 +1,781 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Recursion</title>
+
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/css/reveal.css">
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/lib/css/zenburn.css">
+
+		<!-- Icons -->
+		<link rel="stylesheet" href="/assets/font-awesome-4.7.0/css/font-awesome.css">
+		<style> .reveal i.fa { font-family:FontAwesome; font-style: normal; } </style>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? '/assets/reveal.js-3.5.0/css/print/pdf.css' : '/assets/reveal.js-3.5.0/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="reveal">
+
+			<div class="state-background"></div>
+
+			<div class="slides">
+				<section>
+    <section>
+        <h2>Recursion</h2>
+
+        <p>A quick introduction</p>
+
+        <p>
+            <small>L2L Warszawa 2017</small>
+        </p>
+
+        <aside class="notes">
+            <ul>
+                <li>30 minutes talk</li>
+            </ul>
+        </aside>
+    </section>
+    <section>
+        <h3>About me</h3>
+
+        <p>Sławomir Śledź</p>
+
+        <img src="https://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Sławomir Śledź"
+             style="border: 1px; border-radius: 20px">
+
+        <p>Senior Java Developer</p>
+
+        <p><i class="fa fa-github"></i>&nbsp;<a href="http://ssledz.github.io">ssledz.github.io</a></p>
+    </section>
+    <section>
+        <h3>The Talk</h3>
+        <ul>
+            <li>
+                Recursion in theory
+                <ul>
+                    <li>recursive procedure/function</li>
+                    <li>recursive process</li>
+                    <li>recursion call to iteration transformation</li>
+                </ul>
+            </li>
+            <li>
+                Practical approach to solve recursive problems
+                <ul>
+                    <li>how to recognize</li>
+                    <li>how to approach</li>
+                    <li>some examples</li>
+                </ul>
+            </li>
+            <li>
+                Backup slides
+                <ul>
+                    <li>tree recursion</li>
+                    <li>trampoline</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+</section>
+
+<section>
+    <h3>Recursion</h3>
+    <p>
+        Recursion in computer science is a method where the solution to a problem depends on solutions
+        to smaller instances of the same problem.
+    </p>
+
+    <p>
+        I will focus on recursion in the context of computation
+    </p>
+</section>
+
+<section>
+    <h3>Recursive procedure</h3>
+    <p>
+        Informal definition says that recursive procedure is a procedure which calls itself.
+    </p>
+    <p>
+        Can be defined by two properties:
+    </p>
+    <ul>
+        <li>a simple base case - termination scenario (does not use recursion)</li>
+        <li>a set of rules that reduce all other cases toward the base case</li>
+    </ul>
+</section>
+
+<section>
+    <h3>Procedure vs Process</h3>
+
+    <p>A procedure is a set of steps based on a set of rules. (step-by-step description of the process)</p>
+    <p>A process is a running of procedure, involving following the rules and performing the steps. (activity)</p>
+
+    <aside class="notes">
+        <p>An analogy: a procedure is like a written recipe; running a procedure is like actually preparing the
+            meal.</p>
+        <p>COMPUTATION: a process that takes place inside a computer</p>
+    </aside>
+
+</section>
+
+<section>
+    <h3>Example of recursive procedure</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                n! = n * (n - 1) * (n - 2)...3 * 2 * 1
+    </code></pre>
+    <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    if n == 1 or n == 0:
+                        return 1
+                    return n * factorial(n - 1)
+    </code></pre>
+</section>
+
+<section>
+    <h3>Linear recursive process</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                (factorial 6)
+                (6 * (factorial 5))
+                (6 * (5 * (factorial 4)))
+                (6 * (5 * (4 * (factorial 3))))
+                (6 * (5 * (4 * (3 * (factorial 2)))))
+                (6 * (5 * (4 * (3 * (2 * (factorial 1))))))
+                (6 * (5 * (4 * (3 * (2 * 1)))))
+                (6 * (5 * (4 * (3 * 2))))
+                (6 * (5 * (4 * 6)))
+                (6 * (5 * 24))
+                (6 * 120)
+                720
+    </code></pre>
+</section>
+
+<section>
+    <h3>Observation</h3>
+    <ul>
+        <li>expansion proceeds as if the process is building a chain of deferred operations</li>
+        <li>contraction occurs when operations are actually performed</li>
+    </ul>
+    <p>Such process is called recursive process</p>
+    <p>
+        When the length of deferred operations is increasing proportional to the arguments
+        then such process is called 'linear recursive process'
+    </p>
+    <aside class="notes">
+        <p>
+            Interpreter needs to trace procedure calls which have to be executed later (Call stack is used).
+        </p>
+    </aside>
+</section>
+
+<section>
+    <h3>Factorial v2</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+    </code></pre>
+
+    Computation can be described following
+    <pre><code class="hljs" data-trim contenteditable>
+                product = counter * product
+                counter = counter + 1
+    </code></pre>
+
+</section>
+
+<section>
+    <h3>Linear iterative process</h3>
+    <pre><code class="hljs" data-trim contenteditable>
+                (factorial 6)
+                (fact-iter 1 1 6)
+                (fact-iter 1 2 6)
+                (fact-iter 2 3 6)
+                (fact-iter 6 4 6)
+                (fact-iter 24 4 6)
+                (fact-iter 120 6 6)
+                (fact-iter 720 7 6)
+                720
+    </code></pre>
+</section>
+
+<section>
+    <section>
+        <h3>Observation</h3>
+        <ul>
+            <li>shape of the process does not expand</li>
+            <li>
+                for each step, in order to fully describe the state we need only those variables:
+                <ul>
+                    <li>product</li>
+                    <li>counter</li>
+                    <li>max_count</li>
+                </ul>
+            </li>
+            <li>last action of the procedure does not need to build up a new call frame</li>
+        </ul>
+        <p>Such process is called iterative process</p>
+        <aside class="notes">
+            <p>
+                Anytime we stop the process between 2 steps, we can resume passing only 3 variables
+                to the interpreter.
+            </p>
+        </aside>
+    </section>
+    <section>
+        <h3>Observation</h3>
+
+        <p>
+            Iterative process can be described by a fixed number of state variables.
+        </p>
+
+        <p>
+            When the number of steps of the iterative process is a linear function of the argument then
+            such process is called 'linear iterative process'
+        </p>
+
+        <p>
+            If an implementation of procedure generates 'linear iterative process' then we call it tail recursive.
+        </p>
+    </section>
+</section>
+
+<section>
+    <h3>Recursive vs Iterative - Summary</h3>
+
+    <table>
+        <tbody>
+            <tr>
+                <td></td>
+                <td>recursive</td>
+                <td>iterative</td>
+            </tr>
+            <tr>
+               <td>shape</td>
+                <td>expands and then shrinks</td>
+                <td>the same</td>
+            </tr>
+            <tr>
+                <td>state</td>
+                <td>maintained by interpreter</td>
+                <td>can be described by fixed number of state variables</td>
+            </tr>
+            <tr>
+                <td>memory complexity</td>
+                <td>depends on arguments (call stack is used)</td>
+                <td>constant (if tail call enabled)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <section>
+        <h3>Price of recursion</h3>
+
+        <ul>
+            <li>Deferred long call chain can introduce 'Stack overflow'</li>
+            <li>Consumes more memory</li>
+        </ul>
+
+        <p>
+            Can we handle this ?
+        </p>
+    </section>
+
+    <section>
+        <h3>Tail call optimization</h3>
+        <p>
+            Supported out of the box by
+        </p>
+        <ul>
+            <li>Common Lisp, Scheme, Racket (Lisp dialects)</li>
+            <li>Scala</li>
+            <li>Kotlin</li>
+            <li>Lua</li>
+            <li>Tcl</li>
+            <li>Perl (using special construct)</li>
+            <li>Elixir (runs on Erlang vm)</li>
+            <li>JavaScript - ECMAScript 6.0</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>What about other common languages</h3>
+        <p>
+            We can describe iterative processes only by resorting to special-purpose looping constructs:
+        </p>
+        <ul>
+            <li>do</li>
+            <li>repeat</li>
+            <li>until</li>
+            <li>for</li>
+            <li>while</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>How to approach heavy recursive functions</h3>
+        <p>
+            What to do if we deal with recursive function for which call stack is too small ?
+        </p>
+
+        <ul>
+            <li>convert recursive call into tail recursive (if language supports tail call optimization)</li>
+            <li>convert recursive call into iteration</li>
+            <li>try to manage call stack by your own (very inefficient)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>How to convert recursive calls into iteration in 4 steps</h4>
+        <ul>
+            <li>try to convert all recursive calls into tail calls (If you can't try another method)</li>
+            <li>introduce one-shot loop around the function body</li>
+            <li>convert tail calls into assignments statements</li>
+            <li>make cleanup</li>
+        </ul>
+    </section>
+    <section>
+        <h4>Convert all recursive calls into tail calls</h4>
+
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    if n == 1 or n == 0:
+                        return 1
+                    return n * factorial(n - 1)
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Introduce one-shot loop around the function body</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                      while True:
+                        if counter > max_count:
+                          return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Convert tail calls into assignments statements</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        while True:
+                            if counter > max_count:
+                                return product
+                            (product, counter, max_count) = \
+                                (counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Cleanup</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        while counter <= max_count:
+                            (product, counter, max_count) = \
+                                (counter * product, counter + 1, max_count)
+                        return product
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Cleanup</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    product = 1
+                    counter = 1
+                    while counter <= n:
+                        (product, counter) = (counter * product, counter + 1)
+                    return product
+        </code></pre>
+    </section>
+</section>
+
+
+
+<section>
+    <h3>Practical approach to solve recursive problems</h3>
+    <ul>
+        <li>How to recognize</li>
+        <li>How to approach</li>
+        <li>Some examples</li>
+    </ul>
+</section>
+
+<section>
+    <h3>How to recognize that we deal with recursion</h3>
+    <p>A good hint is that problem appears to be built off sub-problems</p>
+    <p>Problems beginning with</p>
+    <ul>
+        <li>compute the nth... (generate nth Fibonacci number)</li>
+        <li>compute/print/return all... (return all subsets of a set)</li>
+        <li>list the first n...</li>
+    </ul>
+</section>
+
+<section>
+    <h3>How to approach in order to solve the problem</h3>
+    <p>Recursive solutions, by definition, are  build off solutions to sub-problems</p>
+    <p>Many time this means simply to compute f(n) by</p>
+    <ul>
+        <li>adding something</li>
+        <li>removing something</li>
+        <li>changing the solution for f(n-1)</li>
+        <li>or doing something more complicated :)</li>
+    </ul>
+</section>
+
+<section>
+    <h3>Some guidelines</h3>
+    <ul>
+        <li>
+            think about what the sub-problem is, how many sub-problems does f(n) depend on
+            (in a fibonacci - 2, linked list - 1)
+        </li>
+        <li>
+            solve for a 'base case', so if you need to compute for f(n), first compute it for f(0) or f(1) - this
+            is a usually hard-coded value
+        </li>
+        <li>solve for f(2)</li>
+        <li>
+            understand how to solve for f(3) using f(2) - understand how to translate a solution
+            for sub-problems into real solution
+        </li>
+        <li>generalize for f(n)</li>
+    </ul>
+    <aside class="notes">
+        <p>
+            This is a 'bottom-up recursion'
+        </p>
+        <p>
+            'Top down' - jump directly into breaking f(n) into its sub-problems
+        </p>
+    </aside>
+</section>
+
+<section>
+    <section>
+        <h3>Examples</h3>
+        <ul>
+            <li>Compute all permutation of a string (on slides)</li>
+            <li><a href="/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/">Compute all permutations of a string in Java</a></li>
+            <li><a href="/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/">Return all subset of a set in Java</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <p>Trying to find a pattern and solving for f(0), f(1), f(2)</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('a')   = 'a'
+                perm('b')   = 'b'
+                perm('c')   = 'c'
+                perm('ab')  = 'ab', 'ba'
+                perm('ac')  = 'ac', 'ca'
+                perm('bc')  = 'bc', 'cb'
+                perm('abc') = 'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
+    </code></pre>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <p>Trying to solve for f(3) using f(2)</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('a')   = 'a'
+                perm('b')   = 'b'
+                perm('c')   = 'c'
+                perm('ab')  = 'a'|perm('b')  + 'b'|perm('a')
+                perm('ac')  = 'a'|perm('c')  + 'c'|perm('a')
+                perm('bc')  = 'b'|perm('c')  + 'c'|perm('b')
+                perm('abc') = 'a'|perm('bc') + 'b'|perm('ac') + 'c'|perm('ab')
+    </code></pre>
+    </section>
+
+    <section>
+        <h4>Compute all permutation of a string</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def perm(str):
+                    if len(str) == 1:
+                        return [str]
+                    perms = []
+                    for i in range(0, len(str)):
+                        sub_str = str[:i] + str[(i+1):]
+                        sub_perms = perm(sub_str)
+                        for sub_perm in sub_perms:
+                            perms.append(str[i] + sub_perm)
+                    return perms
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                perm('abc')
+                ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+        </code></pre>
+    </section>
+
+</section>
+
+<section>
+    <section>
+        <h3>Backup slides</h3>
+        <ul>
+            <li>tree recursion</li>
+            <li>trampoline</li>
+        </ul>
+    </section>
+    <section>
+        <h3>Tree recursion</h3>
+        <p>Fibonacci numbers</p>
+        <pre><code class="hljs" data-trim contenteditable>
+                Fib(0) = 0
+                Fib(1) = 1
+                Fib(n) = Fib(n - 1) + Fib(n - 2)
+    </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    if n == 0 or n == 1:
+                        return n
+                    return fib(n - 1) + fib(n - 2)
+    </code></pre>
+    </section>
+    <section>
+        <h3>Tree recursion</h3>
+        <pre><code class="hljs" data-trim contenteditable>
+                                fib(5)
+                               /      \
+                              /        \
+                             /          \
+                        fib(4)           \
+                       /     \            \
+                 fib(3)      fib(2)        \
+                /    \      /     \         \
+           fib(2)   fib(1) fib(1)  fib(0)    fib(3)
+           /    \      |      |       |      /    \
+     fib(1)  fib(0)    1      1       0   fib(2)  fib(1)
+       |       |                         /    \      |
+       1       0                    fib(1)   fib(0)  1
+                                       |        |
+                                       1        0
+        </code></pre>
+    </section>
+    <section>
+        <h3>Observation</h3>
+
+        <p>
+            Many redundant computation.
+        </p>
+
+        <p>
+            Process shaped like tree
+        </p>
+    </section>
+    <section>
+        <h3>How to approach ?</h3>
+        <ul>
+            <li>Try to rewrite to have iterative process</li>
+            <li>Dynamic programming
+                <ul>
+                    <li>problem must have an optimal substructure</li>
+                    <li>implementation - memoization</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h4>Dynamic programming</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    memo = {}
+                    def fibc(n):
+                        if n in memo:
+                            return memo[n]
+                        if n == 0 or n == 1:
+                            return n
+                        memo[n - 1] = fibc(n - 1)
+                        memo[n - 2] = fibc(n - 2)
+                        return memo[n - 1] + memo[n - 2]
+                    return fibc(n)
+        </code></pre>
+    </section>
+    <section>
+        <h4>Iterative version</h4>
+        <pre><code class="hljs" data-trim contenteditable>
+                def fib(n):
+                    def fib_iter(a, b, count):
+                        if count == 0:
+                            return b
+                        return fib_iter(a + b, a, count -1)
+                    return fib_iter(1, 0, n)
+    </code></pre>
+    </section>
+    <section>
+        <h3>Tail call optimization through trampoline</h3>
+        <p>Trampoline is a piece of code that repeatedly calls functions</p>
+
+        <p>Here is what the trampoline does</p>
+        <ul>
+            <li>call function <span style="color:greenyellow"><strong>f</strong></span></li>
+            <li>if function <span style="color:greenyellow"><strong>f</strong></span> wants to make a recursive call to itself, it returns the instruction -
+                <span style="color:deepskyblue"><strong>call(f)(*args, **kwds)</strong></span>
+            </li>
+            <li>trampoline interprets the instruction, and calls <span style="color:greenyellow"><strong>f</strong></span> back</li>
+            <li>
+                this process repeats until <span style="color:greenyellow"><strong>f</strong></span> wants to return a
+                final result <span style="color:deepskyblue"><strong>z</strong></span>,
+                then it returns instruction <span style="color:yellow"><strong>result(z)</strong></span></li>
+            <li>
+                trampoline interprets instruction <span style="color:yellow"><strong>result(z)</strong></span>
+                by returning <span style="color:deepskyblue"><strong>z</strong></span> to its caller
+            </li>
+        </ul>
+
+        <aside class="notes">
+            <p>
+                All functions are entered via the trampoline. When a function has to call another,
+                instead of calling it directly it provides the address of the function to be called,
+                the arguments to be used, and so on, to the trampoline.
+                This ensures that the stack does not grow and iteration can continue indefinitely.
+            </p>
+        </aside>
+    </section>
+    <section>
+        <h3>Example of transformation</h3>
+
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial(n):
+                    def fact_iter(product, counter, max_count):
+                        if counter > max_count:
+                            return product
+                        return fact_iter(counter * product, counter + 1, max_count)
+                    return fact_iter(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <pre><code class="hljs" data-trim contenteditable>
+                def call(f):
+                    def g(*args, **kwds):
+                        return f, args, kwds
+                    return g
+                def result(value):
+                    return None, value, None
+
+                def with_trampoline(f):
+                    @functools.wraps(f)
+                    def g(*args, **kwds):
+                        h = f
+                        while h is not None:
+                            h, args, kwds = h(*args, **kwds)
+                        return args
+                    return g
+        </code></pre>
+        <pre><code class="hljs" data-trim contenteditable>
+                def factorial2(n):
+                    def fact(product, counter, max_count):
+                        if counter > max_count:
+                            return result(product)
+                        return call(fact)(counter * product, counter + 1, max_count)
+                    return with_trampoline(fact)(1, 1, n)
+        </code></pre>
+    </section>
+    <section>
+        <h3>Running code</h3>
+        <pre><code class="hljs" data-trim contenteditable>
+                factorial(1000)
+
+                File "sample.py", line 16, in fact_iter
+                    return fact_iter(counter * product, counter + 1, max_count)
+                File "sample.py", line 16, in fact_iter
+                    return fact_iter(counter * product, counter + 1, max_count)
+                File "sample.py", line 14, in fact_iter
+                    if counter > max_count:
+                RecursionError: maximum recursion depth exceeded in comparison
+        </code></pre>
+
+        <pre><code class="hljs" data-trim contenteditable>
+                factorial2(1000)
+
+                # 1000! = ...
+        </code></pre>
+    </section>
+</section>
+
+
+
+<section>
+    <h2>Resources</h2>
+    <ul>
+        <li><a href="https://mitpress.mit.edu/sicp/chapter1/node12.html">Linear Recursion and Iteration</a></li>
+        <li><a href="https://mitpress.mit.edu/sicp/chapter1/node13.html">Tree Recursion</a></li>
+        <li><a href="http://community.schemewiki.org/?iterative-processes">Recursive and Iterative Procedures and Processes</a></li>
+        <li><a href="http://blog.moertel.com/posts/2013-06-12-recursion-to-iteration-4-trampolines.html">Tricks of the trade: Recursion to Iteration, Part 4: The Trampoline</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Tail_call">Tail call</a></li>
+        <li><a href="/blog/2015/08/08/puzzle-write-a-method-to-compute-all-permutations-of-a-string/">Compute all permutations of a string in Java</a></li>
+        <li><a href="/blog/2015/08/09/puzzle-write-a-method-that-return-all-subsets-of-a-set/">Return all subset of a set in Java</a></li>
+
+    </ul>
+</section>
+
+<section>
+    <p>Thank you -:)</p>
+</section>
+			</div>
+
+			<div class="progress"><span></span></div>
+
+		</div>
+
+		<script src="/assets/reveal.js-3.5.0/lib/js/head.min.js"></script>
+		<script src="/assets/reveal.js-3.5.0/js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+            	width: 1024,
+//                margin: 0.1,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				dependencies: [
+
+	                { src: '/assets/reveal.js-3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+    	            { src: '/assets/reveal.js-3.5.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        	        { src: '/assets/reveal.js-3.5.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            	    { src: '/assets/reveal.js-3.5.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/zoom-js/zoom.js', async: true },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/notes/notes.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>

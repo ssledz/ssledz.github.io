@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2017-08-25T11:16:07+02:00</updated>
+  <updated>2017-10-25T02:38:12+02:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Recursion - a Quick Introduction]]></title>
+    <link href="http://ssledz.github.io/blog/2017/10/25/recursion-a-quick-introduction/"/>
+    <updated>2017-10-25T02:33:42+02:00</updated>
+    <id>http://ssledz.github.io/blog/2017/10/25/recursion-a-quick-introduction</id>
+    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/recursion.html">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Functional Programming in Bash - Introduction to fun.sh Library]]></title>
@@ -54,7 +63,35 @@ flatten(List(List(1, 1), 2, List(3, List(5, 8))))
 List[Any] = List(1, 1, 2, 3, 5, 8)
 </code></p>
 
-<p>{% gist fa5227685dda83e8b895ac9578a206b6 %}</p>
+<p><div><script src='https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js'></script>
+<noscript><pre><code>/**
+  * Created by ssledz on 25.07.16.
+  */
+object Flatten {
+
+  def flatten(xs: List[Any]): List[Any] = xs match {
+    case List() =&gt; Nil
+    case y :: ys =&gt; {
+      y match {
+        case z: List[Any] =&gt; flatten(z)
+        case _ =&gt; List(y)
+      }
+    } ::: flatten(ys)
+    case _ =&gt; List(xs)
+
+  }
+
+  def main(args: Array[String]) {
+    List(
+      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
+      flatten(List(1, 2, 3)),
+      flatten(List(List(1, 2), 3, List(4))),
+      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
+    ) foreach println
+  }
+
+}</code></pre></noscript></div>
+</p>
 
 <p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
 for this course !</p>
