@@ -76,7 +76,7 @@ reveal:
     </p>
 
     <p>
-        I will focus on recursive in the context of computation
+        I will focus on recursion in the context of computation
     </p>
 </section>
 
@@ -147,7 +147,7 @@ reveal:
     </ul>
     <p>Such process is called recursive process</p>
     <p>
-        When the length of deferred operations is increasing proportional to number of arguments
+        When the length of deferred operations is increasing proportional to the arguments
         then such process is called 'linear recursive process'
     </p>
     <aside class="notes">
@@ -351,10 +351,10 @@ reveal:
         <pre><code class="hljs" data-trim contenteditable>
                 def factorial(n):
                     def fact_iter(product, counter, max_count):
-                        while True:
-                            if counter > max_count:
-                                return product
-                            return fact_iter(counter * product, counter + 1, max_count)
+                      while True:
+                        if counter > max_count:
+                          return product
+                        return fact_iter(counter * product, counter + 1, max_count)
                     return fact_iter(1, 1, n)
         </code></pre>
     </section>
@@ -366,7 +366,8 @@ reveal:
                         while True:
                             if counter > max_count:
                                 return product
-                            (product, counter, max_count) = (counter * product, counter + 1, max_count)
+                            (product, counter, max_count) = \
+                                (counter * product, counter + 1, max_count)
                     return fact_iter(1, 1, n)
         </code></pre>
     </section>
@@ -376,7 +377,8 @@ reveal:
                 def factorial(n):
                     def fact_iter(product, counter, max_count):
                         while counter <= max_count:
-                            (product, counter, max_count) = (counter * product, counter + 1, max_count)
+                            (product, counter, max_count) = \
+                                (counter * product, counter + 1, max_count)
                         return product
                     return fact_iter(1, 1, n)
         </code></pre>
