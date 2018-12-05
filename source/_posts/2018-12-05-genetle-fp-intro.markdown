@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Gentle introduction to functional programming - live coding session"
-date: 2017-10-25 02:33:42 +0200
+date: 2018-12-05 22:33:42 +0200
 comments: true
 categories: [functional-programming]
 ---
