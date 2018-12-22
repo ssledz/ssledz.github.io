@@ -20,7 +20,6 @@ cases and I will start with the simplest one.
 
 We have two entities : User and Address and two functions retrieving data
 with the respect of a given predicate
-
 ```scala
 case class User(id: Long, login: String)
 case class Address(userId: Long, street: String)
@@ -31,7 +30,6 @@ def findAddressByUserId(userId: Long): Future[Address] = ???
 ```
 
 Our goal is to write a function which for a given login returns user's street name
-
 ```scala
 def findStreetByLogin(login : String) : Function[String] =
   for {
@@ -51,14 +49,12 @@ Of course we can filter out those nulls and rewrite functions to be aware of
 nulls but as you already know this also is not a good solution. Can we
 do better ? Of course we can, let's introduce a context aware
 of whether value exists or not.
-
 ```scala
 def findUserByLogin(login: String): Future[Option[User]] = ???
 def findAddressByUserId(userId: Long): Future[Option[Address]] = ???
 ```
 
 But wait below function is not compiling...
-
 ```scala
 def findStreetByLogin(login: String): Future[Option[String]] =
   for {
@@ -78,7 +74,6 @@ being a container fo an user's possible address.
 
 Equipped with this knowledge we can rewrite our function in the following
 way
-
 ```scala
 def findStreetByLogin(login: String): Future[Option[String]] =
   findUserByLogin(login).flatMap {
@@ -86,11 +81,9 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     case None => Future.successful(None)
   }
 ```
-
 Now it compiles and return correct results. But it is not as readable as
 our first naive attempt. Can we do better ? Ideally we would want to have
 something like
-
 ```scala
 def findStreetByLogin(login: String): Future[Option[String]] =
   for {
@@ -98,13 +91,11 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     address <- ???(findAddressByUserId(user.id))
   } yield address.street
 ```
-
 We already know that `for` comprehension deals with `flatMap`, `map`,
 `withFilter` and `foreach`. In our case compiler needs only `flaMap` and `map`
 to de sugar `for`. So let's introduce a new data type `OptionT`,
 which wraps `Function[Option[A]]` and in a proper way handles
 flatMap in order to compose `Future` with `Option`.
-
 ```scala
 case class OptionT[F[_], A](value: F[Option[A]]) {
 
@@ -124,10 +115,8 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
     OptionT(F.map(value) { x => x.map(f) })
 }
 ```
-
 In fact `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
 is a monad. A minimal api for monad can be described by following trait
-
 ```scala
 trait Monad[M[_]] {
 
@@ -145,9 +134,7 @@ object Monad {
 
 }
 ```
-
 The last thing is to implement `Monad` instance for `Future`.
-
 ```scala
 object MonadInstances {
   implicit val futureInstance: Monad[Future] = new Monad[Future] {
@@ -163,7 +150,6 @@ object MonadInstances {
 ```
 
 And thanks to that we can finally write
-
 ```scala
 import MonadInstances._
 

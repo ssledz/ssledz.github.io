@@ -9,7 +9,6 @@ categories: [scala, spark]
 Below can be found a simple sbt setup for a spark application in scala.
 
 Directory layout
-
 ```
 find .
 .
@@ -37,8 +36,6 @@ val sparkVersion = "2.1.0"
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion
 ```
-
-
 log4j.properties
 ```
 log4j.rootCategory=ERROR, console
@@ -47,9 +44,8 @@ log4j.appender.console.target=System.err
 log4j.appender.console.layout=org.apache.log4j.PatternLayout
 log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
 ```
-
 WordCountExample.scala
-```
+```scala
 package pl.softech
 
 import org.apache.spark.{SparkConf, SparkContext}
