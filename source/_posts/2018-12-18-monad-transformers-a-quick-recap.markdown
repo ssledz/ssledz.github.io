@@ -29,7 +29,6 @@ def findUserByLogin(login: String): Future[User] = ???
 def findAddressByUserId(userId: Long): Future[Address] = ???
 
 ```
-
 Our goal is to write a function which for a given login returns user's street name
 ```scala
 def findStreetByLogin(login : String) : Future[String] =
@@ -53,7 +52,6 @@ of whether value exists or not.
 def findUserByLogin(login: String): Future[Option[User]] = ???
 def findAddressByUserId(userId: Long): Future[Option[Address]] = ???
 ```
-
 But wait below function is not compiling...
 ```scala
 def findStreetByLogin(login: String): Future[Option[String]] =
@@ -63,7 +61,6 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     address <- findAddressByUserId(user.id)
   } yield address.map(_.street)
 ```
-
 It turns out that `Future` and `Option` **monads** do not compose in such a way.
 For a first look, composition looks very natural in `for` comprehension,
 but if we transform it into series of `flatMap` and `map` at the end, we
@@ -102,6 +99,7 @@ which wraps `Future[Option[A]]` and in a proper way handles
 flatMap in order to compose `Future` with `Option`.
 ```scala
 case class OptionFuture[A](value: Future[Option[A]]) {
+
   def flatMap[B](f: A => OptionFuture[B])(implicit ex: ExecutionContext): OptionFuture[B] =
     flatMapF(a => f(a).value)
 
@@ -123,8 +121,10 @@ Let's take a little time to better look at `OptionFuture` data type.
 First question coming to my mind is - can we make it more abstract ?
 It turns out that we can abstract over `Future` very easly. In terms
 of `Future` we are calling only two kinds of functions:
+
 * `flatMap`
 * `Future.successful`
+
 It means that `Future` can be swapped with `Monad`.
 
 What about the `Option` ? Over the `Option` we are performing **pattern matching**
@@ -155,7 +155,7 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
     OptionT(F.map(value) { x => x.map(f) })
 }
 ```
-`OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
+XXX `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
 is a monad.
 
 #### Monad quick recap
