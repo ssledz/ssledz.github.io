@@ -6,19 +6,20 @@ comments: true
 categories: [scala, functional-programming, monads]
 ---
 
-Someone have said that monads are like burrito, if you ever taste one than
-you can't imagine live without it, and it is really, really true :)
+Someone have said that **monads** are like burrito, if you ever taste one than
+you can't imagine live without it.
 
-Monads are a powerful tool. Thanks to them we can abstract over computation.
+**Monads** are a powerful tool. Thanks to them we can abstract over computation.
 We can make one computation depended on another and if needed fail fast.
 
-But one day the time will come when we have two different monads and we will find
+But one day the time will come when we have two different **monads** and we will find
 out that they don't compose !
 
 Let's make some code to visualize the problem. I am going to show two use
 cases and I will start with the simplest one.
 
-We have two entities : User and Address and two functions retrieving data
+### Case 1
+We have two entities : `User` and `Address` and two functions retrieving data
 with the respect of a given predicate
 ```scala
 case class User(id: Long, login: String)
@@ -31,7 +32,7 @@ def findAddressByUserId(userId: Long): Future[Address] = ???
 
 Our goal is to write a function which for a given login returns user's street name
 ```scala
-def findStreetByLogin(login : String) : Function[String] =
+def findStreetByLogin(login : String) : Future[String] =
   for {
     user <- findUserByLogin(login)
     address <- findAddressByUserId(user.id)
@@ -42,11 +43,10 @@ So far so good - quite simple and classic enterprise task :)
 
 However there are two caveats to this solution worth noting. What happened
 if there is no such user or the user exists but it has no address ?
-
-If so we will see Null Pointer Exception in logs - sick !
+It is obvious that we will see `Null Pointer Exception` - sick !
 
 Of course we can filter out those nulls and rewrite functions to be aware of
-nulls but as you already know this also is not a good solution. Can we
+them but as you already know this is also not a good solution. Can we
 do better ? Of course we can, let's introduce a context aware
 of whether value exists or not.
 ```scala
@@ -64,9 +64,9 @@ def findStreetByLogin(login: String): Future[Option[String]] =
   } yield address.map(_.street)
 ```
 
-It turns out that `Future` and `Option` monads do not compose in such a way.
+It turns out that `Future` and `Option` **monads** do not compose in such a way.
 For a first look, composition looks very natural in `for` comprehension,
-but if we transform it into series of `flatMap` and 'map' at the end, we
+but if we transform it into series of `flatMap` and `map` at the end, we
 will notice that the puzzles don't feet. If we start with `Future` than the
 function passed to `flatMap` must return a `Future`. In our case we want
 to return `Option` in the middle and based on it return a next `Future`
@@ -91,10 +91,13 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     address <- ???(findAddressByUserId(user.id))
   } yield address.street
 ```
+This leads us to the definition of **monad transformer**.
+
+#### Monad transformer for `Option`
 We already know that `for` comprehension deals with `flatMap`, `map`,
 `withFilter` and `foreach`. In our case compiler needs only `flaMap` and `map`
 to de sugar `for`. So let's introduce a new data type `OptionT`,
-which wraps `Function[Option[A]]` and in a proper way handles
+which wraps `Future[Option[A]]` and in a proper way handles
 flatMap in order to compose `Future` with `Option`.
 ```scala
 case class OptionT[F[_], A](value: F[Option[A]]) {
@@ -116,7 +119,10 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
 }
 ```
 In fact `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
-is a monad. A minimal api for monad can be described by following trait
+is a monad.
+
+#### Monad quick recap
+A minimal api for monad can be described by following trait
 ```scala
 trait Monad[M[_]] {
 
@@ -149,6 +155,7 @@ object MonadInstances {
 }
 ```
 
+#### Final solution
 And thanks to that we can finally write
 ```scala
 import MonadInstances._
