@@ -91,14 +91,51 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     address <- ???(findAddressByUserId(user.id))
   } yield address.street
 ```
-This leads us to the definition of **monad transformer**.
+We need somehow to fuse `Future` with `Option` in a smart way to make
+the composition possible.
 
-#### Monad transformer for `Option`
+#### Fusing `Future` with `Option`
 We already know that `for` comprehension deals with `flatMap`, `map`,
 `withFilter` and `foreach`. In our case compiler needs only `flaMap` and `map`
-to de sugar `for`. So let's introduce a new data type `OptionT`,
+to de sugar `for`. So let's introduce a new data type `OptionFuture`,
 which wraps `Future[Option[A]]` and in a proper way handles
 flatMap in order to compose `Future` with `Option`.
+```scala
+case class OptionFuture[A](value: Future[Option[A]]) {
+  def flatMap[B](f: A => OptionFuture[B])(implicit ex: ExecutionContext): OptionFuture[B] =
+    flatMapF(a => f(a).value)
+
+  def flatMapF[B](f: A => Future[Option[B]])(implicit ex: ExecutionContext): OptionFuture[B] =
+    OptionFuture(
+      value.flatMap { as =>
+        as match {
+          case Some(a) => f(a)
+          case _ => Future.successful(None)
+        }
+      }
+    )
+
+  def map[B](f: A => B)(implicit ex: ExecutionContext): OptionFuture[B] =
+    OptionFuture(value.map { x => x.map(f) })
+}
+```
+Let's take a little time to better look at `OptionFuture` data type.
+First question coming to my mind is - can we make it more abstract ?
+It turns out that we can abstract over `Future` very easly. In terms
+of `Future` we are calling only two kinds of functions:
+* `flatMap`
+* `Future.successful`
+It means that `Future` can be swapped with `Monad`.
+
+What about the `Option` ? Over the `Option` we are performing **pattern matching**
+- so it means that we need to know something about it structure.
+
+It's now clear that we can't to abstract over `Option`.
+
+This leads us to the definition of **monad transformer** for `Option` and
+we call it `OptionT`
+
+#### Monad transformer for `Option`
 ```scala
 case class OptionT[F[_], A](value: F[Option[A]]) {
 
@@ -118,7 +155,7 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
     OptionT(F.map(value) { x => x.map(f) })
 }
 ```
-In fact `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
+`OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
 is a monad.
 
 #### Monad quick recap
