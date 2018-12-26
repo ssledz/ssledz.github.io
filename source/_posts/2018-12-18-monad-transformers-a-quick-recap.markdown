@@ -46,8 +46,8 @@ It is obvious that we will see `Null Pointer Exception` - sick !
 
 Of course we can filter out those nulls and rewrite functions to be aware of
 them but as you already know this is also not a good solution. Can we
-do better ? Yes we can, let's introduce a context~(`Option`) aware
-of whether value exists or not.
+do better ? Yes we can, let's introduce a context aware
+of whether value exists or not (`Option` data type).
 ```scala
 def findUserByLogin(login: String): Future[Option[User]] = ???
 def findAddressByUserId(userId: Long): Future[Option[Address]] = ???
@@ -117,7 +117,7 @@ case class OptionFuture[A](value: Future[Option[A]]) {
     OptionFuture(value.map { x => x.map(f) })
 }
 ```
-Let's take a little time to better look at `OptionFuture` data type.
+Take a little time to better look at `OptionFuture` data type.
 First question coming to my mind is - can we make it more abstract ?
 It turns out that we can abstract over `Future` very easly. In terms
 of `Future` we are calling only two kinds of functions:
@@ -156,7 +156,10 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
 }
 ```
 `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
-is a monad.
+is a monad. The name of the **monad transformer** comes from the fact that,
+in order to implement this wrapper, we need to know what the inner
+most monad in the stack is - in this case `Option`. Without this knowledge
+we can't compose any two given monads with itself.
 
 #### Monad quick recap
 A minimal api for monad can be described by following trait
@@ -190,7 +193,7 @@ object MonadInstances {
 }
 ```
 
-#### Final solution
+#### A solution
 Putting all pieces together we can finally write
 ```scala
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -212,8 +215,12 @@ def findStreetByLogin(login: String): Future[Option[String]] =
   } yield address.street).value
 ```
 
+and that's it.
+
+#### Final word
+
 At the beginning I said that I have two cases to show, but because the
-post could be to long to go through without a brake I decided to break it
+post could be to long to go through without a brake I decided to split it
 into two pieces. The whole code base used in this post can be found in
 the following [link](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer)
 
