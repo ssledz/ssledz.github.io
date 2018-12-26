@@ -46,7 +46,7 @@ It is obvious that we will see `Null Pointer Exception` - sick !
 
 Of course we can filter out those nulls and rewrite functions to be aware of
 them but as you already know this is also not a good solution. Can we
-do better ? Of course we can, let's introduce a context aware
+do better ? Yes we can, let's introduce a context~(`Option`) aware
 of whether value exists or not.
 ```scala
 def findUserByLogin(login: String): Future[Option[User]] = ???
@@ -82,7 +82,7 @@ Now it compiles and return correct results. But it is not as readable as
 our first naive attempt. Can we do better ? Ideally we would want to have
 something like
 ```scala
-def findStreetByLogin(login: String): Future[Option[String]] =
+def findStreetByLogin(login: String): ??? =
   for {
     user <- ???(findUserByLogin(login))
     address <- ???(findAddressByUserId(user.id))
@@ -103,15 +103,15 @@ case class OptionFuture[A](value: Future[Option[A]]) {
   def flatMap[B](f: A => OptionFuture[B])(implicit ex: ExecutionContext): OptionFuture[B] =
     flatMapF(a => f(a).value)
 
-  def flatMapF[B](f: A => Future[Option[B]])(implicit ex: ExecutionContext): OptionFuture[B] =
-    OptionFuture(
-      value.flatMap { as =>
-        as match {
-          case Some(a) => f(a)
-          case _ => Future.successful(None)
-        }
+  def flatMapF[B](f: A => Future[Option[B]])
+                 (implicit ex: ExecutionContext): OptionFuture[B] = OptionFuture(
+    value.flatMap { as =>
+      as match {
+        case Some(a) => f(a)
+        case _ => Future.successful(None)
       }
-    )
+    }
+  )
 
   def map[B](f: A => B)(implicit ex: ExecutionContext): OptionFuture[B] =
     OptionFuture(value.map { x => x.map(f) })
@@ -130,7 +130,7 @@ It means that `Future` can be swapped with `Monad`.
 What about the `Option` ? Over the `Option` we are performing **pattern matching**
 - so it means that we need to know something about it structure.
 
-It's now clear that we can't to abstract over `Option`.
+And because of that we can't to abstract over it.
 
 This leads us to the definition of **monad transformer** for `Option` and
 we call it `OptionT`
@@ -155,7 +155,7 @@ case class OptionT[F[_], A](value: F[Option[A]]) {
     OptionT(F.map(value) { x => x.map(f) })
 }
 ```
-XXX `OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
+`OptionT[F[_], A]` abstracts over `F` and `A` and it only requires that `F`
 is a monad.
 
 #### Monad quick recap
@@ -177,29 +177,44 @@ object Monad {
 
 }
 ```
-The last thing is to implement `Monad` instance for `Future`.
+And its instance for `Future` you can find below.
 ```scala
 object MonadInstances {
-  implicit val futureInstance: Monad[Future] = new Monad[Future] {
+  implicit def futureInstance(implicit ex: ExecutionContext): Monad[Future] =
+    new Monad[Future] {
 
-    import scala.concurrent.ExecutionContext.Implicits.global
+      override def pure[A](x: A): Future[A] = Future.successful(x)
 
-    override def pure[A](x: A): Future[A] = Future.successful(x)
-
-    override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] =
-        xs.flatMap(f)
-  }
+      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)
+    }
 }
 ```
 
 #### Final solution
-And thanks to that we can finally write
+Putting all pieces together we can finally write
 ```scala
+import scala.concurrent.ExecutionContext.Implicits.global
 import MonadInstances._
 
-def findStreetByLogin(login: String): Future[Option[String]] =
+def findStreetByLogin(login: String): OptionT[Future, String] =
   for {
     user <- OptionT(findUserByLogin(login))
     address <- OptionT(findAddressByUserId(user.id))
   } yield address.street
 ```
+of course we can return directly `Future[Option[String]]` just by calling
+`value` function on the result like
+```scala
+def findStreetByLogin(login: String): Future[Option[String]] =
+  (for {
+    user <- OptionT(findUserByLogin(login))
+    address <- OptionT(findAddressByUserId(user.id))
+  } yield address.street).value
+```
+
+At the beginning I said that I have two cases to show, but because the
+post could be to long to go through without a brake I decided to break it
+into two pieces. The whole code base used in this post can be found in
+the following [link](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer)
+
+More soon...
