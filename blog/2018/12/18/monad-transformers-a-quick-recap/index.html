@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Monad Transformers - a Quick Recap - My Programmer's Road</title>
+  <meta name="author" content="Sławomir Śledź">
+
+  
+  <meta name="description" content="Someone have said that monads are like burrito, if you ever taste one than
+you can’t imagine live without it. Monads are a powerful tool. Thanks to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Programmer's Road" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-66120423-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Programmer's Road</a></h1>
+  
+    <h2>Make things as simple as possible, but not simpler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="ssledz.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Monad Transformers - a Quick Recap</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-12-18T23:19:06+01:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>11:19 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Someone have said that <strong>monads</strong> are like burrito, if you ever taste one than
+you can’t imagine live without it.</p>
+
+<p><strong>Monads</strong> are a powerful tool. Thanks to them we can abstract over computation.
+We can make one computation depended on another and if needed fail fast.</p>
+
+<p>But one day the time will come when we have two different <strong>monads</strong> and we will find
+out that they don’t compose !</p>
+
+<p>Let’s make some code to visualize the problem. I am going to show two use
+cases and I will start with the simplest one.</p>
+
+<h3 id="case-1">Case 1</h3>
+<p>We have two entities : <code>User</code> and <code>Address</code> and two functions retrieving data
+with the respect of a given predicate</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+</span><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">Address</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">street</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span> <span class="o">???</span>
+</span><span class="line"><span class="k">def</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Address</span><span class="o">]</span> <span class="k">=</span> <span class="o">???</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Our goal is to write a function which for a given login returns user’s street name</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span> <span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">  <span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">user</span> <span class="k">&lt;-</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">)</span>
+</span><span class="line">    <span class="n">address</span> <span class="k">&lt;-</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>So far so good - quite simple and classic enterprise task :)</p>
+
+<p>However there are two caveats to this solution worth noting. What happened
+if there is no such user or the user exists but it has no address ?
+It is obvious that we will see <code>Null Pointer Exception</code> - sick !</p>
+
+<p>Of course we can filter out those nulls and rewrite functions to be aware of
+them but as you already know this is also not a good solution. Can we
+do better ? Yes we can, let’s introduce a context aware
+of whether value exists or not (<code>Option</code> data type).</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">User</span><span class="o">]]</span> <span class="k">=</span> <span class="o">???</span>
+</span><span class="line"><span class="k">def</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">]]</span> <span class="k">=</span> <span class="o">???</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>But wait below function is not compiling…</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class="line">  <span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">maybeUser</span> <span class="k">&lt;-</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">)</span>
+</span><span class="line">    <span class="n">user</span> <span class="k">&lt;-</span> <span class="n">maybeUser</span>
+</span><span class="line">    <span class="n">address</span> <span class="k">&lt;-</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">street</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>It turns out that <code>Future</code> and <code>Option</code> <strong>monads</strong> do not compose in such a way.
+For a first look, composition looks very natural in <code>for</code> comprehension,
+but if we transform it into series of <code>flatMap</code> and <code>map</code> at the end, we
+will notice that the puzzles don’t feet. If we start with <code>Future</code> than the
+function passed to <code>flatMap</code> must return a <code>Future</code>. In our case we want
+to return <code>Option</code> in the middle and based on it return a next <code>Future</code>
+being a container fo an user’s possible address.</p>
+
+<p>Equipped with this knowledge we can rewrite our function in the following
+way</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class="line">  <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">).</span><span class="n">flatMap</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">street</span><span class="o">))</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span><span class="o">(</span><span class="nc">None</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Now it compiles and return correct results. But it is not as readable as
+our first naive attempt. Can we do better ? Ideally we would want to have
+something like</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">???</span> <span class="o">=</span>
+</span><span class="line">  <span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">user</span> <span class="k">&lt;-</span> <span class="o">???(</span><span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">))</span>
+</span><span class="line">    <span class="n">address</span> <span class="k">&lt;-</span> <span class="o">???(</span><span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">))</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>We need somehow to fuse <code>Future</code> with <code>Option</code> in a smart way to make
+the composition possible.</p>
+
+<h4 id="fusing-future-with-option">Fusing <code>Future</code> with <code>Option</code></h4>
+<p>We already know that <code>for</code> comprehension deals with <code>flatMap</code>, <code>map</code>,
+<code>withFilter</code> and <code>foreach</code>. In our case compiler needs only <code>flaMap</code> and <code>map</code>
+to de sugar <code>for</code>. So let’s introduce a new data type <code>OptionFuture</code>,
+which wraps <code>Future[Option[A]]</code> and in a proper way handles
+flatMap in order to compose <code>Future</code> with <code>Option</code>.</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">OptionFuture</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">value</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]])</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">    <span class="n">flatMapF</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">).</span><span class="n">value</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMapF</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]])</span>
+</span><span class="line">                 <span class="o">(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nc">OptionFuture</span><span class="o">(</span>
+</span><span class="line">    <span class="n">value</span><span class="o">.</span><span class="n">flatMap</span> <span class="o">{</span> <span class="n">as</span> <span class="k">=&gt;</span>
+</span><span class="line">      <span class="n">as</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">        <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span><span class="o">(</span><span class="nc">None</span><span class="o">)</span>
+</span><span class="line">      <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">  <span class="o">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">    <span class="nc">OptionFuture</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">f</span><span class="o">)</span> <span class="o">})</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Take a little time to better look at <code>OptionFuture</code> data type.
+First question coming to my mind is - can we make it more abstract ?
+It turns out that we can abstract over <code>Future</code> very easly. In terms
+of <code>Future</code> we are calling only two kinds of functions:</p>
+
+<ul>
+  <li><code>flatMap</code></li>
+  <li><code>Future.successful</code></li>
+</ul>
+
+<p>It means that <code>Future</code> can be swapped with <code>Monad</code>.</p>
+
+<p>What about the <code>Option</code> ? Over the <code>Option</code> we are performing <strong>pattern matching</strong>
+- so it means that we need to know something about it structure.</p>
+
+<p>And because of that we can’t to abstract over it.</p>
+
+<p>This leads us to the definition of <strong>monad transformer</strong> for <code>Option</code> and
+we call it <code>OptionT</code></p>
+
+<h4 id="monad-transformer-for-option">Monad transformer for <code>Option</code></h4>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">OptionT</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span>, <span class="kt">A</span><span class="o">](</span><span class="n">value</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]])</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">OptionT</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">B</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">m</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">OptionT</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">    <span class="n">flatMapF</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">).</span><span class="n">value</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMapF</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">F</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]])(</span><span class="k">implicit</span> <span class="n">F</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">OptionT</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nc">OptionT</span><span class="o">(</span>
+</span><span class="line">    <span class="n">F</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">value</span><span class="o">)</span> <span class="o">{</span> <span class="n">as</span> <span class="k">=&gt;</span>
+</span><span class="line">      <span class="n">as</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">        <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="nc">None</span><span class="o">)</span>
+</span><span class="line">      <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">  <span class="o">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">F</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">OptionT</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">    <span class="nc">OptionT</span><span class="o">(</span><span class="n">F</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">value</span><span class="o">)</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">f</span><span class="o">)</span> <span class="o">})</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p><code>OptionT[F[_], A]</code> abstracts over <code>F</code> and <code>A</code> and it only requires that <code>F</code>
+is a monad. The name of the <strong>monad transformer</strong> comes from the fact that,
+in order to implement this wrapper, we need to know what the inner
+most monad in the stack is - in this case <code>Option</code>. Without this knowledge
+we can’t compose any two given monads with itself.</p>
+
+<h4 id="monad-quick-recap">Monad quick recap</h4>
+<p>A minimal api for monad can be described by following trait</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">trait</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">pure</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">xs</span><span class="o">)(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)))</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">object</span> <span class="nc">Monad</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">apply</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">m</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">])</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]</span> <span class="k">=</span> <span class="n">m</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>And its instance for <code>Future</code> you can find below.</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">object</span> <span class="nc">MonadInstances</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">implicit</span> <span class="k">def</span> <span class="n">futureInstance</span><span class="o">(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">Monad</span><span class="o">[</span><span class="kt">Future</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">    <span class="k">new</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">Future</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">override</span> <span class="k">def</span> <span class="n">pure</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">override</span> <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h4 id="a-solution">A solution</h4>
+<p>Putting all pieces together we can finally write</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+</span><span class="line"><span class="k">import</span> <span class="nn">MonadInstances._</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionT</span><span class="o">[</span><span class="kt">Future</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+</span><span class="line">  <span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">user</span> <span class="k">&lt;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">))</span>
+</span><span class="line">    <span class="n">address</span> <span class="k">&lt;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">))</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>of course we can return directly <code>Future[Option[String]]</code> just by calling
+<code>value</code> function on the result like</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class="line">  <span class="o">(</span><span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">user</span> <span class="k">&lt;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">))</span>
+</span><span class="line">    <span class="n">address</span> <span class="k">&lt;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">))</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span><span class="o">).</span><span class="n">value</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>and that’s it.</p>
+
+<h4 id="final-word">Final word</h4>
+
+<p>At the beginning I said that I have two cases to show, but because the
+post could be to long to go through without a brake I decided to split it
+into two pieces. The whole code base used in this post can be found in
+the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer">link</a></p>
+
+<p>More soon…</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sławomir Śledź</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2018-12-18T23:19:06+01:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>11:19 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/functional-programming/'>functional-programming</a>, <a class='category' href='/blog/categories/monads/'>monads</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/" data-via="ssledz83" data-counturl="http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2018/12/05/genetle-fp-intro/" title="Previous Post: Gentle introduction to functional programming - live coding session">&laquo; Gentle introduction to functional programming - live coding session</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2018/12/18/monad-transformers-a-quick-recap/">Monad Transformers - a Quick Recap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/05/genetle-fp-intro/">Gentle Introduction to Functional Programming - Live Coding Session</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/10/25/recursion-a-quick-introduction/">Recursion - a Quick Introduction</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/">Functional Programming in Bash - Introduction to fun.sh Library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/01/04/how-to-pass-arrays-as-parameters-in-bash/">How to Pass Arrays as Parameters in Bash</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Category Cloud</h1>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 137.5%'>functional-programming(5)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/monads' style='font-size: 107.5%'>monads(1)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 145.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 130.0%'>scala(4)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ssledz">@ssledz</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ssledz',
+            count: 10,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>Sławomir Śledź, Senior Scala/Java Developer at <a target="_blank" href="https://www.cloudtechnologies.pl/">Cloud Technologies S.A.</a></p>
+</section>
+
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Gravatar of Sławomir Śledź " title="Gravatar of Sławomir Śledź" />
+	</span>
+</section>
+
+<section>
+<h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/3726554/slavik" target="_blank">
+<img src="http://stackoverflow.com/users/flair/3726554.png?theme=clean" width="208" height="58" alt="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+</section>
+
+<section class='goodreads-aside'>
+  <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
+  <ul>
+    
+  </ul>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/slawomir.sledz?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+    <h1>Certificates</h1>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="58fa8011-f1da-4a68-846c-b869ee04012b"></div>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="d5492e6e-9cb6-4665-b131-973bf8204190"></div>
+    <script type="text/javascript">
+        (function() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = '//www.youracclaim.com/assets/utilities/embed.js';
+            var o = document.getElementsByTagName('script')[0];
+            o.parentNode.insertBefore(s, o);
+        })();
+    </script>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2018 - Sławomir Śledź -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ssledz';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/';
+        var disqus_url = 'http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

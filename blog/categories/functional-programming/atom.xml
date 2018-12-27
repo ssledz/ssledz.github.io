@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2018-12-05T17:39:05+01:00</updated>
+  <updated>2018-12-27T01:00:07+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,287 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Monad Transformers - a Quick Recap]]></title>
+    <link href="http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap/"/>
+    <updated>2018-12-18T23:19:06+01:00</updated>
+    <id>http://ssledz.github.io/blog/2018/12/18/monad-transformers-a-quick-recap</id>
+    <content type="html"><![CDATA[<p>Someone have said that <strong>monads</strong> are like burrito, if you ever taste one than
+you can’t imagine live without it.</p>
+
+<p><strong>Monads</strong> are a powerful tool. Thanks to them we can abstract over computation.
+We can make one computation depended on another and if needed fail fast.</p>
+
+<p>But one day the time will come when we have two different <strong>monads</strong> and we will find
+out that they don’t compose !</p>
+
+<p>Let’s make some code to visualize the problem. I am going to show two use
+cases and I will start with the simplest one.</p>
+
+<h3 id="case-1">Case 1</h3>
+<p>We have two entities : <code>User</code> and <code>Address</code> and two functions retrieving data
+with the respect of a given predicate
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+</span><span class='line'><span class="k">case</span> <span class="k">class</span> <span class="nc">Address</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">street</span><span class="k">:</span> <span class="kt">String</span><span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span> <span class="o">???</span>
+</span><span class='line'><span class="k">def</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Address</span><span class="o">]</span> <span class="k">=</span> <span class="o">???&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nc">Our</span> <span class="n">goal</span> <span class="n">is</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">function</span> <span class="n">which</span> <span class="k">for</span> <span class="n">a</span> <span class="n">given</span> <span class="n">login</span> <span class="n">returns</span> <span class="n">user</span><span class="-Symbol">&#39;s</span> <span class="n">street</span> <span class="n">name</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">scala</span>
+</span><span class='line'><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span> <span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>  <span class="k">for</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">address</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>So far so good - quite simple and classic enterprise task :)</p>
+
+<p>However there are two caveats to this solution worth noting. What happened
+if there is no such user or the user exists but it has no address ?
+It is obvious that we will see <code>Null Pointer Exception</code> - sick !</p>
+
+<p>Of course we can filter out those nulls and rewrite functions to be aware of
+them but as you already know this is also not a good solution. Can we
+do better ? Yes we can, let’s introduce a context aware
+of whether value exists or not (<code>Option</code> data type).
+<code>scala
+def findUserByLogin(login: String): Future[Option[User]] = ???
+def findAddressByUserId(userId: Long): Future[Option[Address]] = ???
+</code>
+But wait below function is not compiling…
+<code>scala
+def findStreetByLogin(login: String): Future[Option[String]] =
+  for {
+    maybeUser &lt;- findUserByLogin(login)
+    user &lt;- maybeUser
+    address &lt;- findAddressByUserId(user.id)
+  } yield address.map(_.street)
+</code>
+It turns out that <code>Future</code> and <code>Option</code> <strong>monads</strong> do not compose in such a way.
+For a first look, composition looks very natural in <code>for</code> comprehension,
+but if we transform it into series of <code>flatMap</code> and <code>map</code> at the end, we
+will notice that the puzzles don’t feet. If we start with <code>Future</code> than the
+function passed to <code>flatMap</code> must return a <code>Future</code>. In our case we want
+to return <code>Option</code> in the middle and based on it return a next <code>Future</code>
+being a container fo an user’s possible address.</p>
+
+<p>Equipped with this knowledge we can rewrite our function in the following
+way
+<code>scala
+def findStreetByLogin(login: String): Future[Option[String]] =
+  findUserByLogin(login).flatMap {
+    case Some(user) =&gt; findAddressByUserId(user.id).map(_.map(_.street))
+    case None =&gt; Future.successful(None)
+  }
+</code>
+Now it compiles and return correct results. But it is not as readable as
+our first naive attempt. Can we do better ? Ideally we would want to have
+something like
+<code>scala
+def findStreetByLogin(login: String): ??? =
+  for {
+    user &lt;- ???(findUserByLogin(login))
+    address &lt;- ???(findAddressByUserId(user.id))
+  } yield address.street
+</code>
+We need somehow to fuse <code>Future</code> with <code>Option</code> in a smart way to make
+the composition possible.</p>
+
+<h4 id="fusing-future-with-option">Fusing <code>Future</code> with <code>Option</code></h4>
+<p>We already know that <code>for</code> comprehension deals with <code>flatMap</code>, <code>map</code>,
+<code>withFilter</code> and <code>foreach</code>. In our case compiler needs only <code>flaMap</code> and <code>map</code>
+to de sugar <code>for</code>. So let’s introduce a new data type <code>OptionFuture</code>,
+which wraps <code>Future[Option[A]]</code> and in a proper way handles
+flatMap in order to compose <code>Future</code> with <code>Option</code>.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">case</span> <span class="k">class</span> <span class="nc">OptionFuture</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;value: Future[Option[A]]&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">flatMap</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; OptionFuture[B]&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>    <span class="n">flatMapF</span><span class="o">(</span><span class="n">a</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">).</span><span class="n">value</span><span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">flatMapF</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; Future[Option[B]]&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+</span><span class='line'>                 <span class="o">(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nc">OptionFuture</span><span class="o">(</span>
+</span><span class='line'>    <span class="n">value</span><span class="o">.</span><span class="n">flatMap</span> <span class="o">{</span> <span class="n">as</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span>
+</span><span class='line'>      <span class="n">as</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'>        <span class="k">case</span> <span class="k">_</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span><span class="o">(</span><span class="nc">None</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>  <span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; B&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;(</span><span class="k">implicit</span> <span class="n">ex</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionFuture</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>    <span class="nc">OptionFuture</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">x</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">f</span><span class="o">)</span> <span class="o">})</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+Take a little time to better look at <code>OptionFuture</code> data type.
+First question coming to my mind is - can we make it more abstract ?
+It turns out that we can abstract over <code>Future</code> very easly. In terms
+of <code>Future</code> we are calling only two kinds of functions:</p>
+
+<ul>
+  <li><code>flatMap</code></li>
+  <li><code>Future.successful</code></li>
+</ul>
+
+<p>It means that <code>Future</code> can be swapped with <code>Monad</code>.</p>
+
+<p>What about the <code>Option</code> ? Over the <code>Option</code> we are performing <strong>pattern matching</strong>
+- so it means that we need to know something about it structure.</p>
+
+<p>And because of that we can’t to abstract over it.</p>
+
+<p>This leads us to the definition of <strong>monad transformer</strong> for <code>Option</code> and
+we call it <code>OptionT</code></p>
+
+<h4 id="monad-transformer-for-option">Monad transformer for <code>Option</code></h4>
+<p>```scala
+case class OptionT<a href="value: F[Option[A]]">F[_], A</a> {</p>
+
+<p>def flatMap<a href="f: A =&gt; OptionT[F, B]">B</a>(implicit m: Monad[F]): OptionT[F, B] =
+    flatMapF(a =&gt; f(a).value)</p>
+
+<p>def flatMapF<a href="f: A =&gt; F[Option[B]]">B</a>(implicit F: Monad[F]): OptionT[F, B] = OptionT(
+    F.flatMap(value) { as =&gt;
+      as match {
+        case Some(a) =&gt; f(a)
+        case _ =&gt; F.pure(None)
+      }
+    }
+  )</p>
+
+<p>def map<a href="f: A =&gt; B">B</a>(implicit F: Monad[F]): OptionT[F, B] =
+    OptionT(F.map(value) { x =&gt; x.map(f) })
+}
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nc">OptionT</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span>, <span class="kt">A</span><span class="o">]&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">abstracts</span> <span class="n">over</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">F</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">and</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">and</span> <span class="n">it</span> <span class="n">only</span> <span class="k">requires</span> <span class="n">that</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">F</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">is</span> <span class="n">a</span> <span class="n">monad</span><span class="o">.</span> <span class="nc">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="n">monad</span> <span class="n">transformer</span><span class="o">&lt;/</span><span class="n">strong</span><span class="o">&gt;</span> <span class="n">comes</span> <span class="n">from</span> <span class="n">the</span> <span class="n">fact</span> <span class="n">that</span><span class="o">,</span>
+</span><span class='line'><span class="n">in</span> <span class="n">order</span> <span class="n">to</span> <span class="n">implement</span> <span class="k">this</span> <span class="n">wrapper</span><span class="o">,</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">know</span> <span class="n">what</span> <span class="n">the</span> <span class="n">inner</span>
+</span><span class='line'><span class="n">most</span> <span class="n">monad</span> <span class="n">in</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">is</span> <span class="o">-</span> <span class="n">in</span> <span class="k">this</span> <span class="k">case</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nc">Option</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;.</span> <span class="nc">Without</span> <span class="k">this</span> <span class="n">knowledge</span>
+</span><span class='line'><span class="n">we</span> <span class="n">can</span><span class="err">’</span><span class="n">t</span> <span class="n">compose</span> <span class="n">any</span> <span class="n">two</span> <span class="n">given</span> <span class="n">monads</span> <span class="k">with</span> <span class="n">itself</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h4</span> <span class="n">id</span><span class="o">=</span><span class="s">&quot;monad-quick-recap&quot;</span><span class="o">&gt;</span><span class="nc">Monad</span> <span class="n">quick</span> <span class="n">recap</span><span class="o">&lt;/</span><span class="n">h4</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">A</span> <span class="n">minimal</span> <span class="n">api</span> <span class="k">for</span> <span class="n">monad</span> <span class="n">can</span> <span class="n">be</span> <span class="n">described</span> <span class="n">by</span> <span class="n">following</span> <span class="k">trait</span>
+</span></code></pre></td></tr></table></div></figure>scala
+trait Monad[M[_]] {</p>
+
+<p>def pure<a href="x: A">A</a>: M[A]</p>
+
+<p>def flatMap<a href="xs: M[A]">A, B</a>(f: A =&gt; M[B]): M[B]</p>
+
+<p>def map<a href="xs: M[A]">A, B</a>(f: A =&gt; B): M[B] = flatMap(xs)(x =&gt; pure(f(x)))</p>
+
+<p>}</p>
+
+<p>object Monad {</p>
+
+<p>def apply<a href="implicit m: Monad[M]">M[_]</a>: Monad[M] = m</p>
+
+<p>}
+<code>
+And its instance for `Future` you can find below.
+</code>scala
+object MonadInstances {
+  implicit def futureInstance(implicit ex: ExecutionContext): Monad[Future] =
+    new Monad[Future] {</p>
+
+<pre><code>  override def pure[A](x: A): Future[A] = Future.successful(x)
+
+  override def flatMap[A, B](xs: Future[A])(f: A =&gt; Future[B]): Future[B] = xs.flatMap(f)
+} } ```
+</code></pre>
+
+<h4 id="a-solution">A solution</h4>
+<p>Putting all pieces together we can finally write
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">MonadInstances._&lt;/p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">OptionT</span><span class="o">[</span><span class="kt">Future</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>  <span class="k">for</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">))</span>
+</span><span class='line'>    <span class="n">address</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">))</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">of</span> <span class="n">course</span> <span class="n">we</span> <span class="n">can</span> <span class="k">return</span> <span class="n">directly</span> <span class="n">`Future[Option[String]]`</span> <span class="n">just</span> <span class="n">by</span> <span class="n">calling</span>
+</span><span class='line'><span class="n">`value`</span> <span class="n">function</span> <span class="n">on</span> <span class="n">the</span> <span class="n">result</span> <span class="n">like</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">scala</span>
+</span><span class='line'><span class="k">def</span> <span class="n">findStreetByLogin</span><span class="o">(</span><span class="n">login</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class='line'>  <span class="o">(</span><span class="k">for</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findUserByLogin</span><span class="o">(</span><span class="n">login</span><span class="o">))</span>
+</span><span class='line'>    <span class="n">address</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="nc">OptionT</span><span class="o">(</span><span class="n">findAddressByUserId</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="o">))</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">yield</span> <span class="n">address</span><span class="o">.</span><span class="n">street</span><span class="o">).</span><span class="n">value</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>and that’s it.</p>
+
+<h4 id="final-word">Final word</h4>
+
+<p>At the beginning I said that I have two cases to show, but because the
+post could be to long to go through without a brake I decided to split it
+into two pieces. The whole code base used in this post can be found in
+the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer">link</a></p>
+
+<p>More soon…</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gentle Introduction to Functional Programming - Live Coding Session]]></title>
