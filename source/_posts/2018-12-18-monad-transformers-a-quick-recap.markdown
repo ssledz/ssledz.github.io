@@ -3,7 +3,7 @@ layout: post
 title: "Monad transformers - a quick recap"
 date: 2018-12-18 23:19:06 +0100
 comments: true
-categories: [scala, functional-programming, monads]
+categories: [scala, functional-programming, monads, monad-transformers]
 ---
 
 Someone have said that **monads** are like burrito, if you ever taste one than
@@ -188,7 +188,7 @@ object MonadInstances {
 
       override def pure[A](x: A): Future[A] = Future.successful(x)
 
-      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)
+      override def flatMap[A, B](xs: Future[A])(f: A => Future[B]): Future[B] = xs.flatMap(f)(ex)
     }
 }
 ```
@@ -214,7 +214,7 @@ def findStreetByLogin(login: String): Future[Option[String]] =
     address <- OptionT(findAddressByUserId(user.id))
   } yield address.street).value
 ```
-
+`
 and that's it.
 
 #### Final word
