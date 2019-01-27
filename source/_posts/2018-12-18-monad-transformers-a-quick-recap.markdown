@@ -224,4 +224,4 @@ post could be to long to go through without a brake I decided to split it
 into two pieces. The whole code base used in this post can be found in
 the following [link](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer)
 
-More soon...
+More in [part 2]({% post_url 2019-01-24-monad-transformers-part-2 %})
