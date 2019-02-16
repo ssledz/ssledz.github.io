@@ -18,11 +18,15 @@ trait Monad[M[_]] {
 
   def flatMap[A, B](xs: M[A])(f: A => M[B]): M[B]
 
+  def map[A, B](xs: M[A])(f: A => B): M[B] = flatMap(xs)(x => pure(f(x)))
+
 }
 ```
 
-Functions `pure` and `flatMap` for a given monad `M[A]` have to follow
-some laws - I will talk about them later.
+Functions `pure` and `flatMap` for a given monad `M[_]` have to follow
+some laws - I will talk about them later. Function `map` can be defined
+in terms of `flatMap` and `pure` and this is a bonus which we get for a free
+when we provide an instance of a Monad for a type `M[_]`.
 
 We can think about `M[A]` like about some smart container
 for a value (values) of type `A`. This container abstracts away from how this value
@@ -57,8 +61,55 @@ first computation as soon as possible giving us possibility to
 spawn another computation in asynchronous manner.
 
 ### Laws
+Each monad needs to follow three laws
+* Left identity: `return a >>= f ≡ f a`
+* Right identity: `m >>= return ≡ m`
+* Associativity: `(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)`
+These laws was taken from haskell because expressions there are very compact and
+easy to follow. Function `>>=` in scala maps to `flatMap`, `return` is
+just a `pure`, `f x` is an application of function `f` to `x` and the
+last one `\x -> ...` is a lambda expression.
+
+Laws in scala can be written in a following way (using ScalaCheck)
+```scala
+val monad = implicitly[Monad[M]]
+
+property("Left identity: return a >>= f ≡ f a") = forAll { (a: A, f: A => M[B]) =>
+  (`return`(a) >>= f) === f(a)
+}
+
+property("Right identity: m >>= return ≡ m") = forAll { m: M[A] =>
+  (m >>= `return`) === m
+}
+
+property("Associativity: (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)") = forAll { (m: M[A], f: A => M[B], g: B => M[C]) =>
+  ((m >>= f) >>= g) === (m >>= (x => f(x) >>= g))
+}
+
+val `return`: A => M[A] = monad.pure _
+
+private implicit class MonadOps[A](m: M[A]) {
+  def >>=[B](f: A => M[B]): M[B] = monad.flatMap(m)(f)
+}
 ```
-```
+If you are curious about implementation details take a look on this [class](https://raw.githubusercontent.com/ssledz/ssledz.github.io-src/master/monad-gentle-introduction/src/test/scala/monad/intro/AbstractMonadProperties.scala)
+
+### Monads
+
+This section is a placeholder for a list of posts about monads mentioned in
+this article. I will try my best to deliver a missing content. Watch my blog
+for an update.
+
+Monads:
+* Option
+* Either
+* Id
+* Writer
+* Reader
+* State
+* Try
+* IO
+* List
 
 ### Resources
 
