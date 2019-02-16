@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2019-01-28T00:13:57+01:00</updated>
+  <updated>2019-02-16T23:55:04+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,172 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[About Monads - a Gentle Introduction]]></title>
+    <link href="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/"/>
+    <updated>2019-01-28T00:23:36+01:00</updated>
+    <id>http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction</id>
+    <content type="html"><![CDATA[<p>In functional programming monad is a design pattern which is used to
+express how states of computations are changing. It can take a form of some
+abstract data type constructor with two abstract functions.</p>
+
+<p>In <code>scala</code> we can define this contract using <code>Monad</code> type class
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">trait</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">pure</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;x: A&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="n">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">flatMap</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;xs: M[A]&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">,</span> <span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;xs: M[A]&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">,</span> <span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">xs</span><span class="o">)(</span><span class="n">x</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)))&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Functions <code>pure</code> and <code>flatMap</code> for a given monad <code>M[_]</code> have to follow
+some laws - I will talk about them later.</p>
+
+<p>Function <code>map</code> can be defined
+in terms of <code>flatMap</code> and <code>pure</code> and this is a bonus which we get for a free
+when we provide an instance of a Monad for a type <code>M[_]</code>.</p>
+
+<p>We can think about <code>M[A]</code> like about some smart container
+for a value (values) of type <code>A</code>. This container abstracts away from how this value
+is kept. We can have many flavors of them like container:</p>
+
+<ul>
+  <li>aware of whether or not the value exists</li>
+  <li>with more then one value</li>
+  <li>for which getting the value would trigger some kind of <code>IO</code> operation</li>
+  <li>with value which eventually could appear in future</li>
+  <li>with value or error</li>
+  <li>with value dependent on some kind of state</li>
+  <li>with value and some logging information</li>
+  <li>etc</li>
+</ul>
+
+<p>Monad let us focus on what we want to do with the contained value. It is
+like a context in which the value exists. When we want to do some computation
+we are abstracting over the context so we aren’t disrupted whether or
+not the value exists, we have many of them or the value may appear in a future.
+We want just to get the value out of the container for a moment to make
+some computation and then put it again. The context is important only when
+we want to pull out a value permanently.</p>
+
+<p>Another advantage of the monad is an ability of sequencing the computations.
+Having let’s say two computations we can very easily make dependence
+between them saying that the computations of the second depends on
+a result of the first. Of course this can be scaled to more than two.</p>
+
+<p>At first glance, it may seem to be not so impressive because it is
+very common to make such things during coding. But be aware that monad
+frees us from thinking about the context in which the value exists. The context
+can be for example an asynchronous computation. Dealing with concurrency
+is challenging - we have to be very careful to not make a hard to spot mistake.
+Monad takes care about this complexity, providing a result of the
+first computation as soon as possible giving us possibility to
+spawn another computation in asynchronous manner.</p>
+
+<h3 id="laws">Laws</h3>
+<p>Each monad needs to follow three laws</p>
+
+<ul>
+  <li>Left identity: <code>return a &gt;&gt;= f ≡ f a</code></li>
+  <li>Right identity: <code>m &gt;&gt;= return ≡ m</code></li>
+  <li>Associativity: <code>(m &gt;&gt;= f) &gt;&gt;= g ≡ m &gt;&gt;= (\x -&gt; f x &gt;&gt;= g)</code></li>
+</ul>
+
+<p>These laws was taken from haskell because expressions there are very compact and
+easy to follow. Function <code>&gt;&gt;=</code> in scala maps to <code>flatMap</code>, <code>return</code> is
+just a <code>pure</code>, <code>f x</code> is an application of function <code>f</code> with <code>x</code> and the
+last one <code>\x -&gt; ...</code> is a lambda expression.</p>
+
+<p>Laws in scala can be written in a following way (using ScalaCheck)
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">val</span> <span class="n">monad</span> <span class="k">=</span> <span class="n">implicitly</span><span class="o">[</span><span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]]&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">property</span><span class="o">(</span><span class="err">“</span><span class="nc">Left</span> <span class="n">identity</span><span class="k">:</span> <span class="kt">return</span> <span class="kt">a</span><span class="err"> »</span><span class="o">=</span> <span class="n">f</span> <span class="o">≡</span> <span class="n">f</span> <span class="n">a</span><span class="err">”</span><span class="o">)</span> <span class="k">=</span> <span class="n">forAll</span> <span class="o">{</span> <span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">,</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">(&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;(</span><span class="n">a</span><span class="o">)</span><span class="err"> »</span><span class="k">=</span> <span class="n">f</span><span class="o">)</span> <span class="o">===</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">property</span><span class="o">(</span><span class="err">“</span><span class="nc">Right</span> <span class="n">identity</span><span class="k">:</span> <span class="kt">m</span><span class="err"> »</span><span class="o">=</span> <span class="k">return</span> <span class="o">≡</span> <span class="n">m</span><span class="err">”</span><span class="o">)</span> <span class="k">=</span> <span class="n">forAll</span> <span class="o">{</span> <span class="n">m</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">(</span><span class="n">m</span><span class="err"> »</span><span class="k">=</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;)</span> <span class="o">===</span> <span class="n">m</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">property</span><span class="o">(</span><span class="err">“</span><span class="nc">Associativity</span><span class="k">:</span> <span class="o">(</span><span class="kt">m</span><span class="err"> »</span><span class="o">=</span> <span class="kt">f</span><span class="o">)</span><span class="err"> »</span><span class="k">=</span> <span class="n">g</span> <span class="o">≡</span> <span class="n">m</span><span class="err"> »</span><span class="k">=</span> <span class="o">(\</span><span class="n">x</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span> <span class="n">x</span><span class="err"> »</span><span class="k">=</span> <span class="n">g</span><span class="o">)</span><span class="err">”</span><span class="o">)</span> <span class="k">=</span>
+</span><span class='line'>  <span class="n">forAll</span> <span class="o">{</span> <span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">],</span> <span class="n">g</span><span class="k">:</span> <span class="kt">B</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">M</span><span class="o">[</span><span class="kt">C</span><span class="o">])</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">((</span><span class="n">m</span><span class="err"> »</span><span class="k">=</span> <span class="n">f</span><span class="o">)</span><span class="err"> »</span><span class="k">=</span> <span class="n">g</span><span class="o">)</span> <span class="o">===</span> <span class="o">(</span><span class="n">m</span><span class="err"> »</span><span class="k">=</span> <span class="o">(</span><span class="n">x</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)</span><span class="err"> »</span><span class="k">=</span> <span class="n">g</span><span class="o">))</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">val</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span><span class="o">&lt;/</span><span class="n">code</span><span class="k">&gt;:</span> <span class="n">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">monad</span><span class="o">.</span><span class="n">pure</span> <span class="k">_</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">private</span> <span class="k">implicit</span> <span class="k">class</span> <span class="nc">MonadOps</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;m: M[A]&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span><span class="err"> »</span><span class="o">=&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; M[B]&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">monad</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">m</span><span class="o">)(</span><span class="n">f</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+If you are curious about implementation details take a look on this <a href="https://raw.githubusercontent.com/ssledz/ssledz.github.io-src/master/monad-gentle-introduction/src/test/scala/monad/intro/AbstractMonadProperties.scala">class</a></p>
+
+<h3 id="flavors-of-monads">Flavors of monads</h3>
+
+<p>This section is a placeholder for a list of posts about monads mentioned in
+this article. I will try my best to deliver a missing content. Watch my blog
+for an update.</p>
+
+<p>Monads:</p>
+
+<ul>
+  <li>Option</li>
+  <li>Either</li>
+  <li>Id</li>
+  <li>Writer</li>
+  <li>Reader</li>
+  <li>State</li>
+  <li>Try</li>
+  <li>IO</li>
+  <li>List</li>
+</ul>
+
+<h3 id="resources">Resources</h3>
+
+<ul>
+  <li><a href="https://www.quora.com/What-are-monads-in-functional-programming-and-why-are-they-useful-Are-they-a-generic-solution-to-the-problem-of-state-in-FP-or-Haskell-specific-Are-they-specific-to-Haskell-or-are-they-encountered-in-other-FP-languages">What are monads in functional programming and why are they useful?</a></li>
+  <li><a href="http://blog.sigfpe.com/2006/08/you-could-have-invented-monads-and.html">You Could Have Invented Monads!</a></li>
+  <li><a href="https://dev.to/theodesp/explain-monads-like-im-five">Explain Monads Like I’m five</a></li>
+  <li><a href="https://wiki.haskell.org/All_About_Monads">All About Monads</a></li>
+  <li><a href="https://www.haskell.org/tutorial/monads.html">A Gentle Introduction to Haskell</a></li>
+  <li><a href="http://learnyouahaskell.com/a-fistful-of-monads">A Fistful of Monads</a></li>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Sources to the post</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Monad Transformers - Part 2]]></title>
@@ -474,23 +640,6 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
     <updated>2017-10-25T02:33:42+02:00</updated>
     <id>http://ssledz.github.io/blog/2017/10/25/recursion-a-quick-introduction</id>
     <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/recursion.html">here</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Functional Programming in Bash - Introduction to fun.sh Library]]></title>
-    <link href="http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/"/>
-    <updated>2017-08-21T00:28:33+02:00</updated>
-    <id>http://ssledz.github.io/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library</id>
-    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/bash-fun.html">here</a>.</p>
-
-<h3 id="resources">Resources</h3>
-
-<ul>
-  <li><a href="https://github.com/ssledz/bash-fun">bash-fun</a></li>
-  <li><a href="https://github.com/ssledz/bash-import">bash-import</a></li>
-  <li><a href="https://github.com/ssledz/bash-repo">bash-repo</a></li>
-</ul>
 ]]></content>
   </entry>
   

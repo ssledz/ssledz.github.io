@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>About Monads - a Gentle Introduction - My Programmer's Road</title>
+  <meta name="author" content="Sławomir Śledź">
+
+  
+  <meta name="description" content="In functional programming monad is a design pattern which is used to
+express how states of computations are changing. It can take a form of some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Programmer's Road" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-66120423-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Programmer's Road</a></h1>
+  
+    <h2>Make things as simple as possible, but not simpler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="ssledz.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">About Monads - a Gentle Introduction</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-01-28T00:23:36+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>12:23 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In functional programming monad is a design pattern which is used to
+express how states of computations are changing. It can take a form of some
+abstract data type constructor with two abstract functions.</p>
+
+<p>In <code>scala</code> we can define this contract using <code>Monad</code> type class</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">trait</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">pure</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">xs</span><span class="o">)(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)))</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Functions <code>pure</code> and <code>flatMap</code> for a given monad <code>M[_]</code> have to follow
+some laws - I will talk about them later.</p>
+
+<p>Function <code>map</code> can be defined
+in terms of <code>flatMap</code> and <code>pure</code> and this is a bonus which we get for a free
+when we provide an instance of a Monad for a type <code>M[_]</code>.</p>
+
+<p>We can think about <code>M[A]</code> like about some smart container
+for a value (values) of type <code>A</code>. This container abstracts away from how this value
+is kept. We can have many flavors of them like container:</p>
+
+<ul>
+  <li>aware of whether or not the value exists</li>
+  <li>with more then one value</li>
+  <li>for which getting the value would trigger some kind of <code>IO</code> operation</li>
+  <li>with value which eventually could appear in future</li>
+  <li>with value or error</li>
+  <li>with value dependent on some kind of state</li>
+  <li>with value and some logging information</li>
+  <li>etc</li>
+</ul>
+
+<p>Monad let us focus on what we want to do with the contained value. It is
+like a context in which the value exists. When we want to do some computation
+we are abstracting over the context so we aren’t disrupted whether or
+not the value exists, we have many of them or the value may appear in a future.
+We want just to get the value out of the container for a moment to make
+some computation and then put it again. The context is important only when
+we want to pull out a value permanently.</p>
+
+<p>Another advantage of the monad is an ability of sequencing the computations.
+Having let’s say two computations we can very easily make dependence
+between them saying that the computations of the second depends on
+a result of the first. Of course this can be scaled to more than two.</p>
+
+<p>At first glance, it may seem to be not so impressive because it is
+very common to make such things during coding. But be aware that monad
+frees us from thinking about the context in which the value exists. The context
+can be for example an asynchronous computation. Dealing with concurrency
+is challenging - we have to be very careful to not make a hard to spot mistake.
+Monad takes care about this complexity, providing a result of the
+first computation as soon as possible giving us possibility to
+spawn another computation in asynchronous manner.</p>
+
+<h3 id="laws">Laws</h3>
+<p>Each monad needs to follow three laws</p>
+
+<ul>
+  <li>Left identity: <code>return a &gt;&gt;= f ≡ f a</code></li>
+  <li>Right identity: <code>m &gt;&gt;= return ≡ m</code></li>
+  <li>Associativity: <code>(m &gt;&gt;= f) &gt;&gt;= g ≡ m &gt;&gt;= (\x -&gt; f x &gt;&gt;= g)</code></li>
+</ul>
+
+<p>These laws was taken from haskell because expressions there are very compact and
+easy to follow. Function <code>&gt;&gt;=</code> in scala maps to <code>flatMap</code>, <code>return</code> is
+just a <code>pure</code>, <code>f x</code> is an application of function <code>f</code> with <code>x</code> and the
+last one <code>\x -&gt; ...</code> is a lambda expression.</p>
+
+<p>Laws in scala can be written in a following way (using ScalaCheck)</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">val</span> <span class="n">monad</span> <span class="k">=</span> <span class="n">implicitly</span><span class="o">[</span><span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">property</span><span class="o">(</span><span class="s">&quot;Left identity: return a &gt;&gt;= f ≡ f a&quot;</span><span class="o">)</span> <span class="k">=</span> <span class="n">forAll</span> <span class="o">{</span> <span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">,</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span> <span class="k">=&gt;</span>
+</span><span class="line">  <span class="o">(</span><span class="n">`return`</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span><span class="o">)</span> <span class="o">===</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">property</span><span class="o">(</span><span class="s">&quot;Right identity: m &gt;&gt;= return ≡ m&quot;</span><span class="o">)</span> <span class="k">=</span> <span class="n">forAll</span> <span class="o">{</span> <span class="n">m</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=&gt;</span>
+</span><span class="line">  <span class="o">(</span><span class="n">m</span> <span class="o">&gt;&gt;=</span> <span class="n">`return`</span><span class="o">)</span> <span class="o">===</span> <span class="n">m</span>
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">property</span><span class="o">(</span><span class="s">&quot;Associativity: (m &gt;&gt;= f) &gt;&gt;= g ≡ m &gt;&gt;= (\\x -&gt; f x &gt;&gt;= g)&quot;</span><span class="o">)</span> <span class="k">=</span>
+</span><span class="line">  <span class="n">forAll</span> <span class="o">{</span> <span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">],</span> <span class="n">g</span><span class="k">:</span> <span class="kt">B</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">C</span><span class="o">])</span> <span class="k">=&gt;</span>
+</span><span class="line">    <span class="o">((</span><span class="n">m</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span><span class="o">)</span> <span class="o">&gt;&gt;=</span> <span class="n">g</span><span class="o">)</span> <span class="o">===</span> <span class="o">(</span><span class="n">m</span> <span class="o">&gt;&gt;=</span> <span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">&gt;&gt;=</span> <span class="n">g</span><span class="o">))</span>
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">val</span> <span class="n">`return`</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">monad</span><span class="o">.</span><span class="n">pure</span> <span class="k">_</span>
+</span><span class="line">
+</span><span class="line"><span class="k">private</span> <span class="k">implicit</span> <span class="k">class</span> <span class="nc">MonadOps</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">m</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="o">&gt;&gt;=[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">M</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">monad</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">m</span><span class="o">)(</span><span class="n">f</span><span class="o">)</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>If you are curious about implementation details take a look on this <a href="https://raw.githubusercontent.com/ssledz/ssledz.github.io-src/master/monad-gentle-introduction/src/test/scala/monad/intro/AbstractMonadProperties.scala">class</a></p>
+
+<h3 id="flavors-of-monads">Flavors of monads</h3>
+
+<p>This section is a placeholder for a list of posts about monads mentioned in
+this article. I will try my best to deliver a missing content. Watch my blog
+for an update.</p>
+
+<p>Monads:</p>
+
+<ul>
+  <li>Option</li>
+  <li>Either</li>
+  <li>Id</li>
+  <li>Writer</li>
+  <li>Reader</li>
+  <li>State</li>
+  <li>Try</li>
+  <li>IO</li>
+  <li>List</li>
+</ul>
+
+<h3 id="resources">Resources</h3>
+
+<ul>
+  <li><a href="https://www.quora.com/What-are-monads-in-functional-programming-and-why-are-they-useful-Are-they-a-generic-solution-to-the-problem-of-state-in-FP-or-Haskell-specific-Are-they-specific-to-Haskell-or-are-they-encountered-in-other-FP-languages">What are monads in functional programming and why are they useful?</a></li>
+  <li><a href="http://blog.sigfpe.com/2006/08/you-could-have-invented-monads-and.html">You Could Have Invented Monads!</a></li>
+  <li><a href="https://dev.to/theodesp/explain-monads-like-im-five">Explain Monads Like I’m five</a></li>
+  <li><a href="https://wiki.haskell.org/All_About_Monads">All About Monads</a></li>
+  <li><a href="https://www.haskell.org/tutorial/monads.html">A Gentle Introduction to Haskell</a></li>
+  <li><a href="http://learnyouahaskell.com/a-fistful-of-monads">A Fistful of Monads</a></li>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Sources to the post</a></li>
+</ul>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sławomir Śledź</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2019-01-28T00:23:36+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>12:23 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/functional-programming/'>functional-programming</a>, <a class='category' href='/blog/categories/monads/'>monads</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/" data-via="ssledz83" data-counturl="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2019/01/24/monad-transformers-part-2/" title="Previous Post: Monad transformers - part 2">&laquo; Monad transformers - part 2</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a Gentle Introduction</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/01/24/monad-transformers-part-2/">Monad Transformers - Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/18/monad-transformers-a-quick-recap/">Monad Transformers - a Quick Recap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/05/genetle-fp-intro/">Gentle Introduction to Functional Programming - Live Coding Session</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/10/25/recursion-a-quick-introduction/">Recursion - a Quick Introduction</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Category Cloud</h1>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 152.5%'>functional-programming(7)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/monad-transformers' style='font-size: 115.0%'>monad-transformers(2)</a> <a href='/blog/categories/monads' style='font-size: 122.5%'>monads(3)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 145.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 145.0%'>scala(6)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ssledz">@ssledz</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ssledz',
+            count: 10,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>Sławomir Śledź, Senior Scala/Java Developer at <a target="_blank" href="https://www.cloudtechnologies.pl/">Cloud Technologies S.A.</a></p>
+</section>
+
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Gravatar of Sławomir Śledź " title="Gravatar of Sławomir Śledź" />
+	</span>
+</section>
+
+<section>
+<h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/3726554/slavik" target="_blank">
+<img src="http://stackoverflow.com/users/flair/3726554.png?theme=clean" width="208" height="58" alt="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for slavik at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+</section>
+
+<section class='goodreads-aside'>
+  <h1><a href="http://www.goodreads.com" target="_blank">Status on Goodreads</a></h1>
+  <ul>
+    
+  </ul>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/slawomir.sledz?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+    <h1>Certificates</h1>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="58fa8011-f1da-4a68-846c-b869ee04012b"></div>
+    <div data-iframe-width="250" data-iframe-height="270" data-share-badge-id="d5492e6e-9cb6-4665-b131-973bf8204190"></div>
+    <script type="text/javascript">
+        (function() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = '//www.youracclaim.com/assets/utilities/embed.js';
+            var o = document.getElementsByTagName('script')[0];
+            o.parentNode.insertBefore(s, o);
+        })();
+    </script>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Sławomir Śledź -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ssledz';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/';
+        var disqus_url = 'http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
