@@ -8,7 +8,7 @@ categories: [scala, functional-programming, monads]
 
 In functional programming monad is a design pattern which is used to
 express how states of computations are changing. It can take a form of some
-abstract data type constructor with two function defined for it.
+abstract data type constructor with two abstract functions.
 
 In `scala` we can define this contract using `Monad` type class
 ```scala
@@ -24,13 +24,16 @@ trait Monad[M[_]] {
 ```
 
 Functions `pure` and `flatMap` for a given monad `M[_]` have to follow
-some laws - I will talk about them later. Function `map` can be defined
+some laws - I will talk about them later.
+
+Function `map` can be defined
 in terms of `flatMap` and `pure` and this is a bonus which we get for a free
 when we provide an instance of a Monad for a type `M[_]`.
 
 We can think about `M[A]` like about some smart container
 for a value (values) of type `A`. This container abstracts away from how this value
 is kept. We can have many flavors of them like container:
+
 * aware of whether or not the value exists
 * with more then one value
 * for which getting the value would trigger some kind of `IO` operation
@@ -39,6 +42,7 @@ is kept. We can have many flavors of them like container:
 * with value dependent on some kind of state
 * with value and some logging information
 * etc
+
 Monad let us focus on what we want to do with the contained value. It is
 like a context in which the value exists. When we want to do some computation
 we are abstracting over the context so we aren't disrupted whether or
@@ -51,6 +55,7 @@ Another advantage of the monad is an ability of sequencing the computations.
 Having let's say two computations we can very easily make dependence
 between them saying that the computations of the second depends on
 a result of the first. Of course this can be scaled to more than two.
+
 At first glance, it may seem to be not so impressive because it is
 very common to make such things during coding. But be aware that monad
 frees us from thinking about the context in which the value exists. The context
@@ -62,12 +67,14 @@ spawn another computation in asynchronous manner.
 
 ### Laws
 Each monad needs to follow three laws
+
 * Left identity: `return a >>= f ≡ f a`
 * Right identity: `m >>= return ≡ m`
 * Associativity: `(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)`
+
 These laws was taken from haskell because expressions there are very compact and
 easy to follow. Function `>>=` in scala maps to `flatMap`, `return` is
-just a `pure`, `f x` is an application of function `f` to `x` and the
+just a `pure`, `f x` is an application of function `f` with `x` and the
 last one `\x -> ...` is a lambda expression.
 
 Laws in scala can be written in a following way (using ScalaCheck)
@@ -82,8 +89,9 @@ property("Right identity: m >>= return ≡ m") = forAll { m: M[A] =>
   (m >>= `return`) === m
 }
 
-property("Associativity: (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)") = forAll { (m: M[A], f: A => M[B], g: B => M[C]) =>
-  ((m >>= f) >>= g) === (m >>= (x => f(x) >>= g))
+property("Associativity: (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)") =
+  forAll { (m: M[A], f: A => M[B], g: B => M[C]) =>
+    ((m >>= f) >>= g) === (m >>= (x => f(x) >>= g))
 }
 
 val `return`: A => M[A] = monad.pure _
@@ -94,13 +102,14 @@ private implicit class MonadOps[A](m: M[A]) {
 ```
 If you are curious about implementation details take a look on this [class](https://raw.githubusercontent.com/ssledz/ssledz.github.io-src/master/monad-gentle-introduction/src/test/scala/monad/intro/AbstractMonadProperties.scala)
 
-### Monads
+### Flavors of monads
 
 This section is a placeholder for a list of posts about monads mentioned in
 this article. I will try my best to deliver a missing content. Watch my blog
 for an update.
 
 Monads:
+
 * Option
 * Either
 * Id
@@ -119,3 +128,4 @@ Monads:
 * [All About Monads](https://wiki.haskell.org/All_About_Monads)
 * [A Gentle Introduction to Haskell](https://www.haskell.org/tutorial/monads.html)
 * [A Fistful of Monads](http://learnyouahaskell.com/a-fistful-of-monads)
+* [Sources to the post](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction)
