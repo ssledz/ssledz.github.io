@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Monads - lunch2learn session"
+title: "Monads - Lunch2Learn Session"
 date: 2019-02-17 13:33:47 +0100
 comments: true
 categories: [functional-programming, monads, scala, l2l]
