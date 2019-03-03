@@ -39,7 +39,36 @@ reveal:
 </section>
 
 <section>
-    <h4>monads</h4>
+    <h4>Monad</h4>
+    <p>In functional programming monad is a design pattern which is used to express how states of computations are changing</p>
+</section>
+
+<section>
+    <h4>Monad</h4>
+    <p>We can think about monad like about some smart container keeping some value or values.</p>
+</section>
+
+<section>
+    <h4>Monad</h4>
+    <p>This container abstracts away from how this value is kept.</p>
+</section>
+
+<section>
+    <p>We can have a container</p>
+    <ul>
+        <li>aware of whether or not the value exists</li>
+        <li>with more then one value</li>
+        <li>for which getting the value would trigger some kind of IO operation</li>
+        <li>with value which eventually could appear in future</li>
+        <li>with value or error</li>
+        <li>with value dependent on some kind of state</li>
+        <li>with value and some logging information</li>
+        <li>etc</li>
+    </ul>
+</section>
+
+<section>
+    <h4>flavors of monads</h4>
     <section tagcloud>
         IO
         Option
@@ -55,6 +84,35 @@ reveal:
 </section>
 
 <section>
+    <h4>monad in scala</h4>
+    <pre><code class="hljs" data-trim contenteditable>
+trait Monad[M[_]] {
+
+  def pure[A](x: A): M[A]
+
+  def flatMap[A, B](xs: M[A])(f: A => M[B]): M[B]
+
+}
+        </code></pre>
+</section>
+
+<section>
+    <h4>monad laws</h4>
+    <p>Left identity</p>
+    <pre><code class="hljs" data-trim contenteditable>
+        return a >>= f ≡ f a
+    </code></pre>
+    <p>Right identity</p>
+    <pre><code class="hljs" data-trim contenteditable>
+        m >>= return ≡ m
+    </code></pre>
+    <p>Associativity</p>
+    <pre><code class="hljs" data-trim contenteditable>
+        (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
+    </code></pre>
+</section>
+
+<section>
     <p>Let's do some coding :-)</p>
 </section>
 
@@ -64,6 +122,7 @@ reveal:
         <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/">Codding session - github sources</a></li>
         <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Implement monad from scratch - github sources </a></li>
         <li><a href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good!</a></li>
+        <li><a href="{% post_url 2019-01-28-about-monads-a-gentle-introduction %}">Monads a gentle introduction</a></li>
     </ul>
 </section>
 
