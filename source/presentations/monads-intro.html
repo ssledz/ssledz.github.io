@@ -40,16 +40,22 @@ reveal:
 
 <section>
     <h4>Monad</h4>
-    <p>In functional programming monad is a design pattern which is used to express how states of computations are changing</p>
+    <p>
+        <span>
+            In functional programming monad is a design pattern which is used to express how states of computations are changing
+        </span>
+    </p>
+    <p class="fragment fade-up">
+        In category theory monad is an endofunctor (a functor mapping a category to itself), together with two natural transformations
+    </p>
 </section>
 
 <section>
-    <h4>Monad</h4>
+    <h4>Monad intuition</h4>
     <p>We can think about monad like about some smart container keeping some value or values.</p>
 </section>
 
 <section>
-    <h4>Monad</h4>
     <p>This container abstracts away from how this value is kept.</p>
 </section>
 
@@ -57,13 +63,13 @@ reveal:
     <p>We can have a container</p>
     <ul>
         <li>aware of whether or not the value exists</li>
-        <li>with more then one value</li>
-        <li>for which getting the value would trigger some kind of IO operation</li>
-        <li>with value which eventually could appear in future</li>
-        <li>with value or error</li>
-        <li>with value dependent on some kind of state</li>
-        <li>with value and some logging information</li>
-        <li>etc</li>
+        <li class="fragment fade-up">with more then one value</li>
+        <li class="fragment fade-up">for which getting the value would trigger some kind of IO operation</li>
+        <li class="fragment fade-up">with value which eventually could appear in future</li>
+        <li class="fragment fade-up">with value or error</li>
+        <li class="fragment fade-up">with value dependent on some kind of state</li>
+        <li class="fragment fade-up">with value and some logging information</li>
+        <li class="fragment fade-up">etc</li>
     </ul>
 </section>
 
@@ -84,6 +90,45 @@ reveal:
 </section>
 
 <section>
+    <p>Monad consists of three parts:</p>
+    <ul>
+        <li>type constructor M T</li>
+        <li class="fragment fade-up">type converter (unit, pure, return)
+        <pre><code class="hljs" data-trim contenteditable>
+return(x) : T → M T
+    </code></pre>
+        </li>
+        <li class="fragment fade-up">combinator (bind, >>=, flatMap)
+        <pre><code class="hljs" data-trim contenteditable>
+(mx >>= f) : (M T, T → M U) → M U
+        </code></pre>
+        </li>
+        <li class="fragment fade-up">respect monad laws</li>
+    </ul>
+</section>
+
+<section>
+    <h4>monad laws</h4>
+    <ul>
+        <li>Left identity
+            <pre><code class="hljs" data-trim contenteditable>
+                return a >>= f ≡ f a
+            </code></pre>
+        </li>
+        <li class="fragment fade-up">Right identity
+            <pre><code class="hljs" data-trim contenteditable>
+                m >>= return ≡ m
+            </code></pre>
+        </li>
+        <li class="fragment fade-up">Associativity
+            <pre><code class="hljs" data-trim contenteditable>
+                (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
+            </code></pre>
+        </li>
+    </ul>
+</section>
+
+<section>
     <h4>monad in scala</h4>
     <pre><code class="hljs" data-trim contenteditable>
 trait Monad[M[_]] {
@@ -97,29 +142,13 @@ trait Monad[M[_]] {
 </section>
 
 <section>
-    <h4>monad laws</h4>
-    <p>Left identity</p>
-    <pre><code class="hljs" data-trim contenteditable>
-        return a >>= f ≡ f a
-    </code></pre>
-    <p>Right identity</p>
-    <pre><code class="hljs" data-trim contenteditable>
-        m >>= return ≡ m
-    </code></pre>
-    <p>Associativity</p>
-    <pre><code class="hljs" data-trim contenteditable>
-        (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
-    </code></pre>
-</section>
-
-<section>
     <p>Let's do some coding :-)</p>
 </section>
 
 <section>
     <h2>Resources</h2>
     <ul>
-        <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/">Codding session - github sources</a></li>
+        <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-intro-session/src/main/scala/learning/monad/example">Codding session - github sources</a></li>
         <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Implement monad from scratch - github sources </a></li>
         <li><a href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good!</a></li>
         <li><a href="{% post_url 2019-01-28-about-monads-a-gentle-introduction %}">Monads a gentle introduction</a></li>
