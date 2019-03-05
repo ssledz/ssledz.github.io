@@ -9,8 +9,8 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="In functional programming monad is a design pattern which is used to
-express how states of computations are changing. It can take a form of some &hellip;">
+  <meta name="description" content="Slides for Lunch2Learn (L2L) session are available here.
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,6 +94,35 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2019/02/17/monads-lunch2learn-session/">Monads - Lunch2Learn Session</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-02-17T13:33:47+01:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>1:33 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/monads-intro.html">here</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1254,84 +1283,6 @@ course and already enrolled for a <strong>“Big Data Analysis with Scala and Sp
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/07/25/playing-with-scala-writing-function-flatten/">Playing With Scala - Writing Function : Flatten</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-07-25T00:25:57+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:25 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Few weeks ago since now :) I started participating in a course <strong>‘Functional Programming Principles in Scala’</strong> by 
-<strong>Martin Odersky</strong>. I have already completed 4 weeks (course consists of 6 weeks) and I can tell honestly that this is 
-the best course I’ve ever been doing.</p>
-
-<p>My knowledge about scala is still increasing !</p>
-
-<p>Below you can find a sample of what I can now do. The problem is to implement function
-<code>flatten(xs: List[Any]): List[Any]</code> which takes a list of anything an tries to flatten it. For example</p>
-
-<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="n">flatten</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="mi">2</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">))))</span>
-</span></code></pre></td></tr></table></div></figure>
-
-<p>should return a following list</p>
-
-<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-<div><script src="https://gist.github.com/fa5227685dda83e8b895ac9578a206b6.js"></script>
-<noscript><pre><code>/**
-  * Created by ssledz on 25.07.16.
-  */
-object Flatten {
-
-  def flatten(xs: List[Any]): List[Any] = xs match {
-    case List() =&gt; Nil
-    case y :: ys =&gt; {
-      y match {
-        case z: List[Any] =&gt; flatten(z)
-        case _ =&gt; List(y)
-      }
-    } ::: flatten(ys)
-    case _ =&gt; List(xs)
-
-  }
-
-  def main(args: Array[String]) {
-    List(
-      flatten(List(List(1, 1), 2, List(3, List(5, 8)))),
-      flatten(List(1, 2, 3)),
-      flatten(List(List(1, 2), 3, List(4))),
-      flatten(List(List(List(List(1, 2), 3, List(4))), List(5, 6, 7)))
-    ) foreach println
-  }
-
-}</code></pre></noscript></div>
-
-<p>At the end I would like to say <strong>‘thank you’</strong> to <strong><a href="https://www.atlassian.com/">Atlassian</a></strong> company for paying a half 
-for this course !</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1345,6 +1296,10 @@ for this course !</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/02/17/monads-lunch2learn-session/">Monads - Lunch2Learn Session</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a Gentle Introduction</a>
@@ -1362,15 +1317,11 @@ for this course !</p>
         <a href="/blog/2018/12/05/genetle-fp-intro/">Gentle Introduction to Functional Programming - Live Coding Session</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2017/10/25/recursion-a-quick-introduction/">Recursion - a Quick Introduction</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 152.5%'>functional-programming(7)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/monad-transformers' style='font-size: 115.0%'>monad-transformers(2)</a> <a href='/blog/categories/monads' style='font-size: 122.5%'>monads(3)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 145.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 145.0%'>scala(6)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 160.0%'>functional-programming(8)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/l2l' style='font-size: 130.0%'>l2l(4)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/monad-transformers' style='font-size: 115.0%'>monad-transformers(2)</a> <a href='/blog/categories/monads' style='font-size: 130.0%'>monads(4)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 145.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 160.0%'>scala(8)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
 </section>
 
 <section>

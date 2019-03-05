@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Gentle introduction to monads in scala</title>
+
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/css/reveal.css">
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/css/tagcloud.css">
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="/assets/reveal.js-3.5.0/lib/css/zenburn.css">
+
+		<!-- Icons -->
+		<link rel="stylesheet" href="/assets/font-awesome-4.7.0/css/font-awesome.css">
+		<style> .reveal i.fa { font-family:FontAwesome; font-style: normal; } </style>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? '/assets/reveal.js-3.5.0/css/print/pdf.css' : '/assets/reveal.js-3.5.0/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="reveal">
+
+			<div class="state-background"></div>
+
+			<div class="slides">
+				<section>
+    <section>
+        <h2>Gentle introduction to monads in scala</h2>
+
+        <p>Live coding session</p>
+
+        <p>
+            <small>L2L Warszawa 2019</small>
+        </p>
+    </section>
+    <section>
+        <h3>About me</h3>
+
+        <p>Sławomir Śledź</p>
+
+        <img src="https://www.gravatar.com/avatar/ccd7a764d62ec150d1a6c48518835736" alt="Sławomir Śledź"
+             style="border: 1px; border-radius: 20px">
+
+        <p>Senior Java/Scala Developer</p>
+
+        <p><i class="fa fa-github"></i>&nbsp;<a href="http://ssledz.github.io">ssledz.github.io</a></p>
+    </section>
+</section>
+
+<section>
+    <p>What is a monad?</p>
+</section>
+
+<section>
+    <h4>Monad</h4>
+    <p>
+        <span>
+            In functional programming monad is a design pattern which is used to express how states of computations are changing
+        </span>
+    </p>
+    <p class="fragment fade-up">
+        In category theory monad is an endofunctor (a functor mapping a category to itself), together with two natural transformations
+    </p>
+</section>
+
+<section>
+    <h4>Monad intuition</h4>
+    <p>We can think about monad like about some smart container keeping some value or values.</p>
+</section>
+
+<section>
+    <p>This container abstracts away from how this value is kept.</p>
+</section>
+
+<section>
+    <p>We can have a container</p>
+    <ul>
+        <li>aware of whether or not the value exists</li>
+        <li class="fragment fade-up">with more then one value</li>
+        <li class="fragment fade-up">for which getting the value would trigger some kind of IO operation</li>
+        <li class="fragment fade-up">with value which eventually could appear in future</li>
+        <li class="fragment fade-up">with value or error</li>
+        <li class="fragment fade-up">with value dependent on some kind of state</li>
+        <li class="fragment fade-up">with value and some logging information</li>
+        <li class="fragment fade-up">etc</li>
+    </ul>
+</section>
+
+<section>
+    <h4>flavors of monads</h4>
+    <section tagcloud>
+        IO
+        Option
+        Either
+        Future
+        Writer
+        Reader
+        Id
+        Try
+        State
+        List
+    </section>
+</section>
+
+<section>
+    <p>Monad consists of three parts:</p>
+    <ul>
+        <li>type constructor M T</li>
+        <li class="fragment fade-up">type converter (unit, pure, return)
+        <pre><code class="hljs" data-trim contenteditable>
+return(x) : T → M T
+    </code></pre>
+        </li>
+        <li class="fragment fade-up">combinator (bind, >>=, flatMap)
+        <pre><code class="hljs" data-trim contenteditable>
+(mx >>= f) : (M T, T → M U) → M U
+        </code></pre>
+        </li>
+        <li class="fragment fade-up">respect monad laws</li>
+    </ul>
+</section>
+
+<section>
+    <h4>monad laws</h4>
+    <ul>
+        <li>Left identity
+            <pre><code class="hljs" data-trim contenteditable>
+                return a >>= f ≡ f a
+            </code></pre>
+        </li>
+        <li class="fragment fade-up">Right identity
+            <pre><code class="hljs" data-trim contenteditable>
+                m >>= return ≡ m
+            </code></pre>
+        </li>
+        <li class="fragment fade-up">Associativity
+            <pre><code class="hljs" data-trim contenteditable>
+                (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
+            </code></pre>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h4>monad in scala</h4>
+    <pre><code class="hljs" data-trim contenteditable>
+trait Monad[M[_]] {
+
+  def pure[A](x: A): M[A]
+
+  def flatMap[A, B](xs: M[A])(f: A => M[B]): M[B]
+
+}
+        </code></pre>
+</section>
+
+<section>
+    <p>Let's do some coding :-)</p>
+</section>
+
+<section>
+    <h2>Resources</h2>
+    <ul>
+        <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-intro-session/src/main/scala/learning/monad/example">Codding session - github sources</a></li>
+        <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Implement monad from scratch - github sources </a></li>
+        <li><a href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good!</a></li>
+        <li><a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">Monads a gentle introduction</a></li>
+    </ul>
+</section>
+
+<section>
+    <p>Thank you :-)</p>
+</section>
+			</div>
+
+			<div class="progress"><span></span></div>
+
+		</div>
+
+		<script src="/assets/reveal.js-3.5.0/lib/js/head.min.js"></script>
+		<script src="/assets/reveal.js-3.5.0/js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+            	width: 1024,
+//                margin: 0.1,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				dependencies: [
+
+	                { src: '/assets/reveal.js-3.5.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+    	            { src: '/assets/reveal.js-3.5.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        	        { src: '/assets/reveal.js-3.5.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            	    { src: '/assets/reveal.js-3.5.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/zoom-js/zoom.js', async: true },
+                	{ src: '/assets/reveal.js-3.5.0/plugin/notes/notes.js', async: true },
+                    { src: '/assets/reveal.js-3.5.0/plugin/tagcloud/tagcloud.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>

@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Learning Scala - My Insights - My Programmer's Road</title>
+  <title>Monads - Lunch2Learn Session - My Programmer's Road</title>
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="It passed almost 5 months since I have been learning Scala programming language. This learning is a part of bigger path which I decided to go through &hellip;">
+  <meta name="description" content="Slides for Lunch2Learn (L2L) session are available here.
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/">
+  <link rel="canonical" href="http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Programmer's Road" type="application/atom+xml">
@@ -96,7 +97,7 @@ MathJax.Hub.Config({
   
   <header>
     
-      <h1 class="entry-title">Learning Scala - My Insights</h1>
+      <h1 class="entry-title">Monads - Lunch2Learn Session</h1>
     
     
       <p class="meta">
@@ -105,92 +106,14 @@ MathJax.Hub.Config({
 
 
 
-<time class='entry-date' datetime='2016-11-08T13:32:38+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:32 pm</span></time>
+<time class='entry-date' datetime='2019-02-17T13:33:47+01:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>1:33 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>It passed almost 5 months since I have been learning <em>Scala</em> programming language. This learning is a part of bigger 
-path which I decided to go through to be more familiar with current trends in <em>big data</em>, <em>machine learning</em> and 
-<em>cloud computing</em>.</p>
-
-<p>When I decided to start learning scala the first question coming into my mind was how to start ?</p>
-
-<p>Because I am rather a fun of books, I bought one - <strong>“Programming Scala: Scalability = Functional Programming + Objects” 
-by Dean Wampler and Alex Payne”</strong> and started reading…. but this was not a good idea. The book I have chosen was 
-written in not an easy going style and I think was too hard for the beginning. After few hundreds of pages I felt lost.
-At the same time on <em>coursera</em> <strong>‘Functional Programming Principles in Scala’</strong> course was reactivated.
-Not thinking too much I signed in and started participating. After few weeks I earn a certificate of accomplishment 
-but this was not an end of my journey. I started participating in another course 
-<strong>“Functional Program Design in Scala”</strong> from the same author (Martin Odersky) as the previous one. In parallel I have 
-started reading a book <strong>“Programming in Scala Second Edition” by Martin Odersky, Lex Spoon, Bill Venners</strong> 
-and I found it very helpful. Currently (in the time of writing this post) I have done <strong>“Parallel programming”</strong> 
-course and already enrolled for a <strong>“Big Data Analysis with Scala and Spark”</strong> (still waiting for course publishing)</p>
-
-<p>I think the knowledge I acquired, thanks to those courses and book, is sufficient to start writing and reading programs
- in scala. Of course it takes some time to be as proficient as in java but I am little closer to this target each day.</p>
-
-<h3 id="resources">Resources</h3>
-<p>The aim of this section is to gather the valuable resources regarding scala.</p>
-
-<p><strong>Online courses</strong></p>
-
-<ul>
-  <li><a href="https://www.coursera.org/learn/progfun1">Functional Programming Principles in Scala</a></li>
-  <li><a href="https://www.coursera.org/learn/progfun2">Functional Program Design in Scala</a></li>
-  <li><a href="https://www.coursera.org/learn/parprog1">Parallel programming</a></li>
-</ul>
-
-<p><strong>Books</strong></p>
-
-<ul>
-  <li><a href="http://www.goodreads.com/book/show/5680904-programming-in-scala">Programming in Scala by Martin Odersky, Lex Spoon, Bill Venners</a></li>
-  <li><a href="https://www.goodreads.com/book/show/11335855-scala-for-the-impatient">Scala for the Impatient</a></li>
-  <li><a href="https://www.goodreads.com/book/show/22491889-programming-scala">Programming Scala: Scalability = Functional Programming + Objects</a></li>
-</ul>
-
-<p><strong>Cheat sheets</strong></p>
-
-<ul>
-  <li><a href="https://www.coursera.org/learn/progfun2/supplement/BDqfw/cheat-sheet">Scala cheat sheet</a></li>
-  <li><a href="https://www.coursera.org/learn/progfun2/supplement/H8MtC/reactive-cheat-sheet">Scala reactive cheat sheet</a></li>
-  <li><a href="http://docs.scala-lang.org/cheatsheets/">Scala cheat sheet from scala-lang.org</a></li>
-  <li><a href="https://gist.github.com/ssledz/c1c1ae9b9401d8c2455ae01d9045b2d5">Scala cheat sheet written by me</a></li>
-</ul>
-
-<p><strong>Tutorials</strong></p>
-
-<ul>
-  <li><a href="http://www.scala-lang.org/docu/files/ScalaByExample.pdf">Scala By Example</a></li>
-  <li><a href="https://twitter.github.io/scala_school/index.html">Scala School</a></li>
-  <li><a href="http://docs.scala-lang.org/tutorials/tour/tour-of-scala.html">Tour of scala</a></li>
-</ul>
-
-<p><strong>Libs</strong></p>
-
-<ul>
-  <li><a href="https://github.com/rickynils/scalacheck/blob/master/doc/UserGuide.md">Scalacheck</a></li>
-  <li><a href="https://scalameter.github.io/">ScalaMeter</a></li>
-  <li><a href="http://akka.io/docs/">Akka</a></li>
-</ul>
-
-<p><strong>Other</strong></p>
-
-<ul>
-  <li><a href="http://stackoverflow.com/tags/scala/info">scala on stackoverflow</a></li>
-</ul>
-
-<h3 id="first-steps">First steps</h3>
-<p>My recommendation about ordering of going through the resources for beginners:</p>
-
-<ol>
-  <li><a href="https://www.coursera.org/learn/progfun1">Functional Programming Principles in Scala</a></li>
-  <li><a href="http://www.goodreads.com/book/show/5680904-programming-in-scala">Programming in Scala by Martin Odersky, Lex Spoon, Bill Venners</a></li>
-  <li><a href="https://www.coursera.org/learn/progfun2">Functional Program Design in Scala</a></li>
-  <li><a href="https://www.coursera.org/learn/parprog1">Parallel programming</a></li>
-</ol>
+<div class="entry-content"><p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/monads-intro.html">here</a>.</p>
 </div>
 
 
@@ -206,12 +129,12 @@ course and already enrolled for a <strong>“Big Data Analysis with Scala and Sp
 
 
 
-<time class='entry-date' datetime='2016-11-08T13:32:38+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:32 pm</span></time>
+<time class='entry-date' datetime='2019-02-17T13:33:47+01:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>1:33 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+    <a class='category' href='/blog/categories/functional-programming/'>functional-programming</a>, <a class='category' href='/blog/categories/l2l/'>l2l</a>, <a class='category' href='/blog/categories/monads/'>monads</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
   
 </span>
 
@@ -220,7 +143,7 @@ course and already enrolled for a <strong>“Big Data Analysis with Scala and Sp
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/" data-via="ssledz83" data-counturl="http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/" data-via="ssledz83" data-counturl="http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -233,10 +156,8 @@ course and already enrolled for a <strong>“Big Data Analysis with Scala and Sp
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2016/07/25/playing-with-scala-writing-function-flatten/" title="Previous Post: Playing with scala - writing function : flatten">&laquo; Playing with scala - writing function : flatten</a>
+        <a class="basic-alignment left" href="/blog/2019/01/28/about-monads-a-gentle-introduction/" title="Previous Post: About Monads - a gentle introduction">&laquo; About Monads - a gentle introduction</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2017/01/04/simple-sbt-setup-for-spark-project/" title="Next Post: Simple Sbt Setup For Spark Project">Simple Sbt Setup For Spark Project &raquo;</a>
       
     </p>
   </footer>
@@ -382,8 +303,8 @@ course and already enrolled for a <strong>“Big Data Analysis with Scala and Sp
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/';
-        var disqus_url = 'http://ssledz.github.io/blog/2016/11/08/learning-scala-my-insights/';
+        var disqus_identifier = 'http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/';
+        var disqus_url = 'http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/';
         var disqus_script = 'embed.js';
       
     (function () {

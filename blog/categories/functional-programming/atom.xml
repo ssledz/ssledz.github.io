@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2019-02-16T23:55:04+01:00</updated>
+  <updated>2019-03-05T17:12:59+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Monads - Lunch2Learn Session]]></title>
+    <link href="http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/"/>
+    <updated>2019-02-17T13:33:47+01:00</updated>
+    <id>http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session</id>
+    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/monads-intro.html">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[About Monads - a Gentle Introduction]]></title>
@@ -631,15 +640,6 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
     <updated>2018-12-05T21:33:42+01:00</updated>
     <id>http://ssledz.github.io/blog/2018/12/05/genetle-fp-intro</id>
     <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/gentle-fp-intro.html">here</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Recursion - a Quick Introduction]]></title>
-    <link href="http://ssledz.github.io/blog/2017/10/25/recursion-a-quick-introduction/"/>
-    <updated>2017-10-25T02:33:42+02:00</updated>
-    <id>http://ssledz.github.io/blog/2017/10/25/recursion-a-quick-introduction</id>
-    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/recursion.html">here</a>.</p>
 ]]></content>
   </entry>
   
