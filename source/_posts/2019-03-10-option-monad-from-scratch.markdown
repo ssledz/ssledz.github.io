@@ -22,7 +22,7 @@ val xs = List("0", "9", "9")
 val ys = List("3", "3", "1")
 val zs = List("2", "3", "2")
 ```
-After merging operation we got a fourth stream `data` containing tuples
+After merging operation we got a stream  caled `data` containing tuples
 of 3 strings 
 ```scala
 val data : List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
@@ -47,6 +47,7 @@ def pipeline = data
 ```
 
 where `DivModule` consist of `div` and `parse` functions. 
+
 ```scala
 object DivModule {
 
@@ -97,7 +98,7 @@ val ys = List("11", "0" , "33", "3", "3", "1")
 val zs = List("0" , "22", "33", "2", "3", "2")
 ```
 
-after running program we get an `Exception`
+after running pipeline we get an `Exception`
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: y or z can't be 0
 	at learning.monad.example.DivModule$.div(DivModule.scala:28)
@@ -119,9 +120,60 @@ def lift(f: Fun3, defaultValue: Double): Fun3 = (x, y, z) =>
   }
 ```
 
-and modify the pipeline
+and modify the pipeline accordingly
 ```scala
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
 ```
 
+Now `pipeline` generates streams of numbers
+
+```
+-1.0, -1.0, 0.0, 1.5, 1.0, -1.0
+```
+
+We can spot that for each undefined value we get `-1` because of `lift` 
+function which maps all undefined values to the default one - in our case `-1`.
+
+In order to get only valid numbers let's apply a filter  
+
+```scala
+def pipeline: List[Double] = data
+  .map((DivModule.lift(DivModule.div, -1)).tupled(_))
+  .filter(_ != -1)
+```
+
+and our result is
+
+```
+0.0, 1.5, 1.0
+```
+
+For a first look this solution would seem to be good, but what about all 
+operations which could return `-1` as a correct result ?
+
+When we change fifth number in zs from '3' to '-3'
+```scala
+val xs = List("11", "22", "0" , "9", "9", null)
+val ys = List("11", "0" , "33", "3", "3", "1")
+val zs = List("0" , "22", "33", "2", "-3", "2")
+```
+
+our pipeline will generate
+
+```
+0.0, 1.5
+```
+
+instead of
+
+```
+0.0, 1.5, -1.0
+```
+
+This is wrong and changing default value in `lift` function doesn't
+fix this, because result of div function covers whole domain of `Double`.
+
+`Option` monad comes to the rescue.
+
+## Option monad
