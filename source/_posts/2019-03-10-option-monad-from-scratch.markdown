@@ -6,13 +6,14 @@ comments: true
 categories: [scala, functional-programming, monads]
 ---
 
-In a [post]({% post_url 2019-01-28-about-monads-a-gentle-introduction %})
+In a post [About Monads - a gentle introduction]({% post_url 2019-01-28-about-monads-a-gentle-introduction %})
 I have introduced a concept of `monad`. Since now we should have a good
-intuition what `monad` is. We are also aware of the situations where 
-they can be used to simplify the code and make it more readable. In this
-post we will focus on an `Option` monad which wraps value with a context 
+intuition what `monad` is and be also aware of the situations where 
+they can be used to simplify the code and make it more readable. 
+
+In this post we will focus on an `Option` monad which wraps value with a context 
 aware of whether or not the value exists. We will start with a problem and solution
-not exactly suiting our needs and adapting `Option` monad we will try to fix solution.
+not exactly suiting our needs and adapting `Option` monad we will try to fix this.
 
 ## Problem
 
@@ -39,15 +40,12 @@ should generate
 ```
 [(x1/y1/z1), (x2/y2/z2),... (xn/yn/zn)]
 ```
-
 This problem can be solved using following scala code
 ```scala
 def pipeline = data
     .map((DivModule.div _).tupled(_))
 ```
-
 where `DivModule` consist of `div` and `parse` functions. 
-
 ```scala
 object DivModule {
 
@@ -83,32 +81,27 @@ object DivModule {
 
 }
 ```
-
-For a given at the beginning streams of numbers we should get
+For a given, at the beginning, streams of numbers we should get
 ```
 0.0, 1.0, 4.5
 ``` 
-And the numbers are correct, but take a look on implementations of `parse`
+The numbers are correct, but take a look on implementations of `parse`
 and `div` functions. Those functions are partial - they don't cover
 the whole domain. And for following streams of numbers 
-
 ```scala
 val xs = List("11", "22", "0" , "9", "9", null)
 val ys = List("11", "0" , "33", "3", "3", "1")
 val zs = List("0" , "22", "33", "2", "3", "2")
 ```
-
 after running pipeline we get an `Exception`
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: y or z can't be 0
-	at learning.monad.example.DivModule$.div(DivModule.scala:28)
-	at learning.monad.example.MonadOption$.$anonfun$pipeline$2(MonadOption.scala:25)
-	at learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted(MonadOption.scala:25)
+  at learning.monad.example.DivModule$.div(DivModule.scala:28)
+  at learning.monad.example.MonadOption$.$anonfun$pipeline$2(MonadOption.scala:25)
+  at learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted(MonadOption.scala:25)
 ```
-
 We can easily fix this - lifting partial function to function. Let's add `lift`
 function to the `DivModule`
-
 ```scala
 type Fun3 = (String, String, String) => Double
 
@@ -119,24 +112,19 @@ def lift(f: Fun3, defaultValue: Double): Fun3 = (x, y, z) =>
     case e: Throwable => defaultValue
   }
 ```
-
 and modify the pipeline accordingly
 ```scala
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
 ```
-
 Now `pipeline` generates streams of numbers
-
 ```
 -1.0, -1.0, 0.0, 1.5, 1.0, -1.0
 ```
-
 We can spot that for each undefined value we get `-1` because of `lift` 
 function which maps all undefined values to the default one - in our case `-1`.
 
 In order to get only valid numbers let's apply a filter  
-
 ```scala
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
@@ -172,7 +160,7 @@ instead of
 ```
 
 This is wrong and changing default value in `lift` function doesn't
-fix this, because result of div function covers whole domain of `Double`.
+fix this, because co-domain of `div` function covers whole domain of `Double`.
 
 `Option` monad comes to the rescue.
 
