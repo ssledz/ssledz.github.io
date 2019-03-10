@@ -8,7 +8,7 @@ categories: [scala, functional-programming, monads]
 
 In a post [About Monads - a gentle introduction]({% post_url 2019-01-28-about-monads-a-gentle-introduction %})
 I have introduced a concept of `monad`. Since now we should have a good
-intuition what `monad` is and be also aware of the situations where 
+intuition what `monad` is and be aware of the situations where 
 they can be used to simplify the code and make it more readable. 
 
 In this post we will focus on an `Option` monad which wraps value with a context 
@@ -28,8 +28,8 @@ of 3 strings
 ```scala
 val data : List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
 ```
-Our task is to build a pipeline that generates a stream of `doubles` 
-which are the result of division one number by the next one in the 
+Our task is to build a pipeline that generates a stream of `Doubles` 
+which is a result of division one number by the next one in the 
 context of the same tuple.
 
 So following stream
@@ -81,12 +81,12 @@ object DivModule {
 
 }
 ```
-For a given, at the beginning, streams of numbers we should get
+For a given streams of numbers (defined at the beginning) we should get
 ```
 0.0, 1.0, 4.5
 ``` 
 The numbers are correct, but take a look on implementations of `parse`
-and `div` functions. Those functions are partial - they don't cover
+and `div` functions. Those functions are `partial` - they don't cover
 the whole domain. And for following streams of numbers 
 ```scala
 val xs = List("11", "22", "0" , "9", "9", null)
@@ -100,7 +100,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: y or z can't be 0
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2(MonadOption.scala:25)
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted(MonadOption.scala:25)
 ```
-We can easily fix this - lifting partial function to function. Let's add `lift`
+We can easily fix this by lifting partial function to function. Let's add `lift`
 function to the `DivModule`
 ```scala
 type Fun3 = (String, String, String) => Double
@@ -112,7 +112,7 @@ def lift(f: Fun3, defaultValue: Double): Fun3 = (x, y, z) =>
     case e: Throwable => defaultValue
   }
 ```
-and modify the pipeline accordingly
+and modify the `pipeline` accordingly
 ```scala
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
@@ -124,7 +124,7 @@ Now `pipeline` generates streams of numbers
 We can spot that for each undefined value we get `-1` because of `lift` 
 function which maps all undefined values to the default one - in our case `-1`.
 
-In order to get only valid numbers let's apply a filter  
+In order to get only a valid numbers let's apply a filter  
 ```scala
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
@@ -140,7 +140,7 @@ and our result is
 For a first look this solution would seem to be good, but what about all 
 operations which could return `-1` as a correct result ?
 
-When we change fifth number in zs from '3' to '-3'
+When we change fifth number in `zs` from `3` to `-3`
 ```scala
 val xs = List("11", "22", "0" , "9", "9", null)
 val ys = List("11", "0" , "33", "3", "3", "1")
@@ -165,3 +165,71 @@ fix this, because co-domain of `div` function covers whole domain of `Double`.
 `Option` monad comes to the rescue.
 
 ## Option monad
+
+In order to implement an `Option` monad we start with defining a data type
+constructor
+```scala
+trait Option[+A]
+```
+
+`Option` is an algebraic data type constructor parametrized with `A` in a `co-variant`
+position. We can think of an `Option[_]` like about container keeping
+a value. For now it has no context. 
+
+Let's assigned a context to it by defining a first value constructor called `Some`
+```scala
+case class Some[A](get: A) extends Option[A]
+```
+This constructor introduced a context of container with a value within.
+
+A context meaning no value (empty container) can be defined with `None`
+```scala
+case object None extends Option[Nothing]
+```
+`None` reveals why we need a type parameter `A` to be in `co-variant` position -
+we simply requires `None` to be cast to any `Option[A]`.  
+
+Recalling a definition of Monad we know that it consists of three parts:
+
+* type constructor `M[A]`
+* type converter (called `unit`, `pure` or `return`)
+* combinator (called `bind`, `>>=` or `flatMap`)
+
+First part is fulfilled. Now we have to implement type converter - `pure`
+```scala
+object Option {
+
+  def pure[A](a: A): Option[A] = if (a == null) None else Some(a)
+  
+}
+```
+`pure` is a function which is responsible for putting a given value
+to the minimal meaningful context. For `Option` we requires that each
+non `null` value should be bind to the `Some`, in other case
+it should be `None`.
+
+The toughest to implement is a combinator function called `flatMap`. For
+an `Option` it is very easy task however.
+```scala
+trait Option[+A] {
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
+    case Some(a) => f(a)
+    case None => None
+  }
+}
+```
+This higher order function is very powerful and can be used as a primitive
+to implement for example `map` and `filter` in a following way
+```scala
+trait Option[+A] {
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
+    case Some(a) => f(a)
+    case None => None
+  }
+
+  def map[B](f: A => B): Option[B] = flatMap(a => Option.pure(f(a)))
+  
+  def filter(p : A => Boolean) : Option[A] = flatMap(a => if(p(a)) Option.pure(a) else None)
+}
+```
+TODO
