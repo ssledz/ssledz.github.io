@@ -110,7 +110,7 @@ for an update.
 
 Monads:
 
-* Option
+* [Option]({% post_url 2019-03-10-option-monad-from-scratch %})
 * Either
 * Id
 * Writer
