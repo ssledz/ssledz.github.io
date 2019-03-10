@@ -9,7 +9,7 @@ categories: [scala, functional-programming, monads]
 In a post [About Monads - a gentle introduction]({% post_url 2019-01-28-about-monads-a-gentle-introduction %})
 I have introduced a concept of `monad`. Since now we should have a good
 intuition what `monad` is and be aware of the situations where 
-they can be used to simplify the code and make it more readable. 
+it can be used to simplify the code and make it more readable. 
 
 In this post we will focus on an `Option` monad which wraps value with a context 
 aware of whether or not the value exists. We will start with a problem and solution
@@ -230,6 +230,67 @@ trait Option[+A] {
   def map[B](f: A => B): Option[B] = flatMap(a => Option.pure(f(a)))
   
   def filter(p : A => Boolean) : Option[A] = flatMap(a => if(p(a)) Option.pure(a) else None)
+}
+```
+Thanks to the `flatMap` we are able to get a value from container, abstracting
+whether or not the value is in container or not, and make a `map` transformation
+deciding if we want to put again transformed value or replace container with 
+the empty one.
+
+Putting all parts together we can define `Option` monad in scala in the following way
+```scala
+sealed trait Option[+A] {
+  
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
+    case Some(a) => f(a)
+    case None => None
+  }
+  
+  def map[B](f: A => B): Option[B] = flatMap(a => Option.pure(f(a)))
+  
+}
+
+object Option {
+  
+  def pure[A](a: A): Option[A] = if (a == null) None else Some(a)
+  
+}  
+
+case class Some[A](get: A) extends Option[A]
+
+case object None extends Option[Nothing]
+```
+
+## Building new version of pipeline
+
+Let's return to our problem. First we need to reimplement `parse`
+```scala
+def parse(x: Option[String]): Option[Double] = x.flatMap { str =>
+  try {
+    Option.pure(str.toDouble)
+  } catch {
+    case e: Throwable => None
+  }
+}
+```
+Argument and return type has been lifted respectively to 
+the `Option[String]` and `Option[Double]` type. You can spot
+that we use `flatMap` to have an access to the `string` value and
+based on the `toDouble` operation we return some double value or nothing -
+in case of parse exception. When an argument `x` is `None` the function
+passed to `flatMap` is not executed - so we are sure that `string` passed
+to monadic function is not `null`.
+
+Next we need to take care of `div`
+```scala
+def div(x: Option[String], y: Option[String], z: Option[String]): Option[Double] = {
+  def zeroToNone(n: Double) = if (n == 0) None else Some(n)
+  
+  for {
+    xx <- parse(x)
+    yy <- parse(y).flatMap(zeroToNone)
+    zz <- parse(z).flatMap(zeroToNone)
+  } yield xx / yy / zz
 }
 ```
 TODO
