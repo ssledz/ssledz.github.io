@@ -293,4 +293,9 @@ def div(x: Option[String], y: Option[String], z: Option[String]): Option[Double]
   } yield xx / yy / zz
 }
 ```
-TODO
+String arguments has been lifted to the `Option[String]` and return type
+is now `Option[Double]`. `x` argument is passed to the `parse` and finally
+we have `Double` value in `xx` variable. If `parse` returns `None` than
+we the whole function `div` is evaluated to `None`. For `y` and `z` things
+works almost the same with one difference - we additionally requires that
+`yy` an `zz` must be not equal to zero
