@@ -275,10 +275,10 @@ def parse(x: Option[String]): Option[Double] = x.flatMap { str =>
 ```
 Argument and return type has been lifted respectively to 
 the `Option[String]` and `Option[Double]` type. You can spot
-that we use `flatMap` to have an access to the `string` value and
-based on the `toDouble` operation we return some double value or nothing -
+that we use `flatMap` to have an access to the `String` value and
+based on the `toDouble` operation we return some `Double` value or nothing -
 in case of parse exception. When an argument `x` is `None` the function
-passed to `flatMap` is not executed - so we are sure that `string` passed
+passed to `flatMap` is not executed - so we are sure that `String` passed
 to monadic function is not `null`.
 
 Next we need to take care of `div`
@@ -293,9 +293,77 @@ def div(x: Option[String], y: Option[String], z: Option[String]): Option[Double]
   } yield xx / yy / zz
 }
 ```
-String arguments has been lifted to the `Option[String]` and return type
-is now `Option[Double]`. `x` argument is passed to the `parse` and finally
-we have `Double` value in `xx` variable. If `parse` returns `None` than
-we the whole function `div` is evaluated to `None`. For `y` and `z` things
-works almost the same with one difference - we additionally requires that
-`yy` an `zz` must be not equal to zero
+`String` arguments has been lifted to the `Option[String]` and return type
+is now `Option[Double]`. 
+
+An `x` argument is passed to the `parse` and finally we have `Double` 
+value in `xx` variable. If `parse` returns `None` then
+the whole function `div` is evaluated to `None`. 
+
+For `y` and `z` things works almost the same with one difference - we additionally requires that
+`yy` an `zz` must be not equal to zero. This is expressed by calling `flatMap`
+with function `zeroToNone`. For `0` value `zeroToNone` returns an empty 
+container `None` which causes that the whole expression `parse(y).flatMap(zeroToNone)`
+is evaluated to `None` what moves `div` function to return `None`.
+
+Finally pipeline could look following
+```scala
+def pipeline2 = data
+  .map(x => map3(x)(Option.pure))
+  .map(z => (DivModuleWithOption.div _).tupled(z))
+```
+
+This pipeline generates
+
+```
+List(None, None, Some(0.0), Some(1.5), Some(-1.0), None)
+```
+
+At the end we need only to filter out nones and get the value out of the `Option`
+
+To do so there is a need to add 3 additional methods to `Option`
+```scala
+   sealed trait Option[+A] {
+   
+      //skipped for brevity
+      
+      def isEmpty: Boolean
+
+      def isNonEmpty: Boolean = !isEmpty
+
+      def get : A
+    }
+```
+
+and to corresponding subclasses
+```scala
+case class Some[A](get: A) extends Option[A] {
+  def isEmpty: Boolean = false
+}
+
+case object None extends Option[Nothing] {
+  def isEmpty: Boolean = true
+
+  def get : Nothing = ???
+}
+```
+
+Finally the pipeline
+```scala
+def pipeline2 = data
+  .map(x => map3(x)(Option.pure))
+  .map(z => (DivModuleWithOption.div _).tupled(z))
+  .filter(_.isNonEmpty)
+  .map(_.get)
+```
+
+generates following stream of numbers
+```
+List(0.0, 1.5, -1.0)
+```
+
+and this is all we need.
+
+## Resources
+
+* [Sources to the post](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction)
