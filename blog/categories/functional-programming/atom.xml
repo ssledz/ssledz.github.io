@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Functional-programming | My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/blog/categories/functional-programming/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2019-03-05T17:12:59+01:00</updated>
+  <updated>2019-03-22T12:56:07+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,514 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Option Monad - From Scratch]]></title>
+    <link href="http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch/"/>
+    <updated>2019-03-10T11:28:42+01:00</updated>
+    <id>http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch</id>
+    <content type="html"><![CDATA[<p>In a post <a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a gentle introduction</a>
+I have introduced a concept of <code>monad</code>. Since now we should have a good
+intuition what <code>monad</code> is and be aware of the situations where 
+it can be used to simplify the code and make it more readable.</p>
+
+<p>In this post we will focus on an <code>Option</code> monad which wraps value with a context 
+aware of whether or not the value exists. We will start with a problem and solution
+not exactly suiting our needs and adapting <code>Option</code> monad we will try to fix this.</p>
+
+<h2 id="problem">Problem</h2>
+
+<p>There are 3 streams of numbers given as a strings. 
+<code>scala
+val xs = List("0", "9", "9")
+val ys = List("3", "3", "1")
+val zs = List("2", "3", "2")
+</code>
+After merging operation we got a stream  called <code>data</code> containing tuples
+of 3 strings 
+<code>scala
+val data : List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
+</code>
+Our task is to build a pipeline that generates a stream of <code>Doubles</code> 
+which is a result of division one number by the next one in the 
+context of the same tuple.</p>
+
+<p>So following stream
+<code>
+[(x1,y1,z1), (x2,y2,z2),...(xn,yn,zn)]
+</code>
+should generate
+<code>
+[(x1/y1/z1), (x2/y2/z2),... (xn/yn/zn)]
+</code>
+This problem can be solved using following scala code
+<code>scala
+def pipeline = data
+    .map((DivModule.div _).tupled(_))
+</code>
+where <code>DivModule</code> consist of <code>div</code> and <code>parse</code> functions. 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">object</span> <span class="nc">DivModule</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;arg can&#39;t be null&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">x</span><span class="o">.</span><span class="n">toDouble</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">div</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">y</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">z</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">y</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">z</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;(x | y | z) can&#39;t be null&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">xx</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">yy</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">y</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">zz</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">z</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">yy</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">zz</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;y or z can&#39;t be 0&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">xx</span> <span class="o">/</span> <span class="n">yy</span> <span class="o">/</span> <span class="n">zz</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nc">For</span> <span class="n">a</span> <span class="n">given</span> <span class="n">streams</span> <span class="n">of</span> <span class="n">numbers</span> <span class="o">(</span><span class="n">defined</span> <span class="n">at</span> <span class="n">the</span> <span class="n">beginning</span><span class="o">)</span> <span class="n">we</span> <span class="n">should</span> <span class="n">get</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="mf">4.5</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nc">The</span> <span class="n">numbers</span> <span class="n">are</span> <span class="n">correct</span><span class="o">,</span> <span class="n">but</span> <span class="n">take</span> <span class="n">a</span> <span class="n">look</span> <span class="n">on</span> <span class="n">implementations</span> <span class="n">of</span> <span class="n">`parse`</span>
+</span><span class='line'><span class="n">and</span> <span class="n">`div`</span> <span class="n">functions</span><span class="o">.</span> <span class="nc">Those</span> <span class="n">functions</span> <span class="n">are</span> <span class="n">`partial`</span> <span class="o">-</span> <span class="n">they</span> <span class="n">don</span><span class="-Symbol">&#39;t</span> <span class="n">cover</span>
+</span><span class='line'><span class="n">the</span> <span class="n">whole</span> <span class="n">domain</span><span class="o">.</span> <span class="nc">And</span> <span class="k">for</span> <span class="n">following</span> <span class="n">streams</span> <span class="n">of</span> <span class="n">numbers</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">scala</span>
+</span><span class='line'><span class="k">val</span> <span class="n">xs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="err">“</span><span class="mi">11</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">22</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">0</span><span class="err">”</span> <span class="o">,</span> <span class="err">“</span><span class="mi">9</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">9</span><span class="err">”</span><span class="o">,</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class='line'><span class="k">val</span> <span class="n">ys</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="err">“</span><span class="mi">11</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">0</span><span class="err">”</span> <span class="o">,</span> <span class="err">“</span><span class="mi">33</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">3</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">3</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">1</span><span class="err">”</span><span class="o">)</span>
+</span><span class='line'><span class="k">val</span> <span class="n">zs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="err">“</span><span class="mi">0</span><span class="err">”</span> <span class="o">,</span> <span class="err">“</span><span class="mi">22</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">33</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">2</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">3</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="mi">2</span><span class="err">”</span><span class="o">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">after</span> <span class="n">running</span> <span class="n">pipeline</span> <span class="n">we</span> <span class="n">get</span> <span class="n">an</span> <span class="n">`Exception`</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nc">Exception</span> <span class="n">in</span> <span class="n">thread</span> <span class="err">“</span><span class="n">main</span><span class="err">”</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">IllegalArgumentException</span><span class="k">:</span> <span class="kt">y</span> <span class="kt">or</span> <span class="kt">z</span> <span class="kt">can</span><span class="err">’</span><span class="kt">t</span> <span class="kt">be</span> <span class="err">0</span>
+</span><span class='line'>  <span class="kt">at</span> <span class="kt">learning.monad.example.DivModule$.div</span><span class="o">(</span><span class="kt">DivModule.scala:</span><span class="err">28</span><span class="o">)</span>
+</span><span class='line'>  <span class="kt">at</span> <span class="kt">learning.monad.example.MonadOption$.$anonfun$pipeline$2</span><span class="o">(</span><span class="kt">MonadOption.scala:</span><span class="err">25</span><span class="o">)</span>
+</span><span class='line'>  <span class="kt">at</span> <span class="kt">learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted</span><span class="o">(</span><span class="kt">MonadOption.scala:</span><span class="err">25</span><span class="o">)</span>
+</span><span class='line'><span class="kt">&lt;code&gt;</span>
+</span><span class='line'><span class="nc">We</span> <span class="n">can</span> <span class="n">easily</span> <span class="n">fix</span> <span class="k">this</span> <span class="n">by</span> <span class="n">lifting</span> <span class="n">a</span> <span class="n">partial</span> <span class="n">function</span> <span class="n">to</span> <span class="n">a</span> <span class="n">function</span><span class="o">.</span> <span class="nc">Let</span><span class="-Symbol">&#39;s</span> <span class="n">add</span> <span class="n">`lift`</span>
+</span><span class='line'><span class="n">function</span> <span class="n">to</span> <span class="n">the</span> <span class="n">`DivModule`</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">scala</span>
+</span><span class='line'><span class="k">type</span> <span class="kt">Fun3</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">)</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">Double</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">lift</span><span class="o">(</span><span class="n">f</span><span class="k">:</span> <span class="kt">Fun3</span><span class="o">,</span> <span class="n">defaultValue</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span><span class="k">:</span> <span class="kt">Fun3</span> <span class="o">=</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">catch</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">e</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">defaultValue</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">and</span> <span class="n">modify</span> <span class="n">the</span> <span class="n">`pipeline`</span> <span class="n">accordingly</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">scala</span>
+</span><span class='line'><span class="k">def</span> <span class="n">pipeline</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">lift</span><span class="o">(</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">div</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">)).</span><span class="n">tupled</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="nc">Now</span> <span class="n">`pipeline`</span> <span class="n">generates</span> <span class="n">streams</span> <span class="n">of</span> <span class="n">numbers</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">-</span><span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span>
+</span></code></pre></td></tr></table></div></figure>
+We can spot that for each undefined value we get <code>-1</code> because of <code>lift</code> 
+function which maps all undefined values to the default one, in our case <code>-1</code>.</p>
+
+<p>In order to get only a valid numbers let’s apply a filter<br />
+<code>scala
+def pipeline: List[Double] = data
+  .map((DivModule.lift(DivModule.div, -1)).tupled(_))
+  .filter(_ != -1)
+</code></p>
+
+<p>and our result is</p>
+
+<p><code>
+0.0, 1.5, 1.0
+</code></p>
+
+<p>For a first look this solution would seem to be good, but what about all 
+operations which could return <code>-1</code> as a correct result ?</p>
+
+<p>When we change fifth number in <code>zs</code> from <code>3</code> to <code>-3</code>
+<code>scala
+val xs = List("11", "22", "0" , "9", "9", null)
+val ys = List("11", "0" , "33", "3", "3", "1")
+val zs = List("0" , "22", "33", "2", "-3", "2")
+</code></p>
+
+<p>our pipeline will generate</p>
+
+<p><code>
+0.0, 1.5
+</code></p>
+
+<p>instead of</p>
+
+<p><code>
+0.0, 1.5, -1.0
+</code></p>
+
+<p>This is wrong and changing default value in <code>lift</code> function doesn’t
+fix this, because co-domain of <code>div</code> function covers whole domain of <code>Double</code>.</p>
+
+<p><code>Option</code> monad comes to the rescue.</p>
+
+<h2 id="option-monad">Option monad</h2>
+
+<p>In order to implement an <code>Option</code> monad we start with defining a data type
+constructor
+<code>scala
+trait Option[+A]
+</code></p>
+
+<p><code>Option</code> is an algebraic data type constructor parametrized with <code>A</code> in a <code>co-variant</code>
+position. We can think of an <code>Option[_]</code> like about container keeping
+a value. For now it has no context.</p>
+
+<p>Let’s assigned a context to it by defining a first value constructor called <code>Some</code>
+<code>scala
+case class Some[A](get: A) extends Option[A]
+</code>
+This constructor introduced a context of container with a value within.</p>
+
+<p>A context meaning no value (empty container) can be defined with <code>None</code>
+<code>scala
+case object None extends Option[Nothing]
+</code>
+<code>None</code> reveals why we need a type parameter <code>A</code> to be in <code>co-variant</code> position -
+we simply requires <code>None</code> to be cast to any <code>Option[A]</code>.</p>
+
+<p>Recalling a definition of Monad we know that it consists of three parts:</p>
+
+<ul>
+  <li>type constructor <code>M[A]</code></li>
+  <li>type converter (called <code>unit</code>, <code>pure</code> or <code>return</code>)</li>
+  <li>combinator (called <code>bind</code>, <code>&gt;&gt;=</code> or <code>flatMap</code>)</li>
+</ul>
+
+<p>First part is fulfilled. Now we have to implement type converter - <code>pure</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">object</span> <span class="nc">Option</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">pure</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;a: A&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure>
+<code>pure</code> is a function which is responsible for putting a given value
+to the minimal meaningful context. For <code>Option</code> we requires that each
+non <code>null</code> value should be bind to the <code>Some</code>, in other case
+it should be <code>None</code>.</p>
+
+<p>The toughest to implement is a combinator function called <code>flatMap</code>. For
+an <code>Option</code> it is very easy task however.
+<code>scala
+trait Option[+A] {
+  def flatMap[B](f: A =&gt; Option[B]): Option[B] = this match {
+    case Some(a) =&gt; f(a)
+    case None =&gt; None
+  }
+}
+</code>
+This higher order function is very powerful and can be used as a primitive
+to implement for example <code>map</code> and <code>filter</code> in a following way
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">flatMap</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; Option[B]&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="k">this</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nc">None</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">None</span>
+</span><span class='line'>  <span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; B&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)))&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">filter</span><span class="o">(</span><span class="n">p</span> <span class="k">:</span> <span class="kt">A</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">Boolean</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="k">if</span><span class="o">(</span><span class="n">p</span><span class="o">(</span><span class="n">a</span><span class="o">))</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">else</span> <span class="nc">None</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+Thanks to the <code>flatMap</code> we are able to get a value from container, abstracting
+whether or not the value is in container or not, and make a <code>map</code> transformation
+deciding if we want to put again transformed value or replace container with 
+the empty one.</p>
+
+<p>Putting all parts together we can define <code>Option</code> monad in scala in the following way
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">flatMap</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; Option[B]&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="k">this</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nc">None</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">None</span>
+</span><span class='line'>  <span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;f: A =&amp;gt; B&quot;</span><span class="o">&gt;</span><span class="n">B</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)))&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">object</span> <span class="nc">Option</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">pure</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;a: A&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="k">&gt;:</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">case</span> <span class="k">class</span> <span class="nc">Some</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;get: A&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">case</span> <span class="k">object</span> <span class="nc">None</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="building-new-version-of-pipeline">Building new version of pipeline</h2>
+
+<p>Let’s return to our problem. First we need to reimplement <code>parse</code>
+<code>scala
+def parse(x: Option[String]): Option[Double] = x.flatMap { str =&gt;
+  try {
+    Option.pure(str.toDouble)
+  } catch {
+    case e: Throwable =&gt; None
+  }
+}
+</code>
+Argument and return type has been lifted respectively to 
+the <code>Option[String]</code> and <code>Option[Double]</code> type. You can spot
+that we use <code>flatMap</code> to have an access to the <code>String</code> value and
+based on the <code>toDouble</code> operation we return some <code>Double</code> value or nothing -
+in case of parse exception. When an argument <code>x</code> is <code>None</code> the function
+passed to <code>flatMap</code> is not executed - so we are sure that <code>String</code> passed
+to monadic function is not <code>null</code>.</p>
+
+<p>Next we need to take care of <code>div</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">def</span> <span class="n">div</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span> <span class="n">y</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span> <span class="n">z</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">zeroToNone</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">for</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">xx</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">yy</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">y</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">zeroToNone</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">zz</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">z</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">zeroToNone</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">yield</span> <span class="n">xx</span> <span class="o">/</span> <span class="n">yy</span> <span class="o">/</span> <span class="n">zz</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><code>String</code> arguments has been lifted to the <code>Option[String]</code> and return type
+is now <code>Option[Double]</code>.</p>
+
+<p>An <code>x</code> argument is passed to the <code>parse</code> and finally we have <code>Double</code> 
+value in <code>xx</code> variable. If <code>parse</code> returns <code>None</code> then
+the whole function <code>div</code> is evaluated to <code>None</code>.</p>
+
+<p>For <code>y</code> and <code>z</code> things works almost the same with one difference - we additionally requires that
+<code>yy</code> an <code>zz</code> must be not equal to zero. This is expressed by calling <code>flatMap</code>
+with function <code>zeroToNone</code>. For <code>0</code> value <code>zeroToNone</code> returns an empty 
+container <code>None</code> which causes that the whole expression <code>parse(y).flatMap(zeroToNone)</code>
+is evaluated to <code>None</code> what moves <code>div</code> function to return <code>None</code>.</p>
+
+<p>Finally pipeline could look following
+<code>scala
+def pipeline2 = data
+  .map(x =&gt; map3(x)(Option.pure))
+  .map(z =&gt; (DivModuleWithOption.div _).tupled(z))
+</code></p>
+
+<p>This pipeline generates
+<code>
+List(None, None, Some(0.0), Some(1.5), Some(-1.0), None)
+</code></p>
+
+<p>At the end we need only to filter out nones and get the value out of the <code>Option</code></p>
+
+<p>To do so there is a need to add 3 additional methods to <code>Option</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;//</span><span class="n">skipped</span> <span class="k">for</span> <span class="n">brevity</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">isNonEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">!</span><span class="n">isEmpty</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">get</span> <span class="k">:</span> <span class="kt">A</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>and to corresponding subclasses
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">case</span> <span class="k">class</span> <span class="nc">Some</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;get: A&quot;</span><span class="o">&gt;</span><span class="n">A</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">case</span> <span class="k">object</span> <span class="nc">None</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">true</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">def</span> <span class="n">get</span> <span class="k">:</span> <span class="kt">Nothing</span> <span class="o">=</span> <span class="o">???</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Finally the pipeline
+<code>scala
+def pipeline2 = data
+  .map(x =&gt; map3(x)(Option.pure))
+  .map(z =&gt; (DivModuleWithOption.div _).tupled(z))
+  .filter(_.isNonEmpty)
+  .map(_.get)
+</code></p>
+
+<p>generates following stream of numbers
+<code>
+List(0.0, 1.5, -1.0)
+</code></p>
+
+<p>and this is all we need.</p>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-intro-session">Sources to the post</a></li>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Implement monad from scratch - github sources</a></li>
+  <li><a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a gentle introduction</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Monads - Lunch2Learn Session]]></title>
@@ -163,7 +671,7 @@ for an update.</p>
 <p>Monads:</p>
 
 <ul>
-  <li>Option</li>
+  <li><a href="/blog/2019/03/10/option-monad-from-scratch/">Option</a></li>
   <li>Either</li>
   <li>Id</li>
   <li>Writer</li>
@@ -631,15 +1139,6 @@ into two pieces. The whole code base used in this post can be found in
 the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-transformer">link</a></p>
 
 <p>More in <a href="/blog/2019/01/24/monad-transformers-part-2/">part 2</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gentle Introduction to Functional Programming - Live Coding Session]]></title>
-    <link href="http://ssledz.github.io/blog/2018/12/05/genetle-fp-intro/"/>
-    <updated>2018-12-05T21:33:42+01:00</updated>
-    <id>http://ssledz.github.io/blog/2018/12/05/genetle-fp-intro</id>
-    <content type="html"><![CDATA[<p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/gentle-fp-intro.html">here</a>.</p>
 ]]></content>
   </entry>
   

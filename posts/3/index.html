@@ -9,7 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Virtual Disk Image (VDI) files grow over time. If You discover that VDI on the host system is much bigger than used space on the guest partition it &hellip;">
+  <meta name="description" content="Preface This post describes my development environment driven by Vagrant (Full description what can be found there is here). You can ask why Vagrant &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,6 +93,246 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/11/08/java-development-environment-with-vagrant-part-1/">Java Development Environment With Vagrant - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-08T16:06:35+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:06 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3 id="preface">Preface</h3>
+
+<p>This post describes my development environment driven by Vagrant (Full description what can be found there is <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">here</a>). You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
+
+<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
+
+<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it? One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
+
+<h3 id="vagrant-providers">Vagrant Providers</h3>
+
+<p>Vagrant has an ability to manage some of machine types like</p>
+
+<ul>
+  <li><code>VirtualBox</code></li>
+  <li><code>VMware</code></li>
+  <li><code>Docker</code></li>
+  <li><code>Hyper-V</code></li>
+</ul>
+
+<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
+
+<h3 id="vagrant-installation">Vagrant Installation</h3>
+
+<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
+
+<h3 id="setting-development-environment">Setting development environment</h3>
+
+<p>To set up java development environment You need just type the following bunch of commands</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
+</span><span class="line">cd vagrant-boxes/java-dev-environment
+</span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure>
+
+<p>Now vagrant box image is downloading from the box repository and then installation script <code>provision.sh</code> will be called.</p>
+
+<p>The <code>provision.sh</code> trace can look following</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">==&gt; default: Creating directories
+</span><span class="line">==&gt; default:     Creating bin directory
+</span><span class="line">==&gt; default:     Creating public_html directory
+</span><span class="line">==&gt; default:     Creating servers directory
+</span><span class="line">==&gt; default: Installing packages
+</span><span class="line">==&gt; default:     apt-get update
+</span><span class="line">==&gt; default:     Installing vim
+</span><span class="line">==&gt; default:     Installing git
+</span><span class="line">==&gt; default: Installing mc
+</span><span class="line">==&gt; default:     Installing libssl-dev libreadline-dev zlib1g-dev
+</span><span class="line">==&gt; default:     Installing make g++
+</span><span class="line">==&gt; default:     Installing apg
+</span><span class="line">==&gt; default:     Installing mysql-server
+</span><span class="line">==&gt; default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
+</span><span class="line">==&gt; default:         Restarting mysql
+</span><span class="line">==&gt; default:     Installing nginx-core ssl-cert
+</span><span class="line">==&gt; default:         Creating /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Enabling /etc/nginx/sites-available/public_html
+</span><span class="line">==&gt; default:         Restarting nginx
+</span><span class="line">==&gt; default: Downloading jdks
+</span><span class="line">==&gt; default:     jdk-5u22-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-6u45-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-7u80-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default:     jdk-8u65-linux-x64.tar.gz is available
+</span><span class="line">==&gt; default: Installing jdks
+</span><span class="line">==&gt; default:     Extracting jdk-5u22-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-6u45-linux-x64.tar.gz
+</span><span class="line">==&gt; default: Extracting jdk-7u80-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Extracting jdk-8u65-linux-x64.tar.gz
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default: Installing apache-maven
+</span><span class="line">==&gt; default:     Downloading apache-maven-3.3.3-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-maven
+</span><span class="line">==&gt; default: Installing apache-ant
+</span><span class="line">==&gt; default:     Downloading apache-ant-1.9.6-bin.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-ant
+</span><span class="line">==&gt; default: Installing gradle
+</span><span class="line">==&gt; default:     Downloading gradle-2.8-bin.zip
+</span><span class="line">==&gt; default:     Extracting gradle-2.8-bin.zip using unzip
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link gradle
+</span><span class="line">==&gt; default: Installing sbt
+</span><span class="line">==&gt; default:     Downloading sbt-0.13.9.tgz
+</span><span class="line">==&gt; default:     Extracting sbt-0.13.9.tgz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link sbt
+</span><span class="line">==&gt; default: Installing environment managers (for Java, Ruby, node.js and Python) 
+</span><span class="line">==&gt; default:     Installing jenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.jenv
+</span><span class="line">==&gt; default:         Setting environment variables
+</span><span class="line">==&gt; default:         Make build tools jenv aware
+</span><span class="line">==&gt; default:             ant plugin activated
+</span><span class="line">==&gt; default:             maven plugin activated
+</span><span class="line">==&gt; default:             gradle plugin activated
+</span><span class="line">==&gt; default:             sbt plugin activated
+</span><span class="line">==&gt; default:     Installing rbenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.rbenv
+</span><span class="line">==&gt; default:         Installing plugins that provide rbenv install
+</span><span class="line">==&gt; default:     Installing nodenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.nodenv
+</span><span class="line">==&gt; default:         Installing plugins that provide nodenv install
+</span><span class="line">==&gt; default:     Installing pyenv
+</span><span class="line">==&gt; default:         Clonning from github to ~/.pyenv
+</span><span class="line">==&gt; default: Updating .bashrc
+</span><span class="line">==&gt; default: Install runtimes using environment managers
+</span><span class="line">==&gt; default:     Install java
+</span><span class="line">==&gt; default:     Set jdk 1.8 globally
+</span><span class="line">==&gt; default:     Install ruby
+</span><span class="line">==&gt; default:     Install node.js
+</span><span class="line">==&gt; default:     install python
+</span><span class="line">==&gt; default: Installing apache-tomcat
+</span><span class="line">==&gt; default:     Downloading apache-tomcat-8.0.28.tar.gz
+</span><span class="line">==&gt; default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
+</span><span class="line">==&gt; default:     Cleaning
+</span><span class="line">==&gt; default:     Creating symbolic link apache-tomcat
+</span><span class="line">==&gt; default:     Creating apache-tomcat /bin/setenv.sh
+</span><span class="line">==&gt; default:     Copying tomcat-users.xml to apache-tomcat/conf
+</span><span class="line">==&gt; default:     Creating /etc/init.d/tomcat script
+</span><span class="line">==&gt; default:     Starting tomcat</span></code></pre></td></tr></table></div></figure>
+
+<p>To loggin to the machine do</p>
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">vagrant ssh</span></code></pre></td></tr></table></div></figure>
+
+<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
+
+<p>More about how to use this setting to develop in the next post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1333,6 +1573,10 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2019/03/10/option-monad-from-scratch/">Option Monad - From Scratch</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2019/02/17/monads-lunch2learn-session/">Monads - Lunch2Learn Session</a>
       </li>
     
@@ -1348,15 +1592,11 @@ Why is it not possible ? Simply speaking regex engine modeled by a <strong>Finit
         <a href="/blog/2018/12/18/monad-transformers-a-quick-recap/">Monad Transformers - a Quick Recap</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2018/12/05/genetle-fp-intro/">Gentle Introduction to Functional Programming - Live Coding Session</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Category Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 130.0%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 107.5%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 115.0%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 115.0%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 107.5%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 107.5%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 107.5%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 160.0%'>functional-programming(8)</a> <a href='/blog/categories/git' style='font-size: 107.5%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 107.5%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 107.5%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 107.5%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 107.5%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 107.5%'>kata(1)</a> <a href='/blog/categories/l2l' style='font-size: 130.0%'>l2l(4)</a> <a href='/blog/categories/learning' style='font-size: 130.0%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 107.5%'>mac(1)</a> <a href='/blog/categories/monad-transformers' style='font-size: 115.0%'>monad-transformers(2)</a> <a href='/blog/categories/monads' style='font-size: 130.0%'>monads(4)</a> <a href='/blog/categories/nas' style='font-size: 107.5%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 107.5%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 115.0%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 107.5%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 107.5%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 137.5%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 145.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 122.5%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 160.0%'>scala(8)</a> <a href='/blog/categories/spark' style='font-size: 107.5%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 107.5%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 107.5%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 107.5%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 107.5%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 115.0%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 115.0%'>virtualization(2)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/algorithms' style='font-size: 126.66666666666667%'>algorithms(4)</a> <a href='/blog/categories/automata' style='font-size: 106.66666666666667%'>automata(1)</a> <a href='/blog/categories/bash' style='font-size: 113.33333333333333%'>bash(2)</a> <a href='/blog/categories/certification' style='font-size: 113.33333333333333%'>certification(2)</a> <a href='/blog/categories/context-free-grammar' style='font-size: 106.66666666666667%'>context free grammar(1)</a> <a href='/blog/categories/coursera' style='font-size: 106.66666666666667%'>coursera(1)</a> <a href='/blog/categories/dynamic-programming' style='font-size: 106.66666666666667%'>dynamic programming(1)</a> <a href='/blog/categories/functional-programming' style='font-size: 160.0%'>functional-programming(9)</a> <a href='/blog/categories/git' style='font-size: 106.66666666666667%'>git(1)</a> <a href='/blog/categories/git-svn' style='font-size: 106.66666666666667%'>git-svn(1)</a> <a href='/blog/categories/github' style='font-size: 106.66666666666667%'>github(1)</a> <a href='/blog/categories/hotswap' style='font-size: 106.66666666666667%'>hotswap(1)</a> <a href='/blog/categories/java' style='font-size: 153.33333333333334%'>java(8)</a> <a href='/blog/categories/jvm' style='font-size: 106.66666666666667%'>jvm(1)</a> <a href='/blog/categories/kata' style='font-size: 106.66666666666667%'>kata(1)</a> <a href='/blog/categories/l2l' style='font-size: 126.66666666666667%'>l2l(4)</a> <a href='/blog/categories/learning' style='font-size: 126.66666666666667%'>learning(4)</a> <a href='/blog/categories/linux' style='font-size: 126.66666666666667%'>linux(4)</a> <a href='/blog/categories/mac' style='font-size: 106.66666666666667%'>mac(1)</a> <a href='/blog/categories/monad-transformers' style='font-size: 113.33333333333333%'>monad-transformers(2)</a> <a href='/blog/categories/monads' style='font-size: 133.33333333333334%'>monads(5)</a> <a href='/blog/categories/nas' style='font-size: 106.66666666666667%'>nas(1)</a> <a href='/blog/categories/octopress' style='font-size: 106.66666666666667%'>octopress(1)</a> <a href='/blog/categories/oracle' style='font-size: 113.33333333333333%'>oracle(2)</a> <a href='/blog/categories/pattern' style='font-size: 106.66666666666667%'>pattern(1)</a> <a href='/blog/categories/productivity' style='font-size: 106.66666666666667%'>productivity(1)</a> <a href='/blog/categories/puzzle' style='font-size: 133.33333333333334%'>puzzle(5)</a> <a href='/blog/categories/recursion' style='font-size: 140.0%'>recursion(6)</a> <a href='/blog/categories/review' style='font-size: 120.0%'>review(3)</a> <a href='/blog/categories/scala' style='font-size: 160.0%'>scala(9)</a> <a href='/blog/categories/spark' style='font-size: 106.66666666666667%'>spark(1)</a> <a href='/blog/categories/svn' style='font-size: 106.66666666666667%'>svn(1)</a> <a href='/blog/categories/tmux' style='font-size: 106.66666666666667%'>tmux(1)</a> <a href='/blog/categories/vagrant' style='font-size: 106.66666666666667%'>vagrant(1)</a> <a href='/blog/categories/vim' style='font-size: 106.66666666666667%'>vim(1)</a> <a href='/blog/categories/virtual-box' style='font-size: 113.33333333333333%'>virtual box(2)</a> <a href='/blog/categories/virtualization' style='font-size: 113.33333333333333%'>virtualization(2)</a> </span>
 </section>
 
 <section>

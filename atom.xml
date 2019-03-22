@@ -4,7 +4,7 @@
   <title><![CDATA[My Programmer's Road]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2019-03-05T17:12:59+01:00</updated>
+  <updated>2019-03-22T12:56:07+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,507 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Option Monad - From Scratch]]></title>
+    <link href="http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch/"/>
+    <updated>2019-03-10T11:28:42+01:00</updated>
+    <id>http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch</id>
+    <content type="html"><![CDATA[<p>In a post <a href="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a gentle introduction</a>
+I have introduced a concept of <code>monad</code>. Since now we should have a good
+intuition what <code>monad</code> is and be aware of the situations where 
+it can be used to simplify the code and make it more readable.</p>
+
+<p>In this post we will focus on an <code>Option</code> monad which wraps value with a context 
+aware of whether or not the value exists. We will start with a problem and solution
+not exactly suiting our needs and adapting <code>Option</code> monad we will try to fix this.</p>
+
+<h2 id="problem">Problem</h2>
+
+<p>There are 3 streams of numbers given as a strings.</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">val</span> <span class="n">xs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;0&quot;</span><span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">ys</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">zs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>After merging operation we got a stream  called <code>data</code> containing tuples
+of 3 strings</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">val</span> <span class="n">data</span> <span class="k">:</span> <span class="kt">List</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">String</span><span class="o">)]</span> <span class="k">=</span> <span class="n">flatten</span><span class="o">(</span><span class="n">xs</span><span class="o">.</span><span class="n">zip</span><span class="o">(</span><span class="n">ys</span><span class="o">).</span><span class="n">zip</span><span class="o">(</span><span class="n">zs</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Our task is to build a pipeline that generates a stream of <code>Doubles</code> 
+which is a result of division one number by the next one in the 
+context of the same tuple.</p>
+
+<p>So following stream</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="o">[(</span><span class="kt">x1</span>,<span class="kt">y1</span>,<span class="kt">z1</span><span class="o">)</span>, <span class="o">(</span><span class="kt">x2</span>,<span class="kt">y2</span>,<span class="kt">z2</span><span class="o">)</span>,<span class="kt">...</span><span class="o">(</span><span class="kt">xn</span>,<span class="kt">yn</span>,<span class="kt">zn</span><span class="o">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>should generate</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="o">[(</span><span class="kt">x1/y1/z1</span><span class="o">)</span>, <span class="o">(</span><span class="kt">x2/y2/z2</span><span class="o">)</span>,<span class="kt">...</span> <span class="o">(</span><span class="kt">xn/yn/zn</span><span class="o">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>This problem can be solved using following scala code</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">pipeline</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class="line">    <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">div</span> <span class="k">_</span><span class="o">).</span><span class="n">tupled</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>where <code>DivModule</code> consist of <code>div</code> and <code>parse</code> functions.</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">object</span> <span class="nc">DivModule</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">      <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;arg can&#39;t be null&quot;</span><span class="o">)</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">x</span><span class="o">.</span><span class="n">toDouble</span>
+</span><span class="line">
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">div</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">y</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">z</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">y</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">z</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">      <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;(x | y | z) can&#39;t be null&quot;</span><span class="o">)</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">val</span> <span class="n">xx</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">val</span> <span class="n">yy</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">y</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">val</span> <span class="n">zz</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">z</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="o">(</span><span class="n">yy</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">zz</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">      <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;y or z can&#39;t be 0&quot;</span><span class="o">)</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">xx</span> <span class="o">/</span> <span class="n">yy</span> <span class="o">/</span> <span class="n">zz</span>
+</span><span class="line">
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>For a given streams of numbers (defined at the beginning) we should get</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="mf">4.5</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>The numbers are correct, but take a look on implementations of <code>parse</code>
+and <code>div</code> functions. Those functions are <code>partial</code> - they don’t cover
+the whole domain. And for following streams of numbers</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">val</span> <span class="n">xs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;11&quot;</span><span class="o">,</span> <span class="s">&quot;22&quot;</span><span class="o">,</span> <span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">ys</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;11&quot;</span><span class="o">,</span> <span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;33&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">zs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;22&quot;</span><span class="o">,</span> <span class="s">&quot;33&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>after running pipeline we get an <code>Exception</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">Exception</span> <span class="n">in</span> <span class="n">thread</span> <span class="s">&quot;main&quot;</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">IllegalArgumentException</span><span class="k">:</span> <span class="kt">y</span> <span class="kt">or</span> <span class="kt">z</span> <span class="kt">can</span><span class="err">&#39;</span><span class="kt">t</span> <span class="kt">be</span> <span class="err">0</span>
+</span><span class="line">  <span class="kt">at</span> <span class="kt">learning.monad.example.DivModule$.div</span><span class="o">(</span><span class="kt">DivModule.scala:</span><span class="err">28</span><span class="o">)</span>
+</span><span class="line">  <span class="kt">at</span> <span class="kt">learning.monad.example.MonadOption$.$anonfun$pipeline$2</span><span class="o">(</span><span class="kt">MonadOption.scala:</span><span class="err">25</span><span class="o">)</span>
+</span><span class="line">  <span class="kt">at</span> <span class="kt">learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted</span><span class="o">(</span><span class="kt">MonadOption.scala:</span><span class="err">25</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>We can easily fix this by lifting a partial function to a function. Let’s add <code>lift</code>
+function to the <code>DivModule</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">type</span> <span class="kt">Fun3</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Double</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="n">lift</span><span class="o">(</span><span class="n">f</span><span class="k">:</span> <span class="kt">Fun3</span><span class="o">,</span> <span class="n">defaultValue</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span><span class="k">:</span> <span class="kt">Fun3</span> <span class="o">=</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span> <span class="k">=&gt;</span>
+</span><span class="line">  <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">catch</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="n">e</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=&gt;</span> <span class="n">defaultValue</span>
+</span><span class="line">  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>and modify the <code>pipeline</code> accordingly</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">pipeline</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">lift</span><span class="o">(</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">div</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">)).</span><span class="n">tupled</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Now <code>pipeline</code> generates streams of numbers</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="o">-</span><span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>We can spot that for each undefined value we get <code>-1</code> because of <code>lift</code> 
+function which maps all undefined values to the default one, in our case <code>-1</code>.</p>
+
+<p>In order to get only a valid numbers let’s apply a filter</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">pipeline</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">lift</span><span class="o">(</span><span class="nc">DivModule</span><span class="o">.</span><span class="n">div</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">)).</span><span class="n">tupled</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span><span class="line">  <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>and our result is</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="mf">1.0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>For a first look this solution would seem to be good, but what about all 
+operations which could return <code>-1</code> as a correct result ?</p>
+
+<p>When we change fifth number in <code>zs</code> from <code>3</code> to <code>-3</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">val</span> <span class="n">xs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;11&quot;</span><span class="o">,</span> <span class="s">&quot;22&quot;</span><span class="o">,</span> <span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">,</span> <span class="s">&quot;9&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">ys</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;11&quot;</span><span class="o">,</span> <span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;33&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">)</span>
+</span><span class="line"><span class="k">val</span> <span class="n">zs</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;0&quot;</span> <span class="o">,</span> <span class="s">&quot;22&quot;</span><span class="o">,</span> <span class="s">&quot;33&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="s">&quot;-3&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>our pipeline will generate</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>instead of</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This is wrong and changing default value in <code>lift</code> function doesn’t
+fix this, because co-domain of <code>div</code> function covers whole domain of <code>Double</code>.</p>
+
+<p><code>Option</code> monad comes to the rescue.</p>
+
+<h2 id="option-monad">Option monad</h2>
+
+<p>In order to implement an <code>Option</code> monad we start with defining a data type
+constructor</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><code>Option</code> is an algebraic data type constructor parametrized with <code>A</code> in a <code>co-variant</code>
+position. We can think of an <code>Option[_]</code> like about container keeping
+a value. For now it has no context.</p>
+
+<p>Let’s assigned a context to it by defining a first value constructor called <code>Some</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">Some</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">get</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>This constructor introduced a context of container with a value within.</p>
+
+<p>A context meaning no value (empty container) can be defined with <code>None</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">object</span> <span class="nc">None</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+<p><code>None</code> reveals why we need a type parameter <code>A</code> to be in <code>co-variant</code> position -
+we simply requires <code>None</code> to be cast to any <code>Option[A]</code>.</p>
+
+<p>Recalling a definition of Monad we know that it consists of three parts:</p>
+
+<ul>
+  <li>type constructor <code>M[A]</code></li>
+  <li>type converter (called <code>unit</code>, <code>pure</code> or <code>return</code>)</li>
+  <li>combinator (called <code>bind</code>, <code>&gt;&gt;=</code> or <code>flatMap</code>)</li>
+</ul>
+
+<p>First part is fulfilled. Now we have to implement type converter - <code>pure</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">object</span> <span class="nc">Option</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">pure</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p><code>pure</code> is a function which is responsible for putting a given value
+to the minimal meaningful context. For <code>Option</code> we requires that each
+non <code>null</code> value should be bind to the <code>Some</code>, in other case
+it should be <code>None</code>.</p>
+
+<p>The toughest to implement is a combinator function called <code>flatMap</code>. For
+an <code>Option</code> it is very easy task however.</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="k">this</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>This higher order function is very powerful and can be used as a primitive
+to implement for example <code>map</code> and <code>filter</code> in a following way</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="k">this</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)))</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">filter</span><span class="o">(</span><span class="n">p</span> <span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="k">if</span><span class="o">(</span><span class="n">p</span><span class="o">(</span><span class="n">a</span><span class="o">))</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">else</span> <span class="nc">None</span><span class="o">)</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Thanks to the <code>flatMap</code> we are able to get a value from container, abstracting
+whether or not the value is in container or not, and make a <code>map</code> transformation
+deciding if we want to put again transformed value or replace container with 
+the empty one.</p>
+
+<p>Putting all parts together we can define <code>Option</code> monad in scala in the following way</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="k">this</span> <span class="k">match</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">a</span><span class="o">)))</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">object</span> <span class="nc">Option</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">pure</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">Some</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">get</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="k">case</span> <span class="k">object</span> <span class="nc">None</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="building-new-version-of-pipeline">Building new version of pipeline</h2>
+
+<p>Let’s return to our problem. First we need to reimplement <code>parse</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatMap</span> <span class="o">{</span> <span class="n">str</span> <span class="k">=&gt;</span>
+</span><span class="line">  <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">    <span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="n">toDouble</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">catch</span> <span class="o">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="n">e</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=&gt;</span> <span class="nc">None</span>
+</span><span class="line">  <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>Argument and return type has been lifted respectively to 
+the <code>Option[String]</code> and <code>Option[Double]</code> type. You can spot
+that we use <code>flatMap</code> to have an access to the <code>String</code> value and
+based on the <code>toDouble</code> operation we return some <code>Double</code> value or nothing -
+in case of parse exception. When an argument <code>x</code> is <code>None</code> the function
+passed to <code>flatMap</code> is not executed - so we are sure that <code>String</code> passed
+to monadic function is not <code>null</code>.</p>
+
+<p>Next we need to take care of <code>div</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">div</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span> <span class="n">y</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span> <span class="n">z</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="n">zeroToNone</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">for</span> <span class="o">{</span>
+</span><span class="line">    <span class="n">xx</span> <span class="k">&lt;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+</span><span class="line">    <span class="n">yy</span> <span class="k">&lt;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">y</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">zeroToNone</span><span class="o">)</span>
+</span><span class="line">    <span class="n">zz</span> <span class="k">&lt;-</span> <span class="n">parse</span><span class="o">(</span><span class="n">z</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">zeroToNone</span><span class="o">)</span>
+</span><span class="line">  <span class="o">}</span> <span class="k">yield</span> <span class="n">xx</span> <span class="o">/</span> <span class="n">yy</span> <span class="o">/</span> <span class="n">zz</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><code>String</code> arguments has been lifted to the <code>Option[String]</code> and return type
+is now <code>Option[Double]</code>.</p>
+
+<p>An <code>x</code> argument is passed to the <code>parse</code> and finally we have <code>Double</code> 
+value in <code>xx</code> variable. If <code>parse</code> returns <code>None</code> then
+the whole function <code>div</code> is evaluated to <code>None</code>.</p>
+
+<p>For <code>y</code> and <code>z</code> things works almost the same with one difference - we additionally requires that
+<code>yy</code> an <code>zz</code> must be not equal to zero. This is expressed by calling <code>flatMap</code>
+with function <code>zeroToNone</code>. For <code>0</code> value <code>zeroToNone</code> returns an empty 
+container <code>None</code> which causes that the whole expression <code>parse(y).flatMap(zeroToNone)</code>
+is evaluated to <code>None</code> what moves <code>div</code> function to return <code>None</code>.</p>
+
+<p>Finally pipeline could look following</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">pipeline2</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">map3</span><span class="o">(</span><span class="n">x</span><span class="o">)(</span><span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">))</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">z</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nc">DivModuleWithOption</span><span class="o">.</span><span class="n">div</span> <span class="k">_</span><span class="o">).</span><span class="n">tupled</span><span class="o">(</span><span class="n">z</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This pipeline generates</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">List</span><span class="o">(</span><span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">0.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">1.5</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(-</span><span class="mf">1.0</span><span class="o">),</span> <span class="nc">None</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>At the end we need only to filter out nones and get the value out of the <code>Option</code></p>
+
+<p>To do so there is a need to add 3 additional methods to <code>Option</code></p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">//skipped for brevity</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">isNonEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">!</span><span class="n">isEmpty</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">get</span> <span class="k">:</span> <span class="kt">A</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>and to corresponding subclasses</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">case</span> <span class="k">class</span> <span class="nc">Some</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">get</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">case</span> <span class="k">object</span> <span class="nc">None</span> <span class="k">extends</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span> <span class="o">{</span>
+</span><span class="line">  <span class="k">def</span> <span class="n">isEmpty</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="n">get</span> <span class="k">:</span> <span class="kt">Nothing</span> <span class="o">=</span> <span class="o">???</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Finally the pipeline</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="k">def</span> <span class="n">pipeline2</span> <span class="k">=</span> <span class="n">data</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">map3</span><span class="o">(</span><span class="n">x</span><span class="o">)(</span><span class="nc">Option</span><span class="o">.</span><span class="n">pure</span><span class="o">))</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">z</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nc">DivModuleWithOption</span><span class="o">.</span><span class="n">div</span> <span class="k">_</span><span class="o">).</span><span class="n">tupled</span><span class="o">(</span><span class="n">z</span><span class="o">))</span>
+</span><span class="line">  <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">isNonEmpty</span><span class="o">)</span>
+</span><span class="line">  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">get</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>generates following stream of numbers</p>
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="scala"><span class="line"><span class="nc">List</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>and this is all we need.</p>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-intro-session">Sources to the post</a></li>
+  <li><a href="https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction">Implement monad from scratch - github sources</a></li>
+  <li><a href="http://ssledz.github.io/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a gentle introduction</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Monads - Lunch2Learn Session]]></title>
@@ -163,7 +664,7 @@ for an update.</p>
 <p>Monads:</p>
 
 <ul>
-  <li>Option</li>
+  <li><a href="http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch/">Option</a></li>
   <li>Either</li>
   <li>Id</li>
   <li>Writer</li>
@@ -1982,226 +2483,6 @@ block of code and type:</p>
 <p>After taking a final exam I have earned <code>Statement of Accomplishment</code> attached below.</p>
 
 <p><img class="center" src="http://ssledz.github.io/images/custom/coursera/automata-statement-of-accomplishment.png" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java Development Environment With Vagrant - Part 1]]></title>
-    <link href="http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1/"/>
-    <updated>2015-11-08T16:06:35+01:00</updated>
-    <id>http://ssledz.github.io/blog/2015/11/08/java-development-environment-with-vagrant-part-1</id>
-    <content type="html"><![CDATA[<h3 id="preface">Preface</h3>
-
-<p>This post describes my development environment driven by Vagrant (Full description what can be found there is <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">here</a>). You can ask why Vagrant ? To be honest this is my first adventure with this tool. I am suprised how easy can be the process of setting brand new development environment. This tool can really save plenty of hours.</p>
-
-<h3 id="what-is-vagranthttpsdocsvagrantupcomv2why-vagrantindexhtml-based-on-documentation">What is <a href="https://docs.vagrantup.com/v2/why-vagrant/index.html">Vagrant</a> (based on documentation)</h3>
-
-<p>Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team. Sounds cool, isn’t it? One can configure the whole development environment with all the tools, needed libraries and various dependencies and other can just based on that create his own brand new development environment. The Process of introducing new team members into the project can be shortened by the time of setting new development environment.</p>
-
-<h3 id="vagrant-providers">Vagrant Providers</h3>
-
-<p>Vagrant has an ability to manage some of machine types like</p>
-
-<ul>
-  <li><code>VirtualBox</code></li>
-  <li><code>VMware</code></li>
-  <li><code>Docker</code></li>
-  <li><code>Hyper-V</code></li>
-</ul>
-
-<p>In my setting I am using <code>Virtualbox</code> which is a free cross-platform consumer virtualization product supported by Oracle. To use this provider <code>VirtualBox</code> must be installed on its own. VirtualBox can be installed by <a href="https://www.virtualbox.org/wiki/Downloads">downloading</a> a package or installer for your operating system and using standard procedures to install that package.</p>
-
-<h3 id="vagrant-installation">Vagrant Installation</h3>
-
-<p>Visit the <a href="http://www.vagrantup.com/downloads">downloads page</a> and get the appropriate installer or package for your platform. Then install it using standard procedures for your operating system. The installer will automatically add <code>vagrant</code> to your system path so that it is available in terminals.</p>
-
-<h3 id="setting-development-environment">Setting development environment</h3>
-
-<p>To set up java development environment You need just type the following bunch of commands</p>
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git@github.com:ssledz/vagrant-boxes.git
-</span><span class="line">cd vagrant-boxes/java-dev-environment
-</span><span class="line">vagrant up</span></code></pre></td></tr></table></div></figure>
-
-<p>Now vagrant box image is downloading from the box repository and then installation script <code>provision.sh</code> will be called.</p>
-
-<p>The <code>provision.sh</code> trace can look following</p>
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">==&gt; default: Creating directories
-</span><span class="line">==&gt; default:     Creating bin directory
-</span><span class="line">==&gt; default:     Creating public_html directory
-</span><span class="line">==&gt; default:     Creating servers directory
-</span><span class="line">==&gt; default: Installing packages
-</span><span class="line">==&gt; default:     apt-get update
-</span><span class="line">==&gt; default:     Installing vim
-</span><span class="line">==&gt; default:     Installing git
-</span><span class="line">==&gt; default: Installing mc
-</span><span class="line">==&gt; default:     Installing libssl-dev libreadline-dev zlib1g-dev
-</span><span class="line">==&gt; default:     Installing make g++
-</span><span class="line">==&gt; default:     Installing apg
-</span><span class="line">==&gt; default:     Installing mysql-server
-</span><span class="line">==&gt; default:         Creating /etc/mysql/conf.d/utf8_charset.cnf
-</span><span class="line">==&gt; default:         Restarting mysql
-</span><span class="line">==&gt; default:     Installing nginx-core ssl-cert
-</span><span class="line">==&gt; default:         Creating /etc/nginx/sites-available/public_html
-</span><span class="line">==&gt; default:         Enabling /etc/nginx/sites-available/public_html
-</span><span class="line">==&gt; default:         Restarting nginx
-</span><span class="line">==&gt; default: Downloading jdks
-</span><span class="line">==&gt; default:     jdk-5u22-linux-x64.tar.gz is available
-</span><span class="line">==&gt; default:     jdk-6u45-linux-x64.tar.gz is available
-</span><span class="line">==&gt; default:     jdk-7u80-linux-x64.tar.gz is available
-</span><span class="line">==&gt; default:     jdk-8u65-linux-x64.tar.gz is available
-</span><span class="line">==&gt; default: Installing jdks
-</span><span class="line">==&gt; default:     Extracting jdk-5u22-linux-x64.tar.gz
-</span><span class="line">==&gt; default:     Extracting jdk-6u45-linux-x64.tar.gz
-</span><span class="line">==&gt; default: Extracting jdk-7u80-linux-x64.tar.gz
-</span><span class="line">==&gt; default:     Extracting jdk-8u65-linux-x64.tar.gz
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default: Installing apache-maven
-</span><span class="line">==&gt; default:     Downloading apache-maven-3.3.3-bin.tar.gz
-</span><span class="line">==&gt; default:     Extracting apache-maven-3.3.3-bin.tar.gz using tar
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default:     Creating symbolic link apache-maven
-</span><span class="line">==&gt; default: Installing apache-ant
-</span><span class="line">==&gt; default:     Downloading apache-ant-1.9.6-bin.tar.gz
-</span><span class="line">==&gt; default:     Extracting apache-ant-1.9.6-bin.tar.gz using tar
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default:     Creating symbolic link apache-ant
-</span><span class="line">==&gt; default: Installing gradle
-</span><span class="line">==&gt; default:     Downloading gradle-2.8-bin.zip
-</span><span class="line">==&gt; default:     Extracting gradle-2.8-bin.zip using unzip
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default:     Creating symbolic link gradle
-</span><span class="line">==&gt; default: Installing sbt
-</span><span class="line">==&gt; default:     Downloading sbt-0.13.9.tgz
-</span><span class="line">==&gt; default:     Extracting sbt-0.13.9.tgz using tar
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default:     Creating symbolic link sbt
-</span><span class="line">==&gt; default: Installing environment managers (for Java, Ruby, node.js and Python) 
-</span><span class="line">==&gt; default:     Installing jenv
-</span><span class="line">==&gt; default:         Clonning from github to ~/.jenv
-</span><span class="line">==&gt; default:         Setting environment variables
-</span><span class="line">==&gt; default:         Make build tools jenv aware
-</span><span class="line">==&gt; default:             ant plugin activated
-</span><span class="line">==&gt; default:             maven plugin activated
-</span><span class="line">==&gt; default:             gradle plugin activated
-</span><span class="line">==&gt; default:             sbt plugin activated
-</span><span class="line">==&gt; default:     Installing rbenv
-</span><span class="line">==&gt; default:         Clonning from github to ~/.rbenv
-</span><span class="line">==&gt; default:         Installing plugins that provide rbenv install
-</span><span class="line">==&gt; default:     Installing nodenv
-</span><span class="line">==&gt; default:         Clonning from github to ~/.nodenv
-</span><span class="line">==&gt; default:         Installing plugins that provide nodenv install
-</span><span class="line">==&gt; default:     Installing pyenv
-</span><span class="line">==&gt; default:         Clonning from github to ~/.pyenv
-</span><span class="line">==&gt; default: Updating .bashrc
-</span><span class="line">==&gt; default: Install runtimes using environment managers
-</span><span class="line">==&gt; default:     Install java
-</span><span class="line">==&gt; default:     Set jdk 1.8 globally
-</span><span class="line">==&gt; default:     Install ruby
-</span><span class="line">==&gt; default:     Install node.js
-</span><span class="line">==&gt; default:     install python
-</span><span class="line">==&gt; default: Installing apache-tomcat
-</span><span class="line">==&gt; default:     Downloading apache-tomcat-8.0.28.tar.gz
-</span><span class="line">==&gt; default:     Extracting apache-tomcat-8.0.28.tar.gz using tar
-</span><span class="line">==&gt; default:     Cleaning
-</span><span class="line">==&gt; default:     Creating symbolic link apache-tomcat
-</span><span class="line">==&gt; default:     Creating apache-tomcat /bin/setenv.sh
-</span><span class="line">==&gt; default:     Copying tomcat-users.xml to apache-tomcat/conf
-</span><span class="line">==&gt; default:     Creating /etc/init.d/tomcat script
-</span><span class="line">==&gt; default:     Starting tomcat</span></code></pre></td></tr></table></div></figure>
-
-<p>To loggin to the machine do</p>
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">vagrant ssh</span></code></pre></td></tr></table></div></figure>
-
-<p>To check what can You find in this environment please visit this <a href="https://github.com/ssledz/vagrant-boxes/tree/master/java-dev-environment">page</a>.</p>
-
-<p>More about how to use this setting to develop in the next post.</p>
 ]]></content>
   </entry>
   

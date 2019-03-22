@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://ssledz.github.io/blog/2019/03/10/option-monad-from-scratch/</loc>
+<lastmod>2019-03-10T11:28:42+01:00</lastmod>
+</url>
+<url>
 <loc>http://ssledz.github.io/blog/2019/02/17/monads-lunch2learn-session/</loc>
 <lastmod>2019-02-17T13:33:47+01:00</lastmod>
 </url>
