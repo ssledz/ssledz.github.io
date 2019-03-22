@@ -17,13 +17,13 @@ not exactly suiting our needs and adapting `Option` monad we will try to fix thi
 
 ## Problem
 
-There are 3 streams of numbers given as a string. 
+There are 3 streams of numbers given as a strings. 
 ```scala
 val xs = List("0", "9", "9")
 val ys = List("3", "3", "1")
 val zs = List("2", "3", "2")
 ```
-After merging operation we got a stream  caled `data` containing tuples
+After merging operation we got a stream  called `data` containing tuples
 of 3 strings 
 ```scala
 val data : List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
@@ -100,7 +100,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: y or z can't be 0
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2(MonadOption.scala:25)
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted(MonadOption.scala:25)
 ```
-We can easily fix this by lifting partial function to function. Let's add `lift`
+We can easily fix this by lifting a partial function to a function. Let's add `lift`
 function to the `DivModule`
 ```scala
 type Fun3 = (String, String, String) => Double
@@ -122,7 +122,7 @@ Now `pipeline` generates streams of numbers
 -1.0, -1.0, 0.0, 1.5, 1.0, -1.0
 ```
 We can spot that for each undefined value we get `-1` because of `lift` 
-function which maps all undefined values to the default one - in our case `-1`.
+function which maps all undefined values to the default one, in our case `-1`.
 
 In order to get only a valid numbers let's apply a filter  
 ```scala
