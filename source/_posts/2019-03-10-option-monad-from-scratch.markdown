@@ -293,6 +293,7 @@ def div(x: Option[String], y: Option[String], z: Option[String]): Option[Double]
   } yield xx / yy / zz
 }
 ```
+
 `String` arguments has been lifted to the `Option[String]` and return type
 is now `Option[Double]`. 
 
@@ -314,7 +315,6 @@ def pipeline2 = data
 ```
 
 This pipeline generates
-
 ```
 List(None, None, Some(0.0), Some(1.5), Some(-1.0), None)
 ```
@@ -323,16 +323,16 @@ At the end we need only to filter out nones and get the value out of the `Option
 
 To do so there is a need to add 3 additional methods to `Option`
 ```scala
-   sealed trait Option[+A] {
+sealed trait Option[+A] {
+
+  //skipped for brevity
    
-      //skipped for brevity
-      
-      def isEmpty: Boolean
-
-      def isNonEmpty: Boolean = !isEmpty
-
-      def get : A
-    }
+  def isEmpty: Boolean
+  
+  def isNonEmpty: Boolean = !isEmpty
+  
+  def get : A
+}
 ```
 
 and to corresponding subclasses
