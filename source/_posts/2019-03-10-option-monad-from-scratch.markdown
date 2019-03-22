@@ -366,4 +366,6 @@ and this is all we need.
 
 ## Resources
 
-* [Sources to the post](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction)
+* [Sources to the post](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-intro-session)
+* [Implement monad from scratch - github sources](https://github.com/ssledz/ssledz.github.io-src/tree/master/monad-gentle-introduction)
+* [About Monads - a gentle introduction]({% post_url 2019-01-28-about-monads-a-gentle-introduction %})
