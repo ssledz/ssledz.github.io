@@ -11,9 +11,9 @@ I have introduced a concept of `monad`. Since now we should have a good
 intuition what `monad` is and be aware of the situations where 
 it can be used to simplify the code and make it more readable. 
 
-In this post we will focus on an `Option` monad which wraps value with a context 
+In this post we will focus on an `Option` monad which wraps value in a context 
 aware of whether or not the value exists. We will start with a problem and solution
-not exactly suiting our needs and adapting `Option` monad we will try to fix this.
+not exactly suiting our needs and by adapting `Option` monad we will try to fix this.
 
 ## Problem
 
@@ -23,20 +23,20 @@ val xs = List("0", "9", "9")
 val ys = List("3", "3", "1")
 val zs = List("2", "3", "2")
 ```
-After merging operation we got a stream  called `data` containing tuples
+After zipping and flattening we got a stream  called `data` containing tuples
 of 3 strings 
 ```scala
 val data : List[(String, String, String)] = flatten(xs.zip(ys).zip(zs))
 ```
 Our task is to build a pipeline that generates a stream of `Doubles` 
-which is a result of division one number by the next one in the 
+which is a result of division one number by another in a sequence in the 
 context of the same tuple.
 
-So following stream
+It means that the pipeline for a stream described as
 ```
 [(x1,y1,z1), (x2,y2,z2),...(xn,yn,zn)]
 ```
-should generate
+should generate a stream of numbers given by formula mentioned below
 ```
 [(x1/y1/z1), (x2/y2/z2),... (xn/yn/zn)]
 ```
@@ -45,7 +45,7 @@ This problem can be solved using following scala code
 def pipeline = data
     .map((DivModule.div _).tupled(_))
 ```
-where `DivModule` consist of `div` and `parse` functions. 
+`div` function is defined in `DivModule`  
 ```scala
 object DivModule {
 
@@ -81,13 +81,16 @@ object DivModule {
 
 }
 ```
-For a given streams of numbers (defined at the beginning) we should get
+For a streams of numbers defined at the beginning we should get
 ```
 0.0, 1.0, 4.5
 ``` 
-The numbers are correct, but take a look on implementations of `parse`
-and `div` functions. Those functions are `partial` - they don't cover
-the whole domain. And for following streams of numbers 
+The numbers are correct, but take a look on implementation of a `parse`
+and `div` functions. Those functions are not `total`. In functional world a function 
+which is not `total` is called `partial`. A `partial` function is not defined 
+for all values passed as its arguments.  
+
+And for following streams of numbers 
 ```scala
 val xs = List("11", "22", "0" , "9", "9", null)
 val ys = List("11", "0" , "33", "3", "3", "1")
@@ -100,8 +103,8 @@ Exception in thread "main" java.lang.IllegalArgumentException: y or z can't be 0
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2(MonadOption.scala:25)
   at learning.monad.example.MonadOption$.$anonfun$pipeline$2$adapted(MonadOption.scala:25)
 ```
-We can easily fix this by lifting a partial function to a function. Let's add `lift`
-function to the `DivModule`
+We can easily fix this by lifting a partial function to a total function. 
+Let's add `lift` function to the `DivModule`
 ```scala
 type Fun3 = (String, String, String) => Double
 
@@ -117,7 +120,7 @@ and modify the `pipeline` accordingly
 def pipeline: List[Double] = data
   .map((DivModule.lift(DivModule.div, -1)).tupled(_))
 ```
-Now `pipeline` generates streams of numbers
+Now `pipeline` generates streams of numbers like
 ```
 -1.0, -1.0, 0.0, 1.5, 1.0, -1.0
 ```
@@ -137,8 +140,8 @@ and our result is
 0.0, 1.5, 1.0
 ```
 
-For a first look this solution would seem to be good, but what about all 
-operations which could return `-1` as a correct result ?
+For a first look this solution would seem to be good, but what about all
+variations of streams for which pipeline could return `-1` as a correct result ?
 
 When we change fifth number in `zs` from `3` to `-3`
 ```scala
