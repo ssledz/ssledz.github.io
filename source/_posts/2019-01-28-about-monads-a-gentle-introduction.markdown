@@ -28,7 +28,10 @@ some laws - I will talk about them later.
 
 Function `map` can be defined
 in terms of `flatMap` and `pure` and this is a bonus which we get for a free
-when we provide an instance of a Monad for a type `M[_]`.
+when we provide an instance of a Monad for a type `M[_]`. Moreover many useful
+functions can be defined in terms of `flatMap` and `pure` like `map2`, `ap`,
+`filter` and so on. This interface is so powerful then often is treated
+as a primitive one when goes to implement other functions.
 
 We can think about `M[A]` like about some smart container
 for a value (values) of type `A`. This container abstracts away from how this value
@@ -43,15 +46,15 @@ is kept. We can have many flavors of them like container:
 * with value and some logging information
 * etc
 
-Monad let us focus on what we want to do with the contained value. It is
-like a context in which the value exists. When we want to do some computation
+`Monad` let us focus on what we want to do with the contained value. `Monad` is
+like a `context` in which the value exists. When we want to do some computation
 we are abstracting over the context so we aren't disrupted whether or
 not the value exists, we have many of them or the value may appear in a future.
 We want just to get the value out of the container for a moment to make
-some computation and then put it again. The context is important only when
+some computation and then put it there again. The `context` is important only when
 we want to pull out a value permanently.
 
-Another advantage of the monad is an ability of sequencing the computations.
+Another advantage of the `monad` is an ability of sequencing the computations.
 Having let's say two computations we can very easily make dependence
 between them saying that the computations of the second depends on
 a result of the first. Of course this can be scaled to more than two.
@@ -60,7 +63,7 @@ At first glance, it may seem to be not so impressive because it is
 very common to make such things during coding. But be aware that monad
 frees us from thinking about the context in which the value exists. The context
 can be for example an asynchronous computation. Dealing with concurrency
-is challenging - we have to be very careful to not make a hard to spot mistake.
+is challenging - we have to be very careful to not make a hard to spot mistakes.
 Monad takes care about this complexity, providing a result of the
 first computation as soon as possible giving us possibility to
 spawn another computation in asynchronous manner.
