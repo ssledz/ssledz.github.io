@@ -702,7 +702,10 @@ some laws - I will talk about them later.</p>
 
 <p>Function <code>map</code> can be defined
 in terms of <code>flatMap</code> and <code>pure</code> and this is a bonus which we get for a free
-when we provide an instance of a Monad for a type <code>M[_]</code>.</p>
+when we provide an instance of a Monad for a type <code>M[_]</code>. Moreover many useful
+functions can be defined in terms of <code>flatMap</code> and <code>pure</code> like <code>map2</code>, <code>ap</code>,
+<code>filter</code> and so on. This interface is so powerful then often is treated
+as a primitive one when goes to implement other functions.</p>
 
 <p>We can think about <code>M[A]</code> like about some smart container
 for a value (values) of type <code>A</code>. This container abstracts away from how this value
@@ -719,15 +722,15 @@ is kept. We can have many flavors of them like container:</p>
   <li>etc</li>
 </ul>
 
-<p>Monad let us focus on what we want to do with the contained value. It is
-like a context in which the value exists. When we want to do some computation
+<p><code>Monad</code> let us focus on what we want to do with the contained value. <code>Monad</code> is
+like a <code>context</code> in which the value exists. When we want to do some computation
 we are abstracting over the context so we aren’t disrupted whether or
 not the value exists, we have many of them or the value may appear in a future.
 We want just to get the value out of the container for a moment to make
-some computation and then put it again. The context is important only when
+some computation and then put it there again. The <code>context</code> is important only when
 we want to pull out a value permanently.</p>
 
-<p>Another advantage of the monad is an ability of sequencing the computations.
+<p>Another advantage of the <code>monad</code> is an ability of sequencing the computations.
 Having let’s say two computations we can very easily make dependence
 between them saying that the computations of the second depends on
 a result of the first. Of course this can be scaled to more than two.</p>
@@ -736,7 +739,7 @@ a result of the first. Of course this can be scaled to more than two.</p>
 very common to make such things during coding. But be aware that monad
 frees us from thinking about the context in which the value exists. The context
 can be for example an asynchronous computation. Dealing with concurrency
-is challenging - we have to be very careful to not make a hard to spot mistake.
+is challenging - we have to be very careful to not make a hard to spot mistakes.
 Monad takes care about this complexity, providing a result of the
 first computation as soon as possible giving us possibility to
 spawn another computation in asynchronous manner.</p>
