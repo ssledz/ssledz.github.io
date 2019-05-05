@@ -143,7 +143,7 @@ and our result is
 For a first look this solution would seem to be good, but what about all
 variations of streams for which pipeline could return `-1` as a correct result ?
 
-When we change fifth number in `zs` from `3` to `-3`
+For example, when we change fifth number in `zs` from `3` to `-3`
 ```scala
 val xs = List("11", "22", "0" , "9", "9", null)
 val ys = List("11", "0" , "33", "3", "3", "1")
@@ -162,14 +162,17 @@ instead of
 0.0, 1.5, -1.0
 ```
 
-This is wrong and changing default value in `lift` function doesn't
-fix this, because co-domain of `div` function covers whole domain of `Double`.
+This is wrong and changing a default value in `lift` function doesn't
+fix this, because for each such case we can find a counterexample where
+a correct value is filtered out. It is easy to prove that `div` function
+returns numbers from the whole `Double` space. In category theory there is
+a name for such functions (morphisms) - epimorphisms.
 
-`Option` monad comes to the rescue.
+And here an `Option` monad comes to the rescue.
 
 ## Option monad
 
-In order to implement an `Option` monad we start with defining a data type
+In order to implement an `Option` monad let's start with defining a data type
 constructor
 ```scala
 trait Option[+A]
@@ -179,11 +182,11 @@ trait Option[+A]
 position. We can think of an `Option[_]` like about container keeping
 a value. For now it has no context. 
 
-Let's assigned a context to it by defining a first value constructor called `Some`
+Let's assigned a context to it by defining a value constructor called `Some`
 ```scala
 case class Some[A](get: A) extends Option[A]
 ```
-This constructor introduced a context of container with a value within.
+This constructor introduced a context of container with a none empty value.
 
 A context meaning no value (empty container) can be defined with `None`
 ```scala
@@ -192,7 +195,7 @@ case object None extends Option[Nothing]
 `None` reveals why we need a type parameter `A` to be in `co-variant` position -
 we simply requires `None` to be cast to any `Option[A]`.  
 
-Recalling a definition of Monad we know that it consists of three parts:
+Recalling a definition of `Monad` we know that it consists of three parts:
 
 * type constructor `M[A]`
 * type converter (called `unit`, `pure` or `return`)
@@ -236,11 +239,10 @@ trait Option[+A] {
 }
 ```
 Thanks to the `flatMap` we are able to get a value from container, abstracting
-whether or not the value is in container or not, and make a `map` transformation
-deciding if we want to put again transformed value or replace container with 
-the empty one.
+whether or not the value exists or not, and apply a `map` transformation
+deciding if we want to put the result again or replace container with an empty one.
 
-Putting all parts together we can define `Option` monad in scala in the following way
+Putting all parts together we can define `Option` monad in `scala` in the following way
 ```scala
 sealed trait Option[+A] {
   
@@ -278,11 +280,11 @@ def parse(x: Option[String]): Option[Double] = x.flatMap { str =>
 ```
 Argument and return type has been lifted respectively to 
 the `Option[String]` and `Option[Double]` type. You can spot
-that we use `flatMap` to have an access to the `String` value and
-based on the `toDouble` operation we return some `Double` value or nothing -
+that I have used `flatMap` to have an access to the `String` value and
+based on the `toDouble` operation I returned some `Double` value or nothing -
 in case of parse exception. When an argument `x` is `None` the function
-passed to `flatMap` is not executed - so we are sure that `String` passed
-to monadic function is not `null`.
+passed to `flatMap` is not executed - so I am sure that `String` passed
+to monadic function is not `null` and I don't have to make awkward `null` checks.
 
 Next we need to take care of `div`
 ```scala
@@ -305,7 +307,7 @@ value in `xx` variable. If `parse` returns `None` then
 the whole function `div` is evaluated to `None`. 
 
 For `y` and `z` things works almost the same with one difference - we additionally requires that
-`yy` an `zz` must be not equal to zero. This is expressed by calling `flatMap`
+`yy` an `zz` must be none zero. This is expressed by calling `flatMap`
 with function `zeroToNone`. For `0` value `zeroToNone` returns an empty 
 container `None` which causes that the whole expression `parse(y).flatMap(zeroToNone)`
 is evaluated to `None` what moves `div` function to return `None`.
