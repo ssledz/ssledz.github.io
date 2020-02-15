@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Review | My Programmer's Road]]></title>
+  <title><![CDATA[Category: Review | ssledz blog]]></title>
   <link href="http://ssledz.github.io/blog/categories/review/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2019-05-05T23:21:45+02:00</updated>
+  <updated>2020-02-15T17:43:42+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
