@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ghc | ssledz blog]]></title>
+  <link href="http://ssledz.github.io/blog/categories/ghc/atom.xml" rel="self"/>
+  <link href="http://ssledz.github.io/"/>
+  <updated>2020-04-26T21:38:26+02:00</updated>
+  <id>http://ssledz.github.io/</id>
+  <author>
+    <name><![CDATA[Sławomir Śledź]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Static Linking With Ghc]]></title>
+    <link href="http://ssledz.github.io/blog/2020/04/26/static-linking-with-ghc/"/>
+    <updated>2020-04-26T21:21:12+02:00</updated>
+    <id>http://ssledz.github.io/blog/2020/04/26/static-linking-with-ghc</id>
+    <content type="html"><![CDATA[<p>In order to compile a given source code using static linking</p>
+
+<p><code>haskell
+-- Main.hs
+main = putStrLn "Hello World!"
+</code></p>
+
+<p>there is a need to pass two additional flags to <code>ghc</code> like</p>
+
+<ul>
+  <li><code>-optl-static</code></li>
+  <li><code>-optl-pthread</code></li>
+</ul>
+
+<p><code>bash
+$ ghc -optl-static -optl-pthread --make Main
+</code></p>
+
+<p>then</p>
+
+<p><code>bash
+$ file Main
+Main: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
+for GNU/Linux 3.2.0, BuildID[sha1]=62d1682f378af2f994758e737ba9dc0b24fc06aa,
+with debug_info, not stripped
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>
