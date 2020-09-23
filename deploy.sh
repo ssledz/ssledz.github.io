@@ -2,5 +2,5 @@
 cd _deploy
 git reset --hard origin/master
 cd ..
-rake generate
-rake deploy
+bundle exec rake generate
+bundle exec rake deploy
