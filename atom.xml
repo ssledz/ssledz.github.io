@@ -4,7 +4,7 @@
   <title><![CDATA[ssledz blog]]></title>
   <link href="http://ssledz.github.io/atom.xml" rel="self"/>
   <link href="http://ssledz.github.io/"/>
-  <updated>2020-09-23T22:55:28+02:00</updated>
+  <updated>2021-01-13T14:15:01+01:00</updated>
   <id>http://ssledz.github.io/</id>
   <author>
     <name><![CDATA[Sławomir Śledź]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Recursive Tail Call Optimization and Trampoline]]></title>
+    <link href="http://ssledz.github.io/blog/2021/01/13/recursive-tail-call-optimization-and-trampoline/"/>
+    <updated>2021-01-13T14:04:26+01:00</updated>
+    <id>http://ssledz.github.io/blog/2021/01/13/recursive-tail-call-optimization-and-trampoline</id>
+    <content type="html"><![CDATA[<p>Tail call optimization (or tail call elimination) allows recursive functions to re-use the stack frame instead of creating new frames on every call.</p>
+
+<p>Thanks to that an author of recursive function in tail position is not constrained by the stack size. 
+More over such a function runs faster than the function without optimization, because calling a function doesn’t create a new stack frame which is time 
+and resource consuming operation.</p>
+
+<p>The article can be found <a href="https://iiit.pl/7743-2/">here</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Object Oriented Programming vs Functional Programming]]></title>
@@ -2433,84 +2448,6 @@ block of code and type:</p>
 <p>There is a one thing to note. Character following <code>zf</code> command - <code>%</code> is a motion command that moves cursor to the matching brace.</p>
 
 <p>To learn more about folding and generally about vim, I recommend to read <a href="https://www.goodreads.com/book/show/27390007-learning-the-vi-and-vim-editors-7-e?from_search=true&amp;search_version=service">Learning the Vi and Vim Editors</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Write to an HFS+ USB Drive From a Synology NAS]]></title>
-    <link href="http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas/"/>
-    <updated>2016-01-10T13:49:39+01:00</updated>
-    <id>http://ssledz.github.io/blog/2016/01/10/write-to-an-hfs-plus-usb-drive-from-a-synology-nas</id>
-    <content type="html"><![CDATA[<p>It is realy annoying that the newest version of Synolgy DSM (<code>5.2-5644 Update 1</code>) can’t handle properly <code>hfs+</code> hard drive device out of the box. Thanks to the fact that many users had the same problems as me before I found realy quickly handy article which shows how to make easy workaround. The trick is to disable journaling on the drive and then try to remount the device in nas with <code>ro</code> flag switched off.</p>
-
-<p>So to be able to write to an <code>HSF+</code> USB drvie you need first</p>
-
-<ul>
-  <li>disable journaling on the drive</li>
-  <li>connect your drive to nas</li>
-  <li>remount device with <code>ro</code> flag switched off</li>
-</ul>
-
-<h3 id="disabling-journaling-in-the-drive">Disabling journaling in the drive</h3>
-<p>To be able to do this you need to plug in your device to the mac (I couldn’t do this from my linux). Then to turn journaling off using <code>Disk Utility</code> do following:</p>
-
-<ul>
-  <li>open <code>Disk Utility</code> (located in <code>Applications/Utilities</code>).</li>
-  <li>select the disk device to disable journaling on.</li>
-  <li>choose <code>Disable Journaling</code> from the <code>File</code> menu.</li>
-</ul>
-
-<p>For someone this option could not be visible (Mac OS X 10.4 and later) then before clicking on the <code>File</code> menu press and hold <a href="http://www.macworld.co.uk/how-to/mac/what-where-option-key-mac-3462401/">Option</a> key</p>
-
-<p>More you can find <a href="https://support.apple.com/en-us/HT204435">here</a></p>
-
-<h3 id="remount-device-with-ro-flag-switched-off">Remount device with ro flag switched off</h3>
-
-<p>First log in as a root to the ds. Then have a look how the drive is mounted</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
-</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
-</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (ro,force,uid=1024,gid=100,umask=000)</span></code></pre></td></tr></table></div></figure>
-
-<p>You can spot that the drive is mounted with the <code>ro</code>(read only) flag.</p>
-
-<p>Now unmount the drive.</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; umount -f /dev/sdq2</span></code></pre></td></tr></table></div></figure>
-
-<p>And remount so it is writable using the same info used when it was mounted automatically.</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount -t hfsplus /dev/sdq2 /volumeUSB1/usbshare1-2</span></code></pre></td></tr></table></div></figure>
-
-<p>Finally, you can notice that device is no longer mounted as read only.</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; mount
-</span><span class="line">/dev/sdq1 on /volumeUSB1/usbshare1-1 type vfat (utf8,umask=000,shortname=mixed,uid=1024,gid=100,quiet)
-</span><span class="line">/dev/sdq2 on /volumeUSB1/usbshare1-2 type hfsplus (0)</span></code></pre></td></tr></table></div></figure>
-
-<p>To prove this try.</p>
-
-<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
-</span><span class="line">ds&gt; mkdir /volumeUSB1/usbshare1-2/sampleDir
-</span><span class="line">ds&gt; ls /volumeUSB1/usbshare1-2/ | grep 'sampleDir'
-</span><span class="line">sampleDir</span></code></pre></td></tr></table></div></figure>
-
-<h3 id="note">Note</h3>
-
-<p>It is very important to switch off journaling in the drive. When you remount the drive with <code>ro</code> switched off and haven’t yet disabled the journaling in the drive you won’t be able to write anything to the disk though <code>mount</code> will print that the drive is mounted as writable.</p>
-
 ]]></content>
   </entry>
   

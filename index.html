@@ -9,7 +9,7 @@
   <meta name="author" content="Sławomir Śledź">
 
   
-  <meta name="description" content="Michael Feathers, the author of Working with Legacy Code, described in a neat way the difference between object and functional oriented programming: &hellip;">
+  <meta name="description" content="Tail call optimization (or tail call elimination) allows recursive functions to re-use the stack frame instead of creating new frames on every call. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,6 +93,41 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2021/01/13/recursive-tail-call-optimization-and-trampoline/">Recursive Tail Call Optimization and Trampoline</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-01-13T14:04:26+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2021</span></span> <span class='time'>2:04 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tail call optimization (or tail call elimination) allows recursive functions to re-use the stack frame instead of creating new frames on every call.</p>
+
+<p>Thanks to that an author of recursive function in tail position is not constrained by the stack size. 
+More over such a function runs faster than the function without optimization, because calling a function doesn’t create a new stack frame which is time 
+and resource consuming operation.</p>
+
+<p>The article can be found <a href="https://iiit.pl/7743-2/">here</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1521,43 +1556,6 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2017/08/21/functional-programming-in-bash-introduction-to-fun-dot-sh-library/">Functional Programming in Bash - Introduction to fun.sh Library</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-08-21T00:28:33+02:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2017</span></span> <span class='time'>12:28 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Slides for Lunch2Learn (L2L) session are available <a href="/presentations/bash-fun.html">here</a>.</p>
-
-<h3 id="resources">Resources</h3>
-
-<ul>
-  <li><a href="https://github.com/ssledz/bash-fun">bash-fun</a></li>
-  <li><a href="https://github.com/ssledz/bash-import">bash-import</a></li>
-  <li><a href="https://github.com/ssledz/bash-repo">bash-repo</a></li>
-</ul>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1573,6 +1571,10 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2021/01/13/recursive-tail-call-optimization-and-trampoline/">Recursive Tail Call Optimization and Trampoline</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2020/09/23/object-oriented-programming-vs-functional-programming/">Object Oriented Programming vs Functional Programming</a>
       </li>
     
@@ -1586,10 +1588,6 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
     
       <li class="post">
         <a href="/blog/2019/02/17/monads-lunch2learn-session/">Monads - Lunch2Learn Session</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2019/01/28/about-monads-a-gentle-introduction/">About Monads - a Gentle Introduction</a>
       </li>
     
   </ul>
@@ -1668,7 +1666,7 @@ the following <a href="https://github.com/ssledz/ssledz.github.io-src/tree/maste
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2020 - Sławomir Śledź -
+  Copyright &copy; 2021 - Sławomir Śledź -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
